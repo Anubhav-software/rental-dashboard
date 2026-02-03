@@ -1,0 +1,328 @@
+<div class="card h-100 p-0 radius-12 border-0">
+    <div class="card-body p-24">
+        <div class="row justify-content-center">
+            <div class="col-xxl-10 col-xl-11 col-lg-12">
+                <% const v = vehicle; %>
+
+                <!-- Vehicle title strip -->
+                <div class="card border radius-16 overflow-hidden mb-24 bg-primary-50 border-primary-200">
+                    <div class="card-body py-24 px-24">
+                        <div class="row align-items-center">
+                            <div class="col-auto">
+                                <div class="w-64-px h-64-px rounded-12 bg-primary-100 d-flex align-items-center justify-content-center">
+                                    <iconify-icon icon="mdi:car-side" class="text-primary-600" style="font-size: 2rem;"></iconify-icon>
+                                </div>
+                            </div>
+                            <div class="col">
+                                <h5 class="fw-semibold text-primary-light mb-4"><%= v.make || '-' %> <%= v.model || '-' %></h5>
+                                <p class="text-sm text-secondary-light mb-0 d-flex align-items-center gap-2">
+                                    <iconify-icon icon="mdi:card-account-details-outline"></iconify-icon>
+                                    <%= v.registrationNumber || '-' %>
+                                </p>
+                            </div>
+                            <div class="col-auto">
+                                <% if (v.status === 'Available') { %>
+                                <span class="bg-success-focus text-success-600 border border-success-main px-20 py-8 radius-8 fw-medium text-sm d-inline-flex align-items-center gap-2">
+                                    <iconify-icon icon="mdi:check-circle-outline"></iconify-icon> Available
+                                </span>
+                                <% } else if (v.status === 'Rented') { %>
+                                <span class="bg-info-focus text-info-600 border border-info-main px-20 py-8 radius-8 fw-medium text-sm d-inline-flex align-items-center gap-2">
+                                    <iconify-icon icon="mdi:key-outline"></iconify-icon> Rented
+                                </span>
+                                <% } else { %>
+                                <span class="bg-warning-focus text-warning-600 border border-warning-main px-20 py-8 radius-8 fw-medium text-sm d-inline-flex align-items-center gap-2">
+                                    <iconify-icon icon="mdi:wrench-outline"></iconify-icon> Maintenance
+                                </span>
+                                <% } %>
+                            </div>
+                            <div class="col-auto d-flex gap-2">
+                                <a href="<%= typeof basePath !== 'undefined' ? basePath : '' %>/vehicle/edit/<%= v.id %>" class="btn btn-success btn-sm radius-8 d-flex align-items-center gap-2">
+                                    <iconify-icon icon="lucide:edit"></iconify-icon> Edit
+                                </a>
+                                <a href="<%= typeof basePath !== 'undefined' ? basePath : '' %>/vehicle" class="btn btn-outline-secondary btn-sm radius-8 d-flex align-items-center gap-2">
+                                    <iconify-icon icon="mdi:arrow-left"></iconify-icon> Back
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row g-3">
+                    <!-- Basic Information card -->
+                    <div class="col-lg-6">
+                        <div class="card border radius-12 h-100 overflow-hidden">
+                            <div class="card-header bg-neutral-50 border-bottom py-14 px-20">
+                                <h6 class="text-sm fw-semibold text-primary-light mb-0 d-flex align-items-center gap-2">
+                                    <iconify-icon icon="solar:document-text-outline" class="text-primary-600"></iconify-icon>
+                                    Basic Information
+                                </h6>
+                            </div>
+                            <div class="card-body p-20">
+                                <div class="vehicle-view-row d-flex align-items-center py-10 border-bottom border-neutral-200">
+                                    <span class="text-secondary-light text-sm d-flex align-items-center gap-2" style="width: 130px;">
+                                        <iconify-icon icon="mdi:car-side"></iconify-icon> Make
+                                    </span>
+                                    <span class="fw-medium text-primary-light"><%= v.make || '-' %></span>
+                                </div>
+                                <div class="vehicle-view-row d-flex align-items-center py-10 border-bottom border-neutral-200">
+                                    <span class="text-secondary-light text-sm d-flex align-items-center gap-2" style="width: 130px;">
+                                        <iconify-icon icon="mdi:car-cog"></iconify-icon> Model
+                                    </span>
+                                    <span class="fw-medium text-primary-light"><%= v.model || '-' %></span>
+                                </div>
+                                <div class="vehicle-view-row d-flex align-items-center py-10 border-bottom border-neutral-200">
+                                    <span class="text-secondary-light text-sm d-flex align-items-center gap-2" style="width: 130px;">
+                                        <iconify-icon icon="mdi:card-account-details-outline"></iconify-icon> Registration
+                                    </span>
+                                    <span class="fw-medium text-primary-light"><%= v.registrationNumber || '-' %></span>
+                                </div>
+                                <div class="vehicle-view-row d-flex align-items-center py-10 border-bottom border-neutral-200">
+                                    <span class="text-secondary-light text-sm d-flex align-items-center gap-2" style="width: 130px;">
+                                        <iconify-icon icon="mdi:format-list-group"></iconify-icon> Type
+                                    </span>
+                                    <span class="fw-medium text-primary-light"><%= (v.vehicleType || 'CAR') === 'MOTORBIKE' ? 'Motorbike' : 'Car' %></span>
+                                </div>
+                                <div class="vehicle-view-row d-flex align-items-center py-10 border-bottom border-neutral-200">
+                                    <span class="text-secondary-light text-sm d-flex align-items-center gap-2" style="width: 130px;">
+                                        <iconify-icon icon="solar:calendar-outline"></iconify-icon> Year
+                                    </span>
+                                    <span class="fw-medium text-primary-light"><%= v.year || '-' %></span>
+                                </div>
+                                <div class="vehicle-view-row d-flex align-items-center py-10 border-bottom border-neutral-200">
+                                    <span class="text-secondary-light text-sm d-flex align-items-center gap-2" style="width: 130px;">
+                                        <iconify-icon icon="mdi:palette-outline"></iconify-icon> Color
+                                    </span>
+                                    <span class="fw-medium text-primary-light"><%= v.color || '-' %></span>
+                                </div>
+                                <div class="vehicle-view-row d-flex align-items-center py-10 border-bottom border-neutral-200">
+                                    <span class="text-secondary-light text-sm d-flex align-items-center gap-2" style="width: 130px;">
+                                        <iconify-icon icon="mdi:seat-passenger"></iconify-icon> Seating
+                                    </span>
+                                    <span class="fw-medium text-primary-light"><%= v.seatingCapacity != null ? v.seatingCapacity : '-' %></span>
+                                </div>
+                                <div class="vehicle-view-row d-flex align-items-center py-10">
+                                    <span class="text-secondary-light text-sm d-flex align-items-center gap-2" style="width: 130px;">
+                                        <iconify-icon icon="mdi:fuel"></iconify-icon> Fuel
+                                    </span>
+                                    <span class="fw-medium text-primary-light"><%= v.fuelType || '-' %></span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Rental Rates card -->
+                    <div class="col-lg-6">
+                        <div class="card border radius-12 h-100 overflow-hidden">
+                            <div class="card-header bg-neutral-50 border-bottom py-14 px-20">
+                                <h6 class="text-sm fw-semibold text-primary-light mb-0 d-flex align-items-center gap-2">
+                                    <iconify-icon icon="solar:wallet-money-outline" class="text-primary-600"></iconify-icon>
+                                    Rental Rates
+                                </h6>
+                            </div>
+                            <div class="card-body p-20">
+                                <div class="vehicle-view-row d-flex align-items-center py-10 border-bottom border-neutral-200">
+                                    <span class="text-secondary-light text-sm d-flex align-items-center gap-2" style="width: 140px;">
+                                        <iconify-icon icon="mdi:calendar-today"></iconify-icon> Daily
+                                    </span>
+                                    <span class="fw-medium text-primary-light"><%= v.dailyRate != null ? v.dailyRate : '-' %></span>
+                                </div>
+                                <div class="vehicle-view-row d-flex align-items-center py-10 border-bottom border-neutral-200">
+                                    <span class="text-secondary-light text-sm d-flex align-items-center gap-2" style="width: 140px;">
+                                        <iconify-icon icon="mdi:clock-outline"></iconify-icon> Hourly
+                                    </span>
+                                    <span class="fw-medium text-primary-light"><%= v.hourlyRate != null ? v.hourlyRate : '-' %></span>
+                                </div>
+                                <div class="vehicle-view-row d-flex align-items-center py-10 border-bottom border-neutral-200">
+                                    <span class="text-secondary-light text-sm d-flex align-items-center gap-2" style="width: 140px;">
+                                        <iconify-icon icon="mdi:calendar-week"></iconify-icon> Weekly
+                                    </span>
+                                    <span class="fw-medium text-primary-light"><%= v.weeklyRate != null ? v.weeklyRate : '-' %></span>
+                                </div>
+                                <div class="vehicle-view-row d-flex align-items-center py-10 border-bottom border-neutral-200">
+                                    <span class="text-secondary-light text-sm d-flex align-items-center gap-2" style="width: 140px;">
+                                        <iconify-icon icon="mdi:calendar-month"></iconify-icon> Monthly
+                                    </span>
+                                    <span class="fw-medium text-primary-light"><%= v.monthlyRate != null ? v.monthlyRate : '-' %></span>
+                                </div>
+                                <div class="vehicle-view-row d-flex align-items-center py-10 border-bottom border-neutral-200">
+                                    <span class="text-secondary-light text-sm d-flex align-items-center gap-2" style="width: 140px;">
+                                        <iconify-icon icon="mdi:clock-alert-outline"></iconify-icon> Late fee/hr
+                                    </span>
+                                    <span class="fw-medium text-primary-light"><%= v.lateReturnFeePerHour != null ? v.lateReturnFeePerHour : '-' %></span>
+                                </div>
+                                <div class="vehicle-view-row d-flex align-items-center py-10">
+                                    <span class="text-secondary-light text-sm d-flex align-items-center gap-2" style="width: 140px;">
+                                        <iconify-icon icon="mdi:calendar-clock-outline"></iconify-icon> Late fee/day
+                                    </span>
+                                    <span class="fw-medium text-primary-light"><%= v.lateReturnFeePerDay != null ? v.lateReturnFeePerDay : '-' %></span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Owner card - own row so it never merges with Charges -->
+                <div class="row mt-3">
+                    <div class="col-12">
+                        <div class="card border radius-12 overflow-hidden" style="max-width: 400px;">
+                            <div class="card-header bg-neutral-50 border-bottom py-14 px-20">
+                                <h6 class="text-sm fw-semibold text-primary-light mb-0 d-flex align-items-center gap-2">
+                                    <iconify-icon icon="mdi:account-outline" class="text-primary-600"></iconify-icon>
+                                    Owner
+                                </h6>
+                            </div>
+                            <div class="card-body p-20">
+                                <div class="vehicle-view-row d-flex align-items-center py-10 border-bottom border-neutral-200">
+                                    <span class="text-secondary-light text-sm d-flex align-items-center gap-2" style="width: 100px;">
+                                        <iconify-icon icon="mdi:account-badge-outline"></iconify-icon> Name
+                                    </span>
+                                    <span class="fw-medium text-primary-light"><%= v.ownerName || '-' %></span>
+                                </div>
+                                <div class="vehicle-view-row d-flex align-items-center py-10">
+                                    <span class="text-secondary-light text-sm d-flex align-items-center gap-2" style="width: 100px;">
+                                        <iconify-icon icon="mdi:phone-outline"></iconify-icon> Contact
+                                    </span>
+                                    <span class="fw-medium text-primary-light"><%= v.ownerContact || '-' %></span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Due dates (client requirement: tax, battery, service, oil) -->
+                <% if (v.taxExpiryDate || v.nextBatteryChangeDate || v.nextServiceDate || v.nextOilChangeDate) { %>
+                <div class="row mt-3">
+                    <div class="col-12">
+                        <div class="card border radius-12 overflow-hidden" style="max-width: 500px;">
+                            <div class="card-header bg-neutral-50 border-bottom py-14 px-20">
+                                <h6 class="text-sm fw-semibold text-primary-light mb-0 d-flex align-items-center gap-2">
+                                    <iconify-icon icon="mdi:calendar-clock-outline" class="text-primary-600"></iconify-icon>
+                                    Due dates
+                                </h6>
+                            </div>
+                            <div class="card-body p-20">
+                                <% if (v.taxExpiryDate) { %>
+                                <div class="vehicle-view-row d-flex align-items-center py-10 border-bottom border-neutral-200">
+                                    <span class="text-secondary-light text-sm d-flex align-items-center gap-2" style="width: 180px;">Tax expiry</span>
+                                    <span class="fw-medium text-primary-light"><%= v.taxExpiryDate %></span>
+                                </div>
+                                <% } %>
+                                <% if (v.nextBatteryChangeDate) { %>
+                                <div class="vehicle-view-row d-flex align-items-center py-10 border-bottom border-neutral-200">
+                                    <span class="text-secondary-light text-sm d-flex align-items-center gap-2" style="width: 180px;">Next battery change</span>
+                                    <span class="fw-medium text-primary-light"><%= v.nextBatteryChangeDate %></span>
+                                </div>
+                                <% } %>
+                                <% if (v.nextServiceDate) { %>
+                                <div class="vehicle-view-row d-flex align-items-center py-10 border-bottom border-neutral-200">
+                                    <span class="text-secondary-light text-sm d-flex align-items-center gap-2" style="width: 180px;">Next service</span>
+                                    <span class="fw-medium text-primary-light"><%= v.nextServiceDate %></span>
+                                </div>
+                                <% } %>
+                                <% if (v.nextOilChangeDate) { %>
+                                <div class="vehicle-view-row d-flex align-items-center py-10">
+                                    <span class="text-secondary-light text-sm d-flex align-items-center gap-2" style="width: 180px;">Next oil change</span>
+                                    <span class="fw-medium text-primary-light"><%= v.nextOilChangeDate %></span>
+                                </div>
+                                <% } %>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <% } %>
+
+                <!-- Charges & Restrictions card -->
+                <div class="card border radius-12 mt-3 overflow-hidden">
+                    <div class="card-header bg-neutral-50 border-bottom py-14 px-20">
+                        <h6 class="text-sm fw-semibold text-primary-light mb-0 d-flex align-items-center gap-2">
+                            <iconify-icon icon="mdi:cash-multiple" class="text-primary-600"></iconify-icon>
+                            Charges & Restrictions
+                        </h6>
+                    </div>
+                    <div class="card-body p-20">
+                        <div class="row g-3">
+                            <div class="col-md-6 col-lg-4">
+                                <div class="vehicle-view-row d-flex align-items-center py-8">
+                                    <span class="text-secondary-light text-sm d-flex align-items-center gap-2" style="min-width: 140px;">
+                                        <iconify-icon icon="mdi:map-marker-radius-outline"></iconify-icon> Geo restriction
+                                    </span>
+                                    <span class="fw-medium text-primary-light"><%= v.geographicRestrictionEnabled ? 'Yes' : 'No' %></span>
+                                </div>
+                                <div class="vehicle-view-row d-flex align-items-center py-8">
+                                    <span class="text-secondary-light text-sm d-flex align-items-center gap-2" style="min-width: 140px;">
+                                        <iconify-icon icon="mdi:map-outline"></iconify-icon> Allowed area
+                                    </span>
+                                    <span class="fw-medium text-primary-light text-break"><%= v.allowedGeographicArea || '-' %></span>
+                                </div>
+                                <div class="vehicle-view-row d-flex align-items-center py-8">
+                                    <span class="text-secondary-light text-sm d-flex align-items-center gap-2" style="min-width: 140px;">
+                                        <iconify-icon icon="mdi:currency-usd"></iconify-icon> Violation fine
+                                    </span>
+                                    <span class="fw-medium text-primary-light"><%= v.geographicViolationFine != null ? v.geographicViolationFine : '-' %></span>
+                                </div>
+                                <div class="vehicle-view-row d-flex align-items-center py-8">
+                                    <span class="text-secondary-light text-sm d-flex align-items-center gap-2" style="min-width: 140px;">
+                                        <iconify-icon icon="mdi:calendar-arrow-left"></iconify-icon> Early return refund
+                                    </span>
+                                    <span class="fw-medium text-primary-light"><%= v.earlyReturnRefundAllowed ? 'Yes' : 'No' %></span>
+                                </div>
+                                <div class="vehicle-view-row d-flex align-items-center py-8">
+                                    <span class="text-secondary-light text-sm d-flex align-items-center gap-2" style="min-width: 140px;">
+                                        <iconify-icon icon="mdi:percent-outline"></iconify-icon> Early return penalty %
+                                    </span>
+                                    <span class="fw-medium text-primary-light"><%= v.earlyReturnPenaltyPercentage != null ? v.earlyReturnPenaltyPercentage : '-' %></span>
+                                </div>
+                            </div>
+                            <div class="col-md-6 col-lg-4">
+                                <div class="vehicle-view-row d-flex align-items-center py-8">
+                                    <span class="text-secondary-light text-sm d-flex align-items-center gap-2" style="min-width: 130px;">
+                                        <iconify-icon icon="mdi:shield-car"></iconify-icon> Helmet damage
+                                    </span>
+                                    <span class="fw-medium text-primary-light"><%= (v.helmetDamageMin != null || v.helmetDamageMax != null) ? (v.helmetDamageMin || '-') + ' – ' + (v.helmetDamageMax || '-') : '-' %></span>
+                                </div>
+                                <div class="vehicle-view-row d-flex align-items-center py-8">
+                                    <span class="text-secondary-light text-sm d-flex align-items-center gap-2" style="min-width: 130px;">
+                                        <iconify-icon icon="mdi:key-outline"></iconify-icon> Key lost
+                                    </span>
+                                    <span class="fw-medium text-primary-light"><%= (v.keyLostMin != null || v.keyLostMax != null) ? (v.keyLostMin || '-') + ' – ' + (v.keyLostMax || '-') : '-' %></span>
+                                </div>
+                                <div class="vehicle-view-row d-flex align-items-center py-8">
+                                    <span class="text-secondary-light text-sm d-flex align-items-center gap-2" style="min-width: 130px;">
+                                        <iconify-icon icon="mdi:car-wrench"></iconify-icon> Puncture repair
+                                    </span>
+                                    <span class="fw-medium text-primary-light"><%= (v.punctureRepairMin != null || v.punctureRepairMax != null) ? (v.punctureRepairMin || '-') + ' – ' + (v.punctureRepairMax || '-') : '-' %></span>
+                                </div>
+                                <div class="vehicle-view-row d-flex align-items-center py-8">
+                                    <span class="text-secondary-light text-sm d-flex align-items-center gap-2" style="min-width: 130px;">
+                                        <iconify-icon icon="mdi:car-pickup"></iconify-icon> Pickup fee
+                                    </span>
+                                    <span class="fw-medium text-primary-light"><%= (v.pickupFeeMin != null || v.pickupFeeMax != null) ? (v.pickupFeeMin || '-') + ' – ' + (v.pickupFeeMax || '-') : '-' %></span>
+                                </div>
+                            </div>
+                            <div class="col-md-6 col-lg-4">
+                                <div class="vehicle-view-row d-flex align-items-center py-8">
+                                    <span class="text-secondary-light text-sm d-flex align-items-center gap-2" style="min-width: 130px;">
+                                        <iconify-icon icon="mdi:oil"></iconify-icon> Oil change
+                                    </span>
+                                    <span class="fw-medium text-primary-light"><%= (v.oilChangeMin != null || v.oilChangeMax != null) ? (v.oilChangeMin || '-') + ' – ' + (v.oilChangeMax || '-') : '-' %></span>
+                                </div>
+                                <div class="vehicle-view-row d-flex align-items-center py-8">
+                                    <span class="text-secondary-light text-sm d-flex align-items-center gap-2" style="min-width: 130px;">
+                                        <iconify-icon icon="mdi:battery-outline"></iconify-icon> Battery rundown
+                                    </span>
+                                    <span class="fw-medium text-primary-light"><%= v.batteryRundownCharge != null ? v.batteryRundownCharge : '-' %></span>
+                                </div>
+                                <div class="vehicle-view-row d-flex align-items-center py-8">
+                                    <span class="text-secondary-light text-sm d-flex align-items-center gap-2" style="min-width: 130px;">
+                                        <iconify-icon icon="mdi:car-emergency"></iconify-icon> Accident recovery
+                                    </span>
+                                    <span class="fw-medium text-primary-light"><%= (v.accidentRecoveryMin != null || v.accidentRecoveryMax != null) ? (v.accidentRecoveryMin || '-') + ' – ' + (v.accidentRecoveryMax || '-') : '-' %></span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,25 @@
+<%# Reusable data table wrapper. Locals: tableId (optional), tableClass (optional), thead (array of th text or HTML), tbody (array of row arrays). For complex tables, use inline markup. %>
+<div class="table-responsive scroll-sm">
+    <table class="table bordered-table sm-table mb-0 <%= typeof tableClass !== 'undefined' ? tableClass : '' %>" <%= typeof tableId !== 'undefined' ? 'id="' + tableId + '"' : '' %>>
+        <% if (typeof thead !== 'undefined' && thead && thead.length) { %>
+        <thead>
+            <tr>
+                <% thead.forEach(function(h) { %>
+                <th scope="col"><%= h %></th>
+                <% }); %>
+            </tr>
+        </thead>
+        <% } %>
+        <% if (typeof tbody !== 'undefined' && tbody && tbody.length) { %>
+        <tbody>
+            <% tbody.forEach(function(row) { %>
+            <tr>
+                <% row.forEach(function(cell) { %>
+                <td><%= cell %></td>
+                <% }); %>
+            </tr>
+            <% }); %>
+        </tbody>
+        <% } %>
+    </table>
+</div>

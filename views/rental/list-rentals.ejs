@@ -1,0 +1,97 @@
+<div class="card h-100 p-0 radius-12">
+    <div class="card-header border-bottom bg-base py-16 px-24 d-flex align-items-center flex-wrap gap-3 justify-content-between">
+        <div class="d-flex align-items-center flex-wrap gap-3">
+            <form method="GET" action="<%= activeOnly ? '/rental/active' : '/rental' %>" class="d-flex align-items-center gap-2">
+                <% if (!activeOnly) { %>
+                <select name="status" class="form-select form-select-sm w-auto ps-12 py-6 radius-12 h-40-px" onchange="this.form.submit()">
+                    <option value="">All status</option>
+                    <option value="ACTIVE" <%= query.status === 'ACTIVE' ? 'selected' : '' %>>Active</option>
+                    <option value="COMPLETED" <%= query.status === 'COMPLETED' ? 'selected' : '' %>>Completed</option>
+                    <option value="CANCELLED" <%= query.status === 'CANCELLED' ? 'selected' : '' %>>Cancelled</option>
+                </select>
+                <% } %>
+            </form>
+        </div>
+        <% if (activeOnly) { %>
+        <a href="<%= typeof basePath !== 'undefined' ? basePath : '' %>/rental" class="btn border border-neutral-400 bg-hover-neutral-100 text-primary-light text-sm btn-sm px-12 py-12 radius-8 d-flex align-items-center gap-2">
+            <iconify-icon icon="mdi:format-list-bulleted" class="icon text-xl line-height-1"></iconify-icon>
+            All rentals
+        </a>
+        <% } else { %>
+        <a href="<%= typeof basePath !== 'undefined' ? basePath : '' %>/rental/active" class="btn border border-neutral-400 bg-hover-neutral-100 text-primary-light text-sm btn-sm px-12 py-12 radius-8 d-flex align-items-center gap-2">
+            <iconify-icon icon="mdi:clock-outline" class="icon text-xl line-height-1"></iconify-icon>
+            Active only
+        </a>
+        <% } %>
+        <a href="<%= typeof basePath !== 'undefined' ? basePath : '' %>/rental/add" class="btn btn-primary text-sm btn-sm px-12 py-12 radius-8 d-flex align-items-center gap-2">
+            <iconify-icon icon="ic:baseline-plus" class="icon text-xl line-height-1"></iconify-icon>
+            Create Rental
+        </a>
+    </div>
+    <div class="card-body p-24">
+        <div class="table-responsive scroll-sm">
+            <table class="table bordered-table sm-table mb-0">
+                <thead>
+                    <tr>
+                        <th scope="col">#</th>
+                        <th scope="col">Contract</th>
+                        <th scope="col">Customer</th>
+                        <th scope="col">Vehicle</th>
+                        <th scope="col">Start</th>
+                        <th scope="col">End</th>
+                        <th scope="col">Total</th>
+                        <th scope="col" class="text-center">Status</th>
+                        <th scope="col" class="text-center">Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <% if (rentals.length === 0) { %>
+                    <tr>
+                        <td colspan="9" class="text-center text-secondary-light py-24">No rentals found.</td>
+                    </tr>
+                    <% } else { %>
+                    <% rentals.forEach((r, i) => { %>
+                    <% const cust = customersMap[r.customerId]; const veh = vehiclesMap[r.vehicleId]; %>
+                    <tr>
+                        <td><%= i + 1 %></td>
+                        <td><span class="text-md fw-medium text-primary-light"><%= r.contractNumber %></span></td>
+                        <td><span class="text-md fw-normal text-secondary-light"><%= cust ? cust.name : '-' %></span></td>
+                        <td><span class="text-md fw-normal text-secondary-light"><%= veh ? (veh.make + ' ' + veh.model) : '-' %></span></td>
+                        <td><span class="text-md fw-normal text-secondary-light"><%= r.startDate %> <%= r.startTime || '' %></span></td>
+                        <td><span class="text-md fw-normal text-secondary-light"><%= r.endDate %> <%= r.endTime || '' %></span></td>
+                        <td><span class="text-md fw-normal text-secondary-light"><%= r.currencySymbol %><%= r.totalAmount %></span></td>
+                        <td class="text-center">
+                            <% if (r.status === 'ACTIVE') { %>
+                            <span class="bg-success-focus text-success-600 border border-success-main px-24 py-4 radius-4 fw-medium text-sm">Active</span>
+                            <% } else if (r.status === 'COMPLETED') { %>
+                            <span class="bg-info-focus text-info-600 border border-info-main px-24 py-4 radius-4 fw-medium text-sm">Completed</span>
+                            <% } else { %>
+                            <span class="bg-neutral-200 text-neutral-600 border border-neutral-400 px-24 py-4 radius-4 fw-medium text-sm">Cancelled</span>
+                            <% } %>
+                        </td>
+                        <td class="text-center">
+                            <div class="d-flex align-items-center gap-10 justify-content-center">
+                                <a href="<%= typeof basePath !== 'undefined' ? basePath : '' %>/rental/view/<%= r.id %>" class="bg-info-focus bg-hover-info-200 text-info-600 fw-medium w-40-px h-40-px d-flex justify-content-center align-items-center rounded-circle text-decoration-none" title="View contract">
+                                    <iconify-icon icon="majesticons:eye-line" class="icon text-xl"></iconify-icon>
+                                </a>
+                                <% if (r.status === 'ACTIVE') { %>
+                                <form action="<%= typeof basePath !== 'undefined' ? basePath : '' %>/rental/delete/<%= r.id %>" method="POST" class="d-inline mb-0 rental-delete-form">
+                                    <button type="submit" class="remove-item-btn bg-danger-focus bg-hover-danger-200 text-danger-600 fw-medium w-40-px h-40-px d-flex justify-content-center align-items-center rounded-circle border-0" title="Cancel rental">
+                                        <iconify-icon icon="fluent:delete-24-regular" class="menu-icon"></iconify-icon>
+                                    </button>
+                                </form>
+                                <% } %>
+                            </div>
+                        </td>
+                    </tr>
+                    <% }); %>
+                    <% } %>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<% script = `
+<script src="/js/modules/rental.js"></script>
+` %>

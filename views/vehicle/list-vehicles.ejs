@@ -1,0 +1,124 @@
+<div class="card h-100 p-0 radius-12">
+    <div class="card-header border-bottom bg-base py-16 px-24 d-flex align-items-center flex-wrap gap-3 justify-content-between">
+        <div class="d-flex align-items-center flex-wrap gap-3">
+            <form method="GET" action="<%= typeof basePath !== 'undefined' ? basePath : '' %>/vehicle" class="navbar-search d-flex align-items-center gap-2">
+                <input type="text" class="bg-base h-40-px w-auto" name="search" placeholder="Search make, model, reg no" value="<%= query.search %>">
+                <iconify-icon icon="ion:search-outline" class="icon"></iconify-icon>
+            </form>
+            <form method="GET" action="<%= typeof basePath !== 'undefined' ? basePath : '' %>/vehicle" class="d-flex align-items-center gap-2">
+                <input type="hidden" name="search" value="<%= query.search %>">
+                <select name="status" class="form-select form-select-sm w-auto ps-12 py-6 radius-12 h-40-px" onchange="this.form.submit()">
+                    <option value="">All status</option>
+                    <option value="Available" <%= query.status === 'Available' ? 'selected' : '' %>>Available</option>
+                    <option value="Rented" <%= query.status === 'Rented' ? 'selected' : '' %>>Rented</option>
+                    <option value="Maintenance" <%= query.status === 'Maintenance' ? 'selected' : '' %>>Maintenance</option>
+                </select>
+            </form>
+        </div>
+        <div class="d-flex align-items-center gap-2">
+            <button type="button" class="btn border border-neutral-400 bg-hover-neutral-100 text-primary-light text-sm btn-sm px-12 py-12 radius-8 d-flex align-items-center gap-2" data-bs-toggle="modal" data-bs-target="#vehicleExportModal">
+                <iconify-icon icon="mdi:file-export-outline" class="icon text-xl line-height-1"></iconify-icon>
+                Export
+            </button>
+            <a href="<%= typeof basePath !== 'undefined' ? basePath : '' %>/vehicle/add" class="btn btn-primary text-sm btn-sm px-12 py-12 radius-8 d-flex align-items-center gap-2">
+                <iconify-icon icon="ic:baseline-plus" class="icon text-xl line-height-1"></iconify-icon>
+                Add Vehicle
+            </a>
+        </div>
+    </div>
+    <div class="card-body p-24">
+        <div class="table-responsive scroll-sm">
+            <table class="table bordered-table sm-table mb-0">
+                <thead>
+                    <tr>
+                        <th scope="col">#</th>
+                        <th scope="col">Make</th>
+                        <th scope="col">Model</th>
+                        <th scope="col">Registration</th>
+                        <th scope="col">Type</th>
+                        <th scope="col">Year</th>
+                        <th scope="col">Daily Rate</th>
+                        <th scope="col">Tax expiry</th>
+                        <th scope="col">Next service</th>
+                        <th scope="col" class="text-center">Status</th>
+                        <th scope="col" class="text-center">Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <% if (vehicles.length === 0) { %>
+                    <tr>
+                        <td colspan="11" class="text-center text-secondary-light py-24">No vehicles found.</td>
+                    </tr>
+                    <% } else { %>
+                    <% vehicles.forEach((v, i) => { %>
+                    <tr>
+                        <td><%= i + 1 %></td>
+                        <td><span class="text-md fw-normal text-secondary-light"><%= v.make || '-' %></span></td>
+                        <td><span class="text-md fw-normal text-secondary-light"><%= v.model %></span></td>
+                        <td><span class="text-md fw-normal text-secondary-light"><%= v.registrationNumber %></span></td>
+                        <td><span class="text-md fw-normal text-secondary-light"><%= (v.vehicleType || 'CAR') === 'MOTORBIKE' ? 'Motorbike' : 'Car' %></span></td>
+                        <td><span class="text-md fw-normal text-secondary-light"><%= v.year || '-' %></span></td>
+                        <td><span class="text-md fw-normal text-secondary-light"><%= v.dailyRate != null ? v.dailyRate : '-' %></span></td>
+                        <td><span class="text-md fw-normal text-secondary-light"><%= v.taxExpiryDate || '-' %></span></td>
+                        <td><span class="text-md fw-normal text-secondary-light"><%= v.nextServiceDate || '-' %></span></td>
+                        <td class="text-center">
+                            <% if (v.status === 'Available') { %>
+                            <span class="bg-success-focus text-success-600 border border-success-main px-24 py-4 radius-4 fw-medium text-sm">Available</span>
+                            <% } else if (v.status === 'Rented') { %>
+                            <span class="bg-info-focus text-info-600 border border-info-main px-24 py-4 radius-4 fw-medium text-sm">Rented</span>
+                            <% } else { %>
+                            <span class="bg-warning-focus text-warning-600 border border-warning-main px-24 py-4 radius-4 fw-medium text-sm">Maintenance</span>
+                            <% } %>
+                        </td>
+                        <td class="text-center">
+                            <div class="d-flex align-items-center gap-10 justify-content-center">
+                                <a href="<%= typeof basePath !== 'undefined' ? basePath : '' %>/vehicle/view/<%= v.id %>" class="bg-info-focus bg-hover-info-200 text-info-600 fw-medium w-40-px h-40-px d-flex justify-content-center align-items-center rounded-circle text-decoration-none">
+                                    <iconify-icon icon="majesticons:eye-line" class="icon text-xl"></iconify-icon>
+                                </a>
+                                <a href="<%= typeof basePath !== 'undefined' ? basePath : '' %>/vehicle/edit/<%= v.id %>" class="bg-success-focus text-success-600 bg-hover-success-200 fw-medium w-40-px h-40-px d-flex justify-content-center align-items-center rounded-circle text-decoration-none">
+                                    <iconify-icon icon="lucide:edit" class="menu-icon"></iconify-icon>
+                                </a>
+                                <form action="<%= typeof basePath !== 'undefined' ? basePath : '' %>/vehicle/delete/<%= v.id %>" method="POST" class="d-inline mb-0 vehicle-delete-form">
+                                    <button type="submit" class="remove-item-btn bg-danger-focus bg-hover-danger-200 text-danger-600 fw-medium w-40-px h-40-px d-flex justify-content-center align-items-center rounded-circle border-0">
+                                        <iconify-icon icon="fluent:delete-24-regular" class="menu-icon"></iconify-icon>
+                                    </button>
+                                </form>
+                            </div>
+                        </td>
+                    </tr>
+                    <% }); %>
+                    <% } %>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<!-- Export modal -->
+<div class="modal fade" id="vehicleExportModal" tabindex="-1" aria-labelledby="vehicleExportModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content radius-16 bg-base">
+            <div class="modal-header py-16 px-24 border border-top-0 border-start-0 border-end-0">
+                <h5 class="modal-title d-flex align-items-center gap-2" id="vehicleExportModalLabel">
+                    <iconify-icon icon="mdi:file-export-outline"></iconify-icon>
+                    Export Vehicles
+                </h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body p-24">
+                <p class="text-secondary-light mb-20">Download the current vehicle list as CSV. Includes all fields (rates, charges, due dates for tax, battery, service, oil).</p>
+                <a href="<%= typeof basePath !== 'undefined' ? basePath : '/owner' %>/vehicle/export" class="btn btn-primary radius-8 d-inline-flex align-items-center gap-2" download="vehicles-export.csv">
+                    <iconify-icon icon="mdi:download-outline"></iconify-icon>
+                    Download CSV
+                </a>
+            </div>
+            <div class="modal-footer border-0 py-16 px-24">
+                <button type="button" class="btn border border-neutral-400 text-primary-light radius-8" data-bs-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<% script = `
+<script src="/js/modules/vehicle.js"></script>
+` %>

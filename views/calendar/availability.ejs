@@ -1,0 +1,55 @@
+<div class="card h-100 p-0 radius-12">
+    <div class="card-header border-bottom bg-base py-16 px-24 d-flex align-items-center flex-wrap gap-3 justify-content-between">
+        <h6 class="text-md fw-semibold text-primary-light mb-0 d-flex align-items-center gap-2">
+            <iconify-icon icon="solar:calendar-outline" class="text-primary-600"></iconify-icon>
+            <%= monthName %> <%= year %>
+        </h6>
+        <div class="d-flex align-items-center gap-2">
+            <a href="<%= typeof basePath !== 'undefined' ? basePath : '' %>/calendar?year=<%= prevYear %>&month=<%= prevMonth %>" class="btn btn-outline-secondary btn-sm radius-8 d-flex align-items-center gap-2">
+                <iconify-icon icon="mdi:chevron-left"></iconify-icon> Prev
+            </a>
+            <a href="<%= typeof basePath !== 'undefined' ? basePath : '' %>/calendar?year=<%= new Date().getFullYear() %>&month=<%= new Date().getMonth() + 1 %>" class="btn btn-outline-secondary btn-sm radius-8">Today</a>
+            <a href="<%= typeof basePath !== 'undefined' ? basePath : '' %>/calendar?year=<%= nextYear %>&month=<%= nextMonth %>" class="btn btn-outline-secondary btn-sm radius-8 d-flex align-items-center gap-2">
+                Next <iconify-icon icon="mdi:chevron-right"></iconify-icon>
+            </a>
+        </div>
+    </div>
+    <div class="card-body p-24">
+        <div class="table-responsive">
+            <table class="table table-bordered mb-0 calendar-month-table">
+                <thead>
+                    <tr class="bg-neutral-50">
+                        <th class="text-center py-12 radius-8">Sun</th>
+                        <th class="text-center py-12">Mon</th>
+                        <th class="text-center py-12">Tue</th>
+                        <th class="text-center py-12">Wed</th>
+                        <th class="text-center py-12">Thu</th>
+                        <th class="text-center py-12">Fri</th>
+                        <th class="text-center py-12 radius-8">Sat</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <% weekRows.forEach(function(row) { %>
+                    <tr>
+                        <% row.forEach(function(cell) { %>
+                        <% if (cell == null) { %>
+                        <td class="p-8 text-center bg-neutral-100" style="min-height: 80px;"></td>
+                        <% } else { %>
+                        <td class="p-8 text-center align-top" style="min-height: 80px;">
+                            <a href="<%= typeof basePath !== 'undefined' ? basePath : '' %>/calendar/day?date=<%= cell.dateStr %>" class="d-block text-primary-light fw-medium text-decoration-none"><%= cell.date %></a>
+                            <% if (cell.rentals && cell.rentals.length > 0) { %>
+                            <div class="mt-4">
+                                <span class="badge bg-info-focus text-info-600 text-xs"><%= cell.rentals.length %> rental<%= cell.rentals.length > 1 ? 's' : '' %></span>
+                            </div>
+                            <% } %>
+                        </td>
+                        <% } %>
+                        <% }); %>
+                    </tr>
+                    <% }); %>
+                </tbody>
+            </table>
+        </div>
+        <p class="text-sm text-secondary-light mt-16 mb-0">Click a date to see rentals for that day.</p>
+    </div>
+</div>

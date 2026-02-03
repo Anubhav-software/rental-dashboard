@@ -1,0 +1,114 @@
+<div class="card h-100 p-0 radius-12">
+    <div class="card-body p-24">
+        <div class="row justify-content-center">
+            <div class="col-xxl-10 col-xl-11 col-lg-12">
+                <% const e = expense; %>
+
+                <div class="card border radius-16 overflow-hidden mb-24 bg-primary-50 border-primary-200">
+                    <div class="card-body py-24 px-24">
+                        <div class="row align-items-center">
+                            <div class="col-auto">
+                                <div class="w-64-px h-64-px rounded-12 bg-primary-100 d-flex align-items-center justify-content-center">
+                                    <iconify-icon icon="mdi:cash-multiple" class="text-primary-600" style="font-size: 2rem;"></iconify-icon>
+                                </div>
+                            </div>
+                            <div class="col">
+                                <h5 class="fw-semibold text-primary-light mb-4"><%= e.expenseType %> — <%= e.currencySymbol %><%= e.amount %></h5>
+                                <p class="text-sm text-secondary-light mb-0"><%= e.expenseDate %></p>
+                                <% if (e.description) { %><p class="text-sm text-secondary-light mb-0 mt-2"><%= e.description %></p><% } %>
+                            </div>
+                            <div class="col-auto">
+                                <% if (e.status === 'PENDING') { %>
+                                <span class="bg-warning-focus text-warning-600 border border-warning-main px-20 py-8 radius-8 fw-medium text-sm">Pending</span>
+                                <% } else if (e.status === 'APPROVED') { %>
+                                <span class="bg-info-focus text-info-600 border border-info-main px-20 py-8 radius-8 fw-medium text-sm">Approved</span>
+                                <% } else if (e.status === 'PAID') { %>
+                                <span class="bg-success-focus text-success-600 border border-success-main px-20 py-8 radius-8 fw-medium text-sm">Paid</span>
+                                <% } else { %>
+                                <span class="bg-danger-focus text-danger-600 border border-danger-main px-20 py-8 radius-8 fw-medium text-sm">Rejected</span>
+                                <% } %>
+                            </div>
+                            <div class="col-auto d-flex gap-2">
+                                <a href="<%= typeof basePath !== 'undefined' ? basePath : '' %>/expense/edit/<%= e.id %>" class="btn btn-success btn-sm radius-8 d-flex align-items-center gap-2">Edit</a>
+                                <a href="<%= typeof basePath !== 'undefined' ? basePath : '' %>/expense" class="btn btn-outline-secondary btn-sm radius-8 d-flex align-items-center gap-2">Back</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row g-3">
+                    <div class="col-lg-6">
+                        <div class="card border radius-12 h-100 overflow-hidden">
+                            <div class="card-header bg-neutral-50 border-bottom py-14 px-20">
+                                <h6 class="text-sm fw-semibold text-primary-light mb-0 d-flex align-items-center gap-2">
+                                    <iconify-icon icon="mdi:cash-multiple" class="text-primary-600"></iconify-icon>
+                                    Details
+                                </h6>
+                            </div>
+                            <div class="card-body p-20">
+                                <div class="vehicle-view-row d-flex align-items-center py-10 border-bottom border-neutral-200">
+                                    <span class="text-secondary-light text-sm" style="width: 120px;">Type</span>
+                                    <span class="fw-medium text-primary-light"><%= e.expenseType %></span>
+                                </div>
+                                <div class="vehicle-view-row d-flex align-items-center py-10 border-bottom border-neutral-200">
+                                    <span class="text-secondary-light text-sm" style="width: 120px;">Category</span>
+                                    <span class="fw-medium text-primary-light"><%= e.expenseCategory %></span>
+                                </div>
+                                <div class="vehicle-view-row d-flex align-items-center py-10 border-bottom border-neutral-200">
+                                    <span class="text-secondary-light text-sm" style="width: 120px;">Amount</span>
+                                    <span class="fw-semibold text-primary-light"><%= e.currencySymbol %><%= e.amount %></span>
+                                </div>
+                                <div class="vehicle-view-row d-flex align-items-center py-10 border-bottom border-neutral-200">
+                                    <span class="text-secondary-light text-sm" style="width: 120px;">Date</span>
+                                    <span class="fw-medium text-primary-light"><%= e.expenseDate %></span>
+                                </div>
+                                <div class="vehicle-view-row d-flex align-items-center py-10 border-bottom border-neutral-200">
+                                    <span class="text-secondary-light text-sm" style="width: 120px;">Payment</span>
+                                    <span class="fw-medium text-primary-light"><%= e.paymentMethod || '-' %></span>
+                                </div>
+                                <div class="vehicle-view-row d-flex align-items-center py-10">
+                                    <span class="text-secondary-light text-sm" style="width: 120px;">Status</span>
+                                    <span class="fw-medium text-primary-light"><%= e.status %></span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-6">
+                        <div class="card border radius-12 h-100 overflow-hidden">
+                            <div class="card-header bg-neutral-50 border-bottom py-14 px-20">
+                                <h6 class="text-sm fw-semibold text-primary-light mb-0 d-flex align-items-center gap-2">
+                                    <iconify-icon icon="mdi:account-outline" class="text-primary-600"></iconify-icon>
+                                    Vendor & Vehicle
+                                </h6>
+                            </div>
+                            <div class="card-body p-20">
+                                <div class="vehicle-view-row d-flex align-items-center py-10 border-bottom border-neutral-200">
+                                    <span class="text-secondary-light text-sm" style="width: 120px;">Vendor</span>
+                                    <span class="fw-medium text-primary-light"><%= e.vendorName || '-' %></span>
+                                </div>
+                                <div class="vehicle-view-row d-flex align-items-center py-10 border-bottom border-neutral-200">
+                                    <span class="text-secondary-light text-sm" style="width: 120px;">Receipt #</span>
+                                    <span class="fw-medium text-primary-light"><%= e.receiptNumber || '-' %></span>
+                                </div>
+                                <div class="vehicle-view-row d-flex align-items-center py-10 border-bottom border-neutral-200">
+                                    <span class="text-secondary-light text-sm" style="width: 120px;">Vehicle</span>
+                                    <span class="fw-medium text-primary-light"><%= vehicle ? (vehicle.make + ' ' + vehicle.model) : '-' %></span>
+                                </div>
+                                <div class="vehicle-view-row d-flex align-items-center py-10">
+                                    <span class="text-secondary-light text-sm" style="width: 120px;">Description</span>
+                                    <span class="fw-medium text-primary-light"><%= e.description || '-' %></span>
+                                </div>
+                                <% if (e.notes) { %>
+                                <div class="vehicle-view-row d-flex align-items-center py-10 mt-2">
+                                    <span class="text-secondary-light text-sm" style="width: 120px;">Notes</span>
+                                    <span class="fw-medium text-primary-light"><%= e.notes %></span>
+                                </div>
+                                <% } %>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

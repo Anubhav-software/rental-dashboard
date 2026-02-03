@@ -1,0 +1,74 @@
+<div class="card h-100 p-0 radius-12">
+    <div class="card-header border-bottom bg-base py-16 px-24 d-flex align-items-center flex-wrap gap-3 justify-content-between">
+        <div class="d-flex align-items-center flex-wrap gap-3">
+            <form method="GET" action="<%= typeof basePath !== 'undefined' ? basePath : '' %>/customer" class="navbar-search d-flex align-items-center gap-2">
+                <input type="text" class="bg-base h-40-px w-auto" name="search" placeholder="Search name, phone, email" value="<%= query.search %>">
+                <iconify-icon icon="ion:search-outline" class="icon"></iconify-icon>
+            </form>
+        </div>
+        <a href="<%= typeof basePath !== 'undefined' ? basePath : '' %>/customer/add" class="btn btn-primary text-sm btn-sm px-12 py-12 radius-8 d-flex align-items-center gap-2">
+            <iconify-icon icon="ic:baseline-plus" class="icon text-xl line-height-1"></iconify-icon>
+            Add Customer
+        </a>
+    </div>
+    <div class="card-body p-24">
+        <div class="table-responsive scroll-sm">
+            <table class="table bordered-table sm-table mb-0">
+                <thead>
+                    <tr>
+                        <th scope="col">#</th>
+                        <th scope="col">Name</th>
+                        <th scope="col">Phone</th>
+                        <th scope="col">Email</th>
+                        <th scope="col">Address</th>
+                        <th scope="col">Type</th>
+                        <th scope="col" class="text-center">Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <% if (customers.length === 0) { %>
+                    <tr>
+                        <td colspan="7" class="text-center text-secondary-light py-24">No customers found.</td>
+                    </tr>
+                    <% } else { %>
+                    <% customers.forEach((c, i) => { %>
+                    <tr>
+                        <td><%= i + 1 %></td>
+                        <td><span class="text-md fw-normal text-secondary-light"><%= c.name || '-' %></span></td>
+                        <td><span class="text-md fw-normal text-secondary-light"><%= c.phone || '-' %></span></td>
+                        <td><span class="text-md fw-normal text-secondary-light"><%= c.email || '-' %></span></td>
+                        <td><span class="text-md fw-normal text-secondary-light"><%= c.address ? (c.address.substring(0, 30) + (c.address.length > 30 ? '...' : '')) : '-' %></span></td>
+                        <td>
+                            <% if (c.isBusinessCustomer) { %>
+                            <span class="bg-info-focus text-info-600 border border-info-main px-16 py-4 radius-4 fw-medium text-sm">B2B</span>
+                            <% } else { %>
+                            <span class="bg-neutral-200 text-neutral-600 border border-neutral-400 px-16 py-4 radius-4 fw-medium text-sm">B2C</span>
+                            <% } %>
+                        </td>
+                        <td class="text-center">
+                            <div class="d-flex align-items-center gap-10 justify-content-center">
+                                <a href="<%= typeof basePath !== 'undefined' ? basePath : '' %>/customer/view/<%= c.id %>" class="bg-info-focus bg-hover-info-200 text-info-600 fw-medium w-40-px h-40-px d-flex justify-content-center align-items-center rounded-circle text-decoration-none">
+                                    <iconify-icon icon="majesticons:eye-line" class="icon text-xl"></iconify-icon>
+                                </a>
+                                <a href="<%= typeof basePath !== 'undefined' ? basePath : '' %>/customer/edit/<%= c.id %>" class="bg-success-focus text-success-600 bg-hover-success-200 fw-medium w-40-px h-40-px d-flex justify-content-center align-items-center rounded-circle text-decoration-none">
+                                    <iconify-icon icon="lucide:edit" class="menu-icon"></iconify-icon>
+                                </a>
+                                <form action="<%= typeof basePath !== 'undefined' ? basePath : '' %>/customer/delete/<%= c.id %>" method="POST" class="d-inline mb-0 customer-delete-form">
+                                    <button type="submit" class="remove-item-btn bg-danger-focus bg-hover-danger-200 text-danger-600 fw-medium w-40-px h-40-px d-flex justify-content-center align-items-center rounded-circle border-0">
+                                        <iconify-icon icon="fluent:delete-24-regular" class="menu-icon"></iconify-icon>
+                                    </button>
+                                </form>
+                            </div>
+                        </td>
+                    </tr>
+                    <% }); %>
+                    <% } %>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<% script = `
+<script src="/js/modules/customer.js"></script>
+` %>

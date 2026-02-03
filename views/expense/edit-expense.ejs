@@ -1,0 +1,118 @@
+<div class="card h-100 p-0 radius-12">
+    <div class="card-body p-24">
+        <div class="row justify-content-center">
+            <div class="col-xxl-10 col-xl-11 col-lg-12">
+                <div class="card border radius-12 overflow-hidden">
+                    <div class="card-header bg-neutral-50 border-bottom py-16 px-24 d-flex align-items-center justify-content-between flex-wrap gap-2">
+                        <h6 class="text-md text-primary-light mb-0 d-flex align-items-center gap-2">
+                            <iconify-icon icon="lucide:edit" class="text-primary-600"></iconify-icon>
+                            Edit Expense
+                        </h6>
+                        <a href="<%= typeof basePath !== 'undefined' ? basePath : '' %>/expense" class="btn btn-outline-secondary btn-sm radius-8 d-flex align-items-center gap-2">
+                            <iconify-icon icon="mdi:arrow-left"></iconify-icon> Back
+                        </a>
+                    </div>
+                    <div class="card-body p-24">
+                        <% if (typeof error !== 'undefined' && error) { %>
+                        <div class="alert alert-danger radius-12 mb-24 d-flex align-items-center gap-2">
+                            <iconify-icon icon="mdi:alert-circle-outline"></iconify-icon>
+                            <%= error %>
+                        </div>
+                        <% } %>
+                        <form method="POST" action="<%= typeof basePath !== 'undefined' ? basePath : '' %>/expense/edit/<%= expense.id %>" id="expense-form">
+                            <% const e = typeof expense !== 'undefined' && expense ? expense : {}; %>
+
+                            <div class="card border radius-12 overflow-hidden mb-24">
+                                <div class="card-header bg-neutral-50 border-bottom py-14 px-20">
+                                    <h6 class="text-sm fw-semibold text-primary-light mb-0 d-flex align-items-center gap-2">
+                                        <iconify-icon icon="mdi:cash-multiple" class="text-primary-600"></iconify-icon>
+                                        Expense details
+                                    </h6>
+                                </div>
+                                <div class="card-body p-20">
+                                    <div class="row g-3">
+                                        <div class="col-md-4">
+                                            <label class="form-label text-sm fw-medium text-primary-light">Type <span class="text-danger">*</span></label>
+                                            <select name="expenseType" id="expenseType" class="form-select h-56-px bg-neutral-50 radius-12" required>
+                                                <option value="">Select type</option>
+                                                <% expenseTypes.forEach(function(t) { %>
+                                                <option value="<%= t %>" <%= e.expenseType === t ? 'selected' : '' %>><%= t %></option>
+                                                <% }); %>
+                                            </select>
+                                        </div>
+                                        <div class="col-md-4">
+                                            <label class="form-label text-sm fw-medium text-primary-light">Category</label>
+                                            <select name="expenseCategory" id="expenseCategory" class="form-select h-56-px bg-neutral-50 radius-12">
+                                                <% expenseCategories.forEach(function(c) { %>
+                                                <option value="<%= c %>" <%= (e.expenseCategory || 'OTHER') === c ? 'selected' : '' %>><%= c %></option>
+                                                <% }); %>
+                                            </select>
+                                        </div>
+                                        <div class="col-md-4">
+                                            <label class="form-label text-sm fw-medium text-primary-light">Amount (₹) <span class="text-danger">*</span></label>
+                                            <input type="number" name="amount" id="amount" class="form-control h-56-px bg-neutral-50 radius-12" placeholder="0" min="0" step="0.01" value="<%= e.amount != null ? e.amount : '' %>" required>
+                                        </div>
+                                        <div class="col-md-4">
+                                            <label class="form-label text-sm fw-medium text-primary-light">Date <span class="text-danger">*</span></label>
+                                            <input type="date" name="expenseDate" id="expenseDate" class="form-control h-56-px bg-neutral-50 radius-12" value="<%= e.expenseDate || '' %>" required>
+                                        </div>
+                                        <div class="col-md-4">
+                                            <label class="form-label text-sm fw-medium text-primary-light">Vehicle (optional)</label>
+                                            <select name="vehicleId" id="vehicleId" class="form-select h-56-px bg-neutral-50 radius-12">
+                                                <option value="">None</option>
+                                                <% vehicles.forEach(function(v) { %>
+                                                <option value="<%= v.id %>" <%= e.vehicleId == v.id ? 'selected' : '' %>><%= v.make %> <%= v.model %></option>
+                                                <% }); %>
+                                            </select>
+                                        </div>
+                                        <div class="col-md-4">
+                                            <label class="form-label text-sm fw-medium text-primary-light">Payment method</label>
+                                            <select name="paymentMethod" id="paymentMethod" class="form-select h-56-px bg-neutral-50 radius-12">
+                                                <option value="">Select</option>
+                                                <% paymentMethods.forEach(function(p) { %>
+                                                <option value="<%= p %>" <%= e.paymentMethod === p ? 'selected' : '' %>><%= p %></option>
+                                                <% }); %>
+                                            </select>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <label class="form-label text-sm fw-medium text-primary-light">Vendor name</label>
+                                            <input type="text" name="vendorName" id="vendorName" class="form-control h-56-px bg-neutral-50 radius-12" placeholder="Vendor" value="<%= e.vendorName || '' %>">
+                                        </div>
+                                        <div class="col-md-6">
+                                            <label class="form-label text-sm fw-medium text-primary-light">Receipt number</label>
+                                            <input type="text" name="receiptNumber" id="receiptNumber" class="form-control h-56-px bg-neutral-50 radius-12" placeholder="Receipt #" value="<%= e.receiptNumber || '' %>">
+                                        </div>
+                                        <div class="col-12">
+                                            <label class="form-label text-sm fw-medium text-primary-light">Description</label>
+                                            <input type="text" name="description" id="description" class="form-control h-56-px bg-neutral-50 radius-12" placeholder="Description" value="<%= e.description || '' %>">
+                                        </div>
+                                        <div class="col-12">
+                                            <label class="form-label text-sm fw-medium text-primary-light">Notes</label>
+                                            <textarea name="notes" id="notes" class="form-control bg-neutral-50 radius-12" rows="2" placeholder="Notes"><%= e.notes || '' %></textarea>
+                                        </div>
+                                        <div class="col-12">
+                                            <span class="text-sm text-secondary-light">Status: </span>
+                                            <span class="badge <%= e.status === 'PENDING' ? 'bg-warning' : e.status === 'PAID' ? 'bg-success' : e.status === 'APPROVED' ? 'bg-info' : 'bg-danger' %>"><%= e.status %></span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="d-flex align-items-center justify-content-end gap-3">
+                                <a href="<%= typeof basePath !== 'undefined' ? basePath : '' %>/expense" class="btn border border-neutral-400 bg-hover-neutral-100 text-primary-light text-md px-24 py-12 radius-8">Cancel</a>
+                                <button type="submit" class="btn btn-primary text-md px-32 py-12 radius-8 d-flex align-items-center gap-2">
+                                    <iconify-icon icon="mdi:content-save-outline"></iconify-icon>
+                                    Update
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<% script = `
+<script src="/js/modules/expense.js"></script>
+` %>

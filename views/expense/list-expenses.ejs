@@ -1,0 +1,105 @@
+<div class="card h-100 p-0 radius-12">
+    <div class="card-header border-bottom bg-base py-16 px-24 d-flex align-items-center flex-wrap gap-3 justify-content-between">
+        <div class="d-flex align-items-center flex-wrap gap-3">
+            <form method="GET" action="<%= pendingOnly ? '/expense/pending' : '/expense' %>" class="d-flex align-items-center gap-2 flex-wrap">
+                <% if (!pendingOnly) { %>
+                <input type="date" name="from" class="form-control form-control-sm w-auto h-40-px radius-12" placeholder="From" value="<%= query.from || '' %>">
+                <input type="date" name="to" class="form-control form-control-sm w-auto h-40-px radius-12" placeholder="To" value="<%= query.to || '' %>">
+                <select name="type" class="form-select form-select-sm w-auto ps-12 py-6 radius-12 h-40-px" onchange="this.form.submit()">
+                    <option value="">All types</option>
+                    <% expenseTypes.forEach(function(t) { %>
+                    <option value="<%= t %>" <%= query.type === t ? 'selected' : '' %>><%= t %></option>
+                    <% }); %>
+                </select>
+                <select name="status" class="form-select form-select-sm w-auto ps-12 py-6 radius-12 h-40-px" onchange="this.form.submit()">
+                    <option value="">All status</option>
+                    <option value="PENDING" <%= query.status === 'PENDING' ? 'selected' : '' %>>Pending</option>
+                    <option value="APPROVED" <%= query.status === 'APPROVED' ? 'selected' : '' %>>Approved</option>
+                    <option value="PAID" <%= query.status === 'PAID' ? 'selected' : '' %>>Paid</option>
+                    <option value="REJECTED" <%= query.status === 'REJECTED' ? 'selected' : '' %>>Rejected</option>
+                </select>
+                <button type="submit" class="btn btn-sm btn-outline-primary radius-8 h-40-px">Filter</button>
+                <% } %>
+            </form>
+        </div>
+        <% if (pendingOnly) { %>
+        <a href="<%= typeof basePath !== 'undefined' ? basePath : '' %>/expense" class="btn border border-neutral-400 bg-hover-neutral-100 text-primary-light text-sm btn-sm px-12 py-12 radius-8 d-flex align-items-center gap-2">All expenses</a>
+        <% } else { %>
+        <a href="<%= typeof basePath !== 'undefined' ? basePath : '' %>/expense/pending" class="btn border border-warning-400 bg-hover-warning-100 text-warning-600 text-sm btn-sm px-12 py-12 radius-8 d-flex align-items-center gap-2">Pending approval</a>
+        <% } %>
+        <a href="<%= typeof basePath !== 'undefined' ? basePath : '' %>/expense/add" class="btn btn-primary text-sm btn-sm px-12 py-12 radius-8 d-flex align-items-center gap-2">
+            <iconify-icon icon="ic:baseline-plus" class="icon text-xl line-height-1"></iconify-icon>
+            Add Expense
+        </a>
+    </div>
+    <div class="card-body p-24">
+        <div class="table-responsive scroll-sm">
+            <table class="table bordered-table sm-table mb-0">
+                <thead>
+                    <tr>
+                        <th scope="col">#</th>
+                        <th scope="col">Date</th>
+                        <th scope="col">Type</th>
+                        <th scope="col">Category</th>
+                        <th scope="col">Amount</th>
+                        <th scope="col">Vehicle</th>
+                        <th scope="col" class="text-center">Status</th>
+                        <th scope="col" class="text-center">Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <% if (expenses.length === 0) { %>
+                    <tr>
+                        <td colspan="8" class="text-center text-secondary-light py-24">No expenses found.</td>
+                    </tr>
+                    <% } else { %>
+                    <% expenses.forEach((e, i) => { %>
+                    <% const veh = e.vehicleId ? vehiclesMap[e.vehicleId] : null; %>
+                    <tr>
+                        <td><%= i + 1 %></td>
+                        <td><span class="text-md fw-normal text-secondary-light"><%= e.expenseDate %></span></td>
+                        <td><span class="text-md fw-normal text-secondary-light"><%= e.expenseType %></span></td>
+                        <td><span class="text-md fw-normal text-secondary-light"><%= e.expenseCategory %></span></td>
+                        <td><span class="text-md fw-medium text-primary-light"><%= e.currencySymbol %><%= e.amount %></span></td>
+                        <td><span class="text-md fw-normal text-secondary-light"><%= veh ? (veh.make + ' ' + veh.model) : '-' %></span></td>
+                        <td class="text-center">
+                            <% if (e.status === 'PENDING') { %>
+                            <span class="bg-warning-focus text-warning-600 border border-warning-main px-16 py-4 radius-4 fw-medium text-sm">Pending</span>
+                            <% } else if (e.status === 'APPROVED') { %>
+                            <span class="bg-info-focus text-info-600 border border-info-main px-16 py-4 radius-4 fw-medium text-sm">Approved</span>
+                            <% } else if (e.status === 'PAID') { %>
+                            <span class="bg-success-focus text-success-600 border border-success-main px-16 py-4 radius-4 fw-medium text-sm">Paid</span>
+                            <% } else { %>
+                            <span class="bg-danger-focus text-danger-600 border border-danger-main px-16 py-4 radius-4 fw-medium text-sm">Rejected</span>
+                            <% } %>
+                        </td>
+                        <td class="text-center">
+                            <div class="d-flex align-items-center gap-10 justify-content-center">
+                                <a href="<%= typeof basePath !== 'undefined' ? basePath : '' %>/expense/view/<%= e.id %>" class="bg-info-focus bg-hover-info-200 text-info-600 fw-medium w-40-px h-40-px d-flex justify-content-center align-items-center rounded-circle text-decoration-none" title="View">
+                                    <iconify-icon icon="majesticons:eye-line" class="icon text-xl"></iconify-icon>
+                                </a>
+                                <a href="<%= typeof basePath !== 'undefined' ? basePath : '' %>/expense/edit/<%= e.id %>" class="bg-success-focus text-success-600 bg-hover-success-200 fw-medium w-40-px h-40-px d-flex justify-content-center align-items-center rounded-circle text-decoration-none" title="Edit">
+                                    <iconify-icon icon="lucide:edit" class="menu-icon"></iconify-icon>
+                                </a>
+                                <% if (e.status === 'PENDING') { %>
+                                <form action="<%= typeof basePath !== 'undefined' ? basePath : '' %>/expense/approve/<%= e.id %>" method="POST" class="d-inline mb-0">
+                                    <button type="submit" class="btn btn-sm btn-success radius-8">Approve</button>
+                                </form>
+                                <% } %>
+                                <form action="<%= typeof basePath !== 'undefined' ? basePath : '' %>/expense/delete/<%= e.id %>" method="POST" class="d-inline mb-0 expense-delete-form">
+                                    <button type="submit" class="remove-item-btn bg-danger-focus bg-hover-danger-200 text-danger-600 fw-medium w-40-px h-40-px d-flex justify-content-center align-items-center rounded-circle border-0" title="Delete"></button>
+                                </form>
+                            </div>
+                        </td>
+                    </tr>
+                    <% }); %>
+                    <% } %>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<% script = `
+<script src="/js/modules/expense.js"></script>
+` %>

@@ -1,0 +1,100 @@
+<div class="card h-100 p-0 radius-12">
+    <div class="card-body p-24">
+        <div class="row justify-content-center">
+            <div class="col-xxl-10 col-xl-11 col-lg-12">
+                <% const r = rental; %>
+
+                <!-- Rental summary -->
+                <div class="card border radius-16 overflow-hidden mb-24 bg-neutral-50 border-neutral-200">
+                    <div class="card-body py-20 px-24">
+                        <div class="row align-items-center">
+                            <div class="col">
+                                <h6 class="fw-semibold text-primary-light mb-2">Contract <%= r.contractNumber %></h6>
+                                <p class="text-sm text-secondary-light mb-0">
+                                    <%= customer ? customer.name : 'Customer' %> · <%= vehicle ? (vehicle.make + ' ' + vehicle.model) : 'Vehicle' %>
+                                </p>
+                                <p class="text-sm text-secondary-light mb-0 mt-2">
+                                    Expected return: <%= r.expectedReturnDate %> <%= r.expectedReturnTime %>
+                                    · Deposit: <%= r.currencySymbol %><%= r.deposit != null ? r.deposit : 0 %>
+                                </p>
+                            </div>
+                            <div class="col-auto">
+                                <a href="<%= typeof basePath !== 'undefined' ? basePath : '' %>/return" class="btn btn-outline-secondary btn-sm radius-8 d-flex align-items-center gap-2">
+                                    <iconify-icon icon="mdi:arrow-left"></iconify-icon> Back
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <form method="POST" action="<%= typeof basePath !== 'undefined' ? basePath : '' %>/return/process/<%= r.id %>" id="return-form">
+                    <% if (typeof error !== 'undefined' && error) { %>
+                    <div class="alert alert-danger radius-12 mb-24 d-flex align-items-center gap-2">
+                        <iconify-icon icon="mdi:alert-circle-outline"></iconify-icon>
+                        <%= error %>
+                    </div>
+                    <% } %>
+
+                    <!-- Return date & time -->
+                    <div class="card border radius-12 overflow-hidden mb-24">
+                        <div class="card-header bg-neutral-50 border-bottom py-14 px-20">
+                            <h6 class="text-sm fw-semibold text-primary-light mb-0 d-flex align-items-center gap-2">
+                                <iconify-icon icon="solar:calendar-outline" class="text-primary-600"></iconify-icon>
+                                Actual return date & time
+                            </h6>
+                        </div>
+                        <div class="card-body p-20">
+                            <div class="row g-3">
+                                <div class="col-md-6">
+                                    <label class="form-label text-sm fw-medium text-primary-light">Return date <span class="text-danger">*</span></label>
+                                    <input type="date" name="actualReturnDate" id="actualReturnDate" class="form-control h-56-px bg-neutral-50 radius-12" required>
+                                </div>
+                                <div class="col-md-6">
+                                    <label class="form-label text-sm fw-medium text-primary-light">Return time</label>
+                                    <input type="time" name="actualReturnTime" id="actualReturnTime" class="form-control h-56-px bg-neutral-50 radius-12" value="10:00">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Charges -->
+                    <div class="card border radius-12 overflow-hidden mb-24">
+                        <div class="card-header bg-neutral-50 border-bottom py-14 px-20">
+                            <h6 class="text-sm fw-semibold text-primary-light mb-0 d-flex align-items-center gap-2">
+                                <iconify-icon icon="mdi:cash-multiple" class="text-primary-600"></iconify-icon>
+                                Additional charges (deducted from deposit)
+                            </h6>
+                        </div>
+                        <div class="card-body p-20">
+                            <div class="row g-3">
+                                <div class="col-md-6">
+                                    <label class="form-label text-sm fw-medium text-primary-light">Late return fee (<%= r.currencySymbol %>)</label>
+                                    <input type="number" name="lateReturnFee" id="lateReturnFee" class="form-control h-56-px bg-neutral-50 radius-12" placeholder="0" min="0" step="0.01" value="0">
+                                </div>
+                                <div class="col-md-6">
+                                    <label class="form-label text-sm fw-medium text-primary-light">Other charges — fuel, damage, etc. (<%= r.currencySymbol %>)</label>
+                                    <input type="number" name="otherCharges" id="otherCharges" class="form-control h-56-px bg-neutral-50 radius-12" placeholder="0" min="0" step="0.01" value="0">
+                                </div>
+                            </div>
+                            <p class="text-sm text-secondary-light mt-3 mb-0">Total charges will be deducted from deposit. Remaining deposit will be refunded. If charges exceed deposit, customer pays the difference.</p>
+                        </div>
+                    </div>
+
+                    <div class="d-flex align-items-center justify-content-end gap-3">
+                        <a href="<%= typeof basePath !== 'undefined' ? basePath : '' %>/return" class="btn border border-neutral-400 bg-hover-neutral-100 text-primary-light text-md px-24 py-12 radius-8 d-flex align-items-center gap-2">
+                            Cancel
+                        </a>
+                        <button type="submit" class="btn btn-primary text-md px-32 py-12 radius-8 d-flex align-items-center gap-2">
+                            <iconify-icon icon="mdi:check-circle-outline"></iconify-icon>
+                            Complete return
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<% script = `
+<script src="/js/modules/return.js"></script>
+` %>

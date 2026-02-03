@@ -1,0 +1,246 @@
+<div class="card h-100 p-0 radius-12">
+    <div class="card-body p-24">
+        <div class="row justify-content-center">
+            <div class="col-xxl-10 col-xl-11 col-lg-12">
+                <div class="card border radius-12 overflow-hidden">
+                    <div class="card-header bg-neutral-50 border-bottom py-16 px-24 d-flex align-items-center justify-content-between flex-wrap gap-2">
+                        <h6 class="text-md text-primary-light mb-0 d-flex align-items-center gap-2">
+                            <iconify-icon icon="mdi:domain" class="text-primary-600"></iconify-icon>
+                            Company Details (workflow schema)
+                        </h6>
+                        <a href="<%= typeof basePath !== 'undefined' ? basePath : '' %>/dashboard/index5" class="btn btn-outline-secondary btn-sm radius-8 d-flex align-items-center gap-2">
+                            <iconify-icon icon="mdi:arrow-left"></iconify-icon> Back
+                        </a>
+                    </div>
+                    <div class="card-body p-24">
+                        <% if (typeof error !== 'undefined' && error) { %>
+                        <div class="alert alert-danger radius-12 mb-24 d-flex align-items-center gap-2">
+                            <iconify-icon icon="mdi:alert-circle-outline"></iconify-icon>
+                            <%= error %>
+                        </div>
+                        <% } %>
+                        <form method="POST" action="<%= typeof basePath !== 'undefined' ? basePath : '' %>/settings/company" id="company-form">
+                            <% const c = typeof company !== 'undefined' && company ? company : {}; %>
+
+                            <!-- Basic Info -->
+                            <div class="card border radius-12 overflow-hidden mb-24">
+                                <div class="card-header bg-neutral-50 border-bottom py-14 px-20">
+                                    <h6 class="text-sm fw-semibold text-primary-light mb-0 d-flex align-items-center gap-2">
+                                        <iconify-icon icon="mdi:account-outline" class="text-primary-600"></iconify-icon>
+                                        Basic Information
+                                    </h6>
+                                </div>
+                                <div class="card-body p-20">
+                                    <div class="row g-3">
+                                        <div class="col-md-6">
+                                            <label class="form-label text-sm fw-medium text-primary-light">Company name <span class="text-danger">*</span></label>
+                                            <input type="text" name="name" id="name" class="form-control h-56-px bg-neutral-50 radius-12" value="<%= c.name || '' %>" required>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <label class="form-label text-sm fw-medium text-primary-light">Phone</label>
+                                            <input type="text" name="phone" class="form-control h-56-px bg-neutral-50 radius-12" value="<%= c.phone || '' %>">
+                                        </div>
+                                        <div class="col-md-6">
+                                            <label class="form-label text-sm fw-medium text-primary-light">Email</label>
+                                            <input type="email" name="email" class="form-control h-56-px bg-neutral-50 radius-12" value="<%= c.email || '' %>">
+                                        </div>
+                                        <div class="col-md-6">
+                                            <label class="form-label text-sm fw-medium text-primary-light">Country</label>
+                                            <select name="country" class="form-select h-56-px bg-neutral-50 radius-12">
+                                                <option value="">Select</option>
+                                                <option value="India" <%= (c.country || '') === 'India' ? 'selected' : '' %>>India</option>
+                                                <option value="Thailand" <%= (c.country || '') === 'Thailand' ? 'selected' : '' %>>Thailand</option>
+                                                <option value="USA" <%= (c.country || '') === 'USA' ? 'selected' : '' %>>USA</option>
+                                                <option value="UK" <%= (c.country || '') === 'UK' ? 'selected' : '' %>>UK</option>
+                                            </select>
+                                        </div>
+                                        <div class="col-12">
+                                            <label class="form-label text-sm fw-medium text-primary-light">Address</label>
+                                            <input type="text" name="address" class="form-control h-56-px bg-neutral-50 radius-12" value="<%= c.address || '' %>">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Currency & Operating Hours -->
+                            <div class="card border radius-12 overflow-hidden mb-24">
+                                <div class="card-header bg-neutral-50 border-bottom py-14 px-20">
+                                    <h6 class="text-sm fw-semibold text-primary-light mb-0 d-flex align-items-center gap-2">
+                                        <iconify-icon icon="mdi:cash-multiple" class="text-primary-600"></iconify-icon>
+                                        Currency & Operating Hours
+                                    </h6>
+                                </div>
+                                <div class="card-body p-20">
+                                    <div class="row g-3">
+                                        <div class="col-md-4">
+                                            <label class="form-label text-sm fw-medium text-primary-light">Currency code</label>
+                                            <select name="currency_code" class="form-select h-56-px bg-neutral-50 radius-12">
+                                                <option value="INR" <%= (c.currency_code || 'INR') === 'INR' ? 'selected' : '' %>>INR</option>
+                                                <option value="THB" <%= (c.currency_code || '') === 'THB' ? 'selected' : '' %>>THB</option>
+                                                <option value="USD" <%= (c.currency_code || '') === 'USD' ? 'selected' : '' %>>USD</option>
+                                            </select>
+                                        </div>
+                                        <div class="col-md-4">
+                                            <label class="form-label text-sm fw-medium text-primary-light">Currency symbol</label>
+                                            <input type="text" name="currency_symbol" class="form-control h-56-px bg-neutral-50 radius-12" value="<%= c.currency_symbol || '₹' %>" placeholder="₹ / $ / ฿">
+                                        </div>
+                                        <div class="col-md-2">
+                                            <label class="form-label text-sm fw-medium text-primary-light">Open</label>
+                                            <input type="time" name="operating_hours_start" class="form-control h-56-px bg-neutral-50 radius-12" value="<%= c.operating_hours_start || '08:00' %>">
+                                        </div>
+                                        <div class="col-md-2">
+                                            <label class="form-label text-sm fw-medium text-primary-light">Close</label>
+                                            <input type="time" name="operating_hours_end" class="form-control h-56-px bg-neutral-50 radius-12" value="<%= c.operating_hours_end || '18:00' %>">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Contract / Invoice Prefixes & Rate Options -->
+                            <div class="card border radius-12 overflow-hidden mb-24">
+                                <div class="card-header bg-neutral-50 border-bottom py-14 px-20">
+                                    <h6 class="text-sm fw-semibold text-primary-light mb-0 d-flex align-items-center gap-2">
+                                        <iconify-icon icon="mdi:file-document-outline" class="text-primary-600"></iconify-icon>
+                                        Prefixes & Rate Options
+                                    </h6>
+                                </div>
+                                <div class="card-body p-20">
+                                    <div class="row g-3">
+                                        <div class="col-md-3">
+                                            <label class="form-label text-sm fw-medium text-primary-light">Contract number prefix</label>
+                                            <input type="text" name="contract_number_prefix" class="form-control h-56-px bg-neutral-50 radius-12" value="<%= c.contract_number_prefix || 'CNT' %>" placeholder="CNT">
+                                        </div>
+                                        <div class="col-md-3">
+                                            <label class="form-label text-sm fw-medium text-primary-light">Invoice number prefix</label>
+                                            <input type="text" name="invoice_number_prefix" class="form-control h-56-px bg-neutral-50 radius-12" value="<%= c.invoice_number_prefix || 'INV' %>" placeholder="INV">
+                                        </div>
+                                        <div class="col-md-6">
+                                            <label class="form-label text-sm fw-medium text-primary-light">Default charge method</label>
+                                            <select name="default_charge_calculation_method" class="form-select h-56-px bg-neutral-50 radius-12">
+                                                <option value="DAILY" <%= (c.default_charge_calculation_method || 'DAILY') === 'DAILY' ? 'selected' : '' %>>Daily</option>
+                                                <option value="WEEKLY" <%= (c.default_charge_calculation_method || '') === 'WEEKLY' ? 'selected' : '' %>>Weekly</option>
+                                                <option value="MONTHLY" <%= (c.default_charge_calculation_method || '') === 'MONTHLY' ? 'selected' : '' %>>Monthly</option>
+                                                <option value="HOURLY" <%= (c.default_charge_calculation_method || '') === 'HOURLY' ? 'selected' : '' %>>Hourly</option>
+                                            </select>
+                                        </div>
+                                        <div class="col-12">
+                                            <label class="form-label text-sm fw-medium text-primary-light">Enable rate types</label>
+                                            <div class="d-flex flex-wrap gap-3">
+                                                <div class="form-check">
+                                                    <input type="checkbox" name="enable_hourly_rates" class="form-check-input" value="1" <%= c.enable_hourly_rates ? 'checked' : '' %>>
+                                                    <label class="form-check-label text-sm">Hourly</label>
+                                                </div>
+                                                <div class="form-check">
+                                                    <input type="checkbox" name="enable_daily_rates" class="form-check-input" value="1" <%= c.enable_daily_rates !== false ? 'checked' : '' %>>
+                                                    <label class="form-check-label text-sm">Daily</label>
+                                                </div>
+                                                <div class="form-check">
+                                                    <input type="checkbox" name="enable_weekly_rates" class="form-check-input" value="1" <%= c.enable_weekly_rates ? 'checked' : '' %>>
+                                                    <label class="form-check-label text-sm">Weekly</label>
+                                                </div>
+                                                <div class="form-check">
+                                                    <input type="checkbox" name="enable_monthly_rates" class="form-check-input" value="1" <%= c.enable_monthly_rates ? 'checked' : '' %>>
+                                                    <label class="form-check-label text-sm">Monthly</label>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Terms & Conditions -->
+                            <div class="card border radius-12 overflow-hidden mb-24">
+                                <div class="card-header bg-neutral-50 border-bottom py-14 px-20">
+                                    <h6 class="text-sm fw-semibold text-primary-light mb-0 d-flex align-items-center gap-2">
+                                        <iconify-icon icon="mdi:file-document-check-outline" class="text-primary-600"></iconify-icon>
+                                        Terms & Conditions
+                                    </h6>
+                                </div>
+                                <div class="card-body p-20">
+                                    <textarea name="terms_and_conditions" class="form-control bg-neutral-50 radius-12" rows="4" placeholder="Company T&C for contracts"><%= c.terms_and_conditions || '' %></textarea>
+                                </div>
+                            </div>
+
+                            <!-- Tax Settings -->
+                            <div class="card border radius-12 overflow-hidden mb-24">
+                                <div class="card-header bg-neutral-50 border-bottom py-14 px-20">
+                                    <h6 class="text-sm fw-semibold text-primary-light mb-0 d-flex align-items-center gap-2">
+                                        <iconify-icon icon="mdi:receipt-text-outline" class="text-primary-600"></iconify-icon>
+                                        Tax Settings
+                                    </h6>
+                                </div>
+                                <div class="card-body p-20">
+                                    <div class="row g-3">
+                                        <div class="col-md-4">
+                                            <label class="form-label text-sm fw-medium text-primary-light">Tax system name</label>
+                                            <select name="tax_system_name" class="form-select h-56-px bg-neutral-50 radius-12">
+                                                <option value="">None</option>
+                                                <option value="GST" <%= (c.tax_system_name || '') === 'GST' ? 'selected' : '' %>>GST</option>
+                                                <option value="VAT" <%= (c.tax_system_name || '') === 'VAT' ? 'selected' : '' %>>VAT</option>
+                                                <option value="Sales Tax" <%= (c.tax_system_name || '') === 'Sales Tax' ? 'selected' : '' %>>Sales Tax</option>
+                                            </select>
+                                        </div>
+                                        <div class="col-md-4">
+                                            <label class="form-label text-sm fw-medium text-primary-light">Tax %</label>
+                                            <input type="number" name="tax_percentage" class="form-control h-56-px bg-neutral-50 radius-12" value="<%= c.tax_percentage != null ? c.tax_percentage : '' %>" placeholder="18" min="0" step="0.01">
+                                        </div>
+                                        <div class="col-md-4">
+                                            <label class="form-label text-sm fw-medium text-primary-light">Tax registration number</label>
+                                            <input type="text" name="tax_registration_number" class="form-control h-56-px bg-neutral-50 radius-12" value="<%= c.tax_registration_number || '' %>">
+                                        </div>
+                                        <div class="col-12">
+                                            <div class="form-check">
+                                                <input type="checkbox" name="enable_tax_invoicing" class="form-check-input" value="1" <%= c.enable_tax_invoicing ? 'checked' : '' %>>
+                                                <label class="form-check-label text-sm">Enable tax on invoices</label>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Invoice & Expense -->
+                            <div class="card border radius-12 overflow-hidden mb-24">
+                                <div class="card-header bg-neutral-50 border-bottom py-14 px-20">
+                                    <h6 class="text-sm fw-semibold text-primary-light mb-0 d-flex align-items-center gap-2">
+                                        <iconify-icon icon="mdi:invoice-outline" class="text-primary-600"></iconify-icon>
+                                        Invoice & Expense
+                                    </h6>
+                                </div>
+                                <div class="card-body p-20">
+                                    <div class="row g-3">
+                                        <div class="col-md-6">
+                                            <div class="form-check">
+                                                <input type="checkbox" name="enable_invoice_module" class="form-check-input" value="1" <%= c.enable_invoice_module ? 'checked' : '' %>>
+                                                <label class="form-check-label text-sm">Enable invoice module</label>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <label class="form-label text-sm fw-medium text-primary-light">Default invoice type</label>
+                                            <select name="default_invoice_type" class="form-select h-56-px bg-neutral-50 radius-12">
+                                                <option value="B2C" <%= (c.default_invoice_type || 'B2C') === 'B2C' ? 'selected' : '' %>>B2C</option>
+                                                <option value="B2B" <%= (c.default_invoice_type || '') === 'B2B' ? 'selected' : '' %>>B2B</option>
+                                            </select>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <label class="form-label text-sm fw-medium text-primary-light">Expense approval threshold</label>
+                                            <input type="number" name="expense_approval_threshold" class="form-control h-56-px bg-neutral-50 radius-12" value="<%= c.expense_approval_threshold != null ? c.expense_approval_threshold : 5000 %>" min="0" step="0.01" placeholder="5000">
+                                            <p class="text-xs text-secondary-light mt-2 mb-0">Expenses above this need Owner approval.</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="d-flex align-items-center justify-content-end gap-3">
+                                <a href="<%= typeof basePath !== 'undefined' ? basePath : '' %>/dashboard/index5" class="btn border border-neutral-400 bg-hover-neutral-100 text-primary-light text-md px-24 py-12 radius-8">Cancel</a>
+                                <button type="submit" class="btn btn-primary text-md px-32 py-12 radius-8 d-flex align-items-center gap-2">
+                                    <iconify-icon icon="mdi:content-save-outline"></iconify-icon>
+                                    Save Company
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

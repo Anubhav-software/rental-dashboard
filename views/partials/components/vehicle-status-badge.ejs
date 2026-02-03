@@ -1,0 +1,10 @@
+<% const status = typeof vehicleStatus !== 'undefined' ? vehicleStatus : (typeof status !== 'undefined' ? status : ''); %>
+<% if (status === 'Available') { %>
+<span class="bg-success-focus text-success-600 border border-success-main px-24 py-4 radius-4 fw-medium text-sm">Available</span>
+<% } else if (status === 'Rented') { %>
+<span class="bg-info-focus text-info-600 border border-info-main px-24 py-4 radius-4 fw-medium text-sm">Rented</span>
+<% } else if (status === 'Maintenance') { %>
+<span class="bg-warning-focus text-warning-600 border border-warning-main px-24 py-4 radius-4 fw-medium text-sm">Maintenance</span>
+<% } else { %>
+<span class="bg-neutral-200 text-neutral-600 border border-neutral-400 px-24 py-4 radius-4 fw-medium text-sm"><%= status || '-' %></span>
+<% } %>

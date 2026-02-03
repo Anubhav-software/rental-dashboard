@@ -1,0 +1,385 @@
+<div class="card h-100 p-0 radius-12">
+    <div class="card-body p-24">
+        <div class="row justify-content-center">
+            <div class="col-xxl-8 col-xl-10 col-lg-11">
+                <div class="card border radius-12 overflow-hidden">
+                    <div class="card-header bg-neutral-50 border-bottom py-16 px-24 d-flex align-items-center justify-content-between flex-wrap gap-2">
+                        <h6 class="text-md text-primary-light mb-0 d-flex align-items-center gap-2">
+                            <iconify-icon icon="mdi:car-outline" class="text-primary-600"></iconify-icon>
+                            Add Vehicle
+                        </h6>
+                        <div class="d-flex align-items-center gap-2 flex-wrap">
+                            <a href="<%= typeof basePath !== 'undefined' ? basePath : '' %>/vehicle/template/download" class="btn border border-neutral-400 text-primary-light bg-hover-neutral-100 text-sm btn-sm px-12 py-10 radius-8 d-flex align-items-center gap-2" download="vehicle-import-template.csv">
+                                <iconify-icon icon="mdi:file-download-outline" class="icon text-lg"></iconify-icon>
+                                Download template for export
+                            </a>
+                            <button type="button" class="btn border border-primary-600 text-primary-600 bg-hover-primary-50 text-sm btn-sm px-12 py-10 radius-8 d-flex align-items-center gap-2" data-bs-toggle="modal" data-bs-target="#vehicleImportModal">
+                                <iconify-icon icon="mdi:file-excel-outline" class="icon text-lg"></iconify-icon>
+                                Import from Excel
+                            </button>
+                        </div>
+                    </div>
+                    <div class="card-body p-24">
+                        <% if (typeof error !== 'undefined' && error) { %>
+                        <div class="alert alert-danger radius-12 mb-24 d-flex align-items-center gap-2">
+                            <iconify-icon icon="mdi:alert-circle-outline"></iconify-icon>
+                            <%= error %>
+                        </div>
+                        <% } %>
+                        <form method="POST" action="<%= typeof basePath !== 'undefined' ? basePath : '' %>/vehicle/add" id="vehicle-form">
+                            <% const v = typeof vehicle !== 'undefined' && vehicle ? vehicle : {}; %>
+
+                            <!-- Part 1: Basic Information -->
+                            <div class="card border radius-12 overflow-hidden mb-24">
+                                <div class="card-header bg-neutral-50 border-bottom py-14 px-20">
+                                    <h6 class="text-sm fw-semibold text-primary-light mb-0 d-flex align-items-center gap-2">
+                                        <iconify-icon icon="solar:document-text-outline" class="text-primary-600"></iconify-icon>
+                                        Basic Information
+                                    </h6>
+                                </div>
+                                <div class="card-body p-20">
+                                <div class="row g-3">
+                                    <div class="col-md-6">
+                                        <div class="icon-field">
+                                            <span class="icon top-50 translate-middle-y"><iconify-icon icon="mdi:car-side"></iconify-icon></span>
+                                            <input type="text" name="make" id="make" class="form-control h-56-px bg-neutral-50 radius-12 ps-48" placeholder="Make (e.g. Toyota)" value="<%= v.make || '' %>" required>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="icon-field">
+                                            <span class="icon top-50 translate-middle-y"><iconify-icon icon="mdi:car-cog"></iconify-icon></span>
+                                            <input type="text" name="model" id="model" class="form-control h-56-px bg-neutral-50 radius-12 ps-48" placeholder="Model (e.g. Camry)" value="<%= v.model || '' %>" required>
+                                        </div>
+                                    </div>
+                                    <div class="col-12">
+                                        <div class="icon-field">
+                                            <span class="icon top-50 translate-middle-y"><iconify-icon icon="mdi:card-account-details-outline"></iconify-icon></span>
+                                            <input type="text" name="registrationNumber" id="registrationNumber" class="form-control h-56-px bg-neutral-50 radius-12 ps-48" placeholder="Registration Number (e.g. TN-01-AB-1234)" value="<%= v.registrationNumber || '' %>" required>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <div class="icon-field">
+                                            <span class="icon top-50 translate-middle-y"><iconify-icon icon="mdi:format-list-group"></iconify-icon></span>
+                                            <select name="vehicleType" class="form-select h-56-px bg-neutral-50 radius-12 ps-48">
+                                                <option value="CAR" <%= (v.vehicleType || 'CAR') === 'CAR' ? 'selected' : '' %>>Car</option>
+                                                <option value="MOTORBIKE" <%= (v.vehicleType || '') === 'MOTORBIKE' ? 'selected' : '' %>>Motorbike</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <div class="icon-field">
+                                            <span class="icon top-50 translate-middle-y"><iconify-icon icon="solar:calendar-outline"></iconify-icon></span>
+                                            <input type="number" name="year" class="form-control h-56-px bg-neutral-50 radius-12 ps-48" placeholder="Year" min="1990" max="2030" value="<%= v.year || '' %>">
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <div class="icon-field">
+                                            <span class="icon top-50 translate-middle-y"><iconify-icon icon="mdi:palette-outline"></iconify-icon></span>
+                                            <input type="text" name="color" class="form-control h-56-px bg-neutral-50 radius-12 ps-48" placeholder="Color" value="<%= v.color || '' %>">
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="icon-field">
+                                            <span class="icon top-50 translate-middle-y"><iconify-icon icon="mdi:seat-passenger"></iconify-icon></span>
+                                            <input type="number" name="seatingCapacity" class="form-control h-56-px bg-neutral-50 radius-12 ps-48" placeholder="Seating capacity" min="1" max="20" value="<%= v.seatingCapacity || '' %>">
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="icon-field">
+                                            <span class="icon top-50 translate-middle-y"><iconify-icon icon="mdi:fuel"></iconify-icon></span>
+                                            <select name="fuelType" class="form-select h-56-px bg-neutral-50 radius-12 ps-48">
+                                                <option value="">Fuel type</option>
+                                                <option value="Petrol" <%= (v.fuelType || '') === 'Petrol' ? 'selected' : '' %>>Petrol</option>
+                                                <option value="Diesel" <%= (v.fuelType || '') === 'Diesel' ? 'selected' : '' %>>Diesel</option>
+                                                <option value="CNG" <%= (v.fuelType || '') === 'CNG' ? 'selected' : '' %>>CNG</option>
+                                                <option value="Electric" <%= (v.fuelType || '') === 'Electric' ? 'selected' : '' %>>Electric</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                </div>
+                                </div>
+                            </div>
+
+                            <!-- Part 2: Rental Rates -->
+                            <div class="card border radius-12 overflow-hidden mb-24">
+                                <div class="card-header bg-neutral-50 border-bottom py-14 px-20">
+                                    <h6 class="text-sm fw-semibold text-primary-light mb-0 d-flex align-items-center gap-2">
+                                        <iconify-icon icon="solar:wallet-money-outline" class="text-primary-600"></iconify-icon>
+                                        Rental Rates
+                                    </h6>
+                                </div>
+                                <div class="card-body p-20">
+                                <div class="row g-3">
+                                    <div class="col-md-6 col-lg-3">
+                                        <div class="icon-field">
+                                            <span class="icon top-50 translate-middle-y"><iconify-icon icon="mdi:currency-inr"></iconify-icon></span>
+                                            <input type="number" name="dailyRate" class="form-control h-56-px bg-neutral-50 radius-12 ps-48" placeholder="Daily rate" min="0" step="0.01" value="<%= v.dailyRate != null ? v.dailyRate : '' %>">
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6 col-lg-3">
+                                        <div class="icon-field">
+                                            <span class="icon top-50 translate-middle-y"><iconify-icon icon="mdi:clock-outline"></iconify-icon></span>
+                                            <input type="number" name="hourlyRate" class="form-control h-56-px bg-neutral-50 radius-12 ps-48" placeholder="Hourly rate" min="0" step="0.01" value="<%= v.hourlyRate != null ? v.hourlyRate : '' %>">
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6 col-lg-3">
+                                        <div class="icon-field">
+                                            <span class="icon top-50 translate-middle-y"><iconify-icon icon="mdi:calendar-week"></iconify-icon></span>
+                                            <input type="number" name="weeklyRate" class="form-control h-56-px bg-neutral-50 radius-12 ps-48" placeholder="Weekly rate" min="0" step="0.01" value="<%= v.weeklyRate != null ? v.weeklyRate : '' %>">
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6 col-lg-3">
+                                        <div class="icon-field">
+                                            <span class="icon top-50 translate-middle-y"><iconify-icon icon="mdi:calendar-month"></iconify-icon></span>
+                                            <input type="number" name="monthlyRate" class="form-control h-56-px bg-neutral-50 radius-12 ps-48" placeholder="Monthly rate" min="0" step="0.01" value="<%= v.monthlyRate != null ? v.monthlyRate : '' %>">
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6 col-lg-3">
+                                        <div class="icon-field">
+                                            <span class="icon top-50 translate-middle-y"><iconify-icon icon="mdi:clock-alert-outline"></iconify-icon></span>
+                                            <input type="number" name="lateReturnFeePerHour" class="form-control h-56-px bg-neutral-50 radius-12 ps-48" placeholder="Late return fee per hour" min="0" step="0.01" value="<%= v.lateReturnFeePerHour != null ? v.lateReturnFeePerHour : '' %>">
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6 col-lg-3">
+                                        <div class="icon-field">
+                                            <span class="icon top-50 translate-middle-y"><iconify-icon icon="mdi:calendar-clock-outline"></iconify-icon></span>
+                                            <input type="number" name="lateReturnFeePerDay" class="form-control h-56-px bg-neutral-50 radius-12 ps-48" placeholder="Late return fee per day" min="0" step="0.01" value="<%= v.lateReturnFeePerDay != null ? v.lateReturnFeePerDay : '' %>">
+                                        </div>
+                                    </div>
+                                </div>
+                                </div>
+                            </div>
+
+                            <!-- Part 3: Owner (optional) -->
+                            <div class="card border radius-12 overflow-hidden mb-24" style="max-width: 500px;">
+                                <div class="card-header bg-neutral-50 border-bottom py-14 px-20">
+                                    <h6 class="text-sm fw-semibold text-primary-light mb-0 d-flex align-items-center gap-2">
+                                        <iconify-icon icon="mdi:account-outline" class="text-primary-600"></iconify-icon>
+                                        Owner (optional)
+                                    </h6>
+                                </div>
+                                <div class="card-body p-20">
+                                <div class="row g-3">
+                                    <div class="col-md-6">
+                                        <div class="icon-field">
+                                            <span class="icon top-50 translate-middle-y"><iconify-icon icon="mdi:account-badge-outline"></iconify-icon></span>
+                                            <input type="text" name="ownerName" class="form-control h-56-px bg-neutral-50 radius-12 ps-48" placeholder="Owner name" value="<%= v.ownerName || '' %>">
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="icon-field">
+                                            <span class="icon top-50 translate-middle-y"><iconify-icon icon="mdi:phone-outline"></iconify-icon></span>
+                                            <input type="text" name="ownerContact" class="form-control h-56-px bg-neutral-50 radius-12 ps-48" placeholder="Owner contact" value="<%= v.ownerContact || '' %>">
+                                        </div>
+                                    </div>
+                                </div>
+                                </div>
+                            </div>
+
+                            <!-- Part 4: Status -->
+                            <div class="card border radius-12 overflow-hidden mb-24" style="max-width: 320px;">
+                                <div class="card-header bg-neutral-50 border-bottom py-14 px-20">
+                                    <h6 class="text-sm fw-semibold text-primary-light mb-0 d-flex align-items-center gap-2">
+                                        <iconify-icon icon="mdi:state-machine" class="text-primary-600"></iconify-icon>
+                                        Status
+                                    </h6>
+                                </div>
+                                <div class="card-body p-20">
+                                <div class="icon-field">
+                                    <span class="icon top-50 translate-middle-y"><iconify-icon icon="mdi:checkbox-marked-circle-outline"></iconify-icon></span>
+                                    <select name="status" class="form-select h-56-px bg-neutral-50 radius-12 ps-48">
+                                        <option value="Available" <%= (v.status || 'Available') === 'Available' ? 'selected' : '' %>>Available</option>
+                                        <option value="Rented" <%= (v.status || '') === 'Rented' ? 'selected' : '' %>>Rented</option>
+                                        <option value="Maintenance" <%= (v.status || '') === 'Maintenance' ? 'selected' : '' %>>Maintenance</option>
+                                    </select>
+                                </div>
+                                </div>
+                            </div>
+
+                            <!-- Part 5: Charges & Restrictions -->
+                            <div class="card border radius-12 overflow-hidden mb-24">
+                                <div class="card-header bg-neutral-50 border-bottom py-14 px-20">
+                                    <h6 class="text-sm fw-semibold text-primary-light mb-0 d-flex align-items-center gap-2">
+                                        <iconify-icon icon="mdi:cash-multiple" class="text-primary-600"></iconify-icon>
+                                        Charges & Restrictions
+                                    </h6>
+                                </div>
+                                <div class="card-body p-20">
+                                <div class="row g-3">
+                                    <div class="col-12">
+                                        <div class="form-check mb-12">
+                                            <input type="checkbox" name="geographicRestrictionEnabled" class="form-check-input radius-4" id="geographicRestrictionEnabled" value="1" <%= (v.geographicRestrictionEnabled || v.geographic_restriction_enabled) ? 'checked' : '' %>>
+                                            <label class="form-check-label text-sm" for="geographicRestrictionEnabled">Geographic restriction enabled</label>
+                                        </div>
+                                        <div class="row g-2 mb-12">
+                                            <div class="col-md-6">
+                                                <input type="text" name="allowedGeographicArea" class="form-control h-48-px radius-8" placeholder="Allowed geographic area" value="<%= v.allowedGeographicArea || v.allowed_geographic_area || '' %>">
+                                            </div>
+                                            <div class="col-md-6">
+                                                <input type="number" name="geographicViolationFine" class="form-control h-48-px radius-8" placeholder="Violation fine" min="0" step="0.01" value="<%= v.geographicViolationFine != null ? v.geographicViolationFine : (v.geographic_violation_fine != null ? v.geographic_violation_fine : '') %>">
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-12">
+                                        <div class="form-check mb-4">
+                                            <input type="checkbox" name="earlyReturnRefundAllowed" class="form-check-input radius-4" id="earlyReturnRefundAllowed" value="1" <%= (v.earlyReturnRefundAllowed || v.early_return_refund_allowed) ? 'checked' : '' %>>
+                                            <label class="form-check-label text-sm" for="earlyReturnRefundAllowed">Early return refund allowed</label>
+                                        </div>
+                                        <p class="text-xs text-secondary-light mb-8">If customer returns vehicle before end date, allow refund for unused days (optional penalty % below).</p>
+                                        <div class="col-md-4 ps-0">
+                                            <input type="number" name="earlyReturnPenaltyPercentage" class="form-control h-48-px radius-8" placeholder="Early return penalty %" min="0" max="100" step="0.01" value="<%= v.earlyReturnPenaltyPercentage != null ? v.earlyReturnPenaltyPercentage : (v.early_return_penalty_percentage != null ? v.early_return_penalty_percentage : '') %>">
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <label class="form-label text-xs mb-4">Helmet damage (min–max)</label>
+                                        <div class="d-flex gap-2">
+                                            <input type="number" name="helmetDamageMin" class="form-control h-48-px radius-8" placeholder="Min" min="0" step="0.01" value="<%= v.helmetDamageMin != null ? v.helmetDamageMin : '' %>">
+                                            <input type="number" name="helmetDamageMax" class="form-control h-48-px radius-8" placeholder="Max" min="0" step="0.01" value="<%= v.helmetDamageMax != null ? v.helmetDamageMax : '' %>">
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <label class="form-label text-xs mb-4">Key lost (min–max)</label>
+                                        <div class="d-flex gap-2">
+                                            <input type="number" name="keyLostMin" class="form-control h-48-px radius-8" placeholder="Min" min="0" step="0.01" value="<%= v.keyLostMin != null ? v.keyLostMin : '' %>">
+                                            <input type="number" name="keyLostMax" class="form-control h-48-px radius-8" placeholder="Max" min="0" step="0.01" value="<%= v.keyLostMax != null ? v.keyLostMax : '' %>">
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <label class="form-label text-xs mb-4">Puncture repair (min–max)</label>
+                                        <div class="d-flex gap-2">
+                                            <input type="number" name="punctureRepairMin" class="form-control h-48-px radius-8" placeholder="Min" min="0" step="0.01" value="<%= v.punctureRepairMin != null ? v.punctureRepairMin : '' %>">
+                                            <input type="number" name="punctureRepairMax" class="form-control h-48-px radius-8" placeholder="Max" min="0" step="0.01" value="<%= v.punctureRepairMax != null ? v.punctureRepairMax : '' %>">
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <label class="form-label text-xs mb-4">Pickup fee (min–max)</label>
+                                        <div class="d-flex gap-2">
+                                            <input type="number" name="pickupFeeMin" class="form-control h-48-px radius-8" placeholder="Min" min="0" step="0.01" value="<%= v.pickupFeeMin != null ? v.pickupFeeMin : '' %>">
+                                            <input type="number" name="pickupFeeMax" class="form-control h-48-px radius-8" placeholder="Max" min="0" step="0.01" value="<%= v.pickupFeeMax != null ? v.pickupFeeMax : '' %>">
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <label class="form-label text-xs mb-4">Oil change (min–max)</label>
+                                        <div class="d-flex gap-2">
+                                            <input type="number" name="oilChangeMin" class="form-control h-48-px radius-8" placeholder="Min" min="0" step="0.01" value="<%= v.oilChangeMin != null ? v.oilChangeMin : '' %>">
+                                            <input type="number" name="oilChangeMax" class="form-control h-48-px radius-8" placeholder="Max" min="0" step="0.01" value="<%= v.oilChangeMax != null ? v.oilChangeMax : '' %>">
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <label class="form-label text-xs mb-4">Battery rundown charge</label>
+                                        <input type="number" name="batteryRundownCharge" class="form-control h-48-px radius-8" placeholder="Amount" min="0" step="0.01" value="<%= v.batteryRundownCharge != null ? v.batteryRundownCharge : '' %>">
+                                    </div>
+                                    <div class="col-md-4">
+                                        <label class="form-label text-xs mb-4">Accident recovery (min–max)</label>
+                                        <div class="d-flex gap-2">
+                                            <input type="number" name="accidentRecoveryMin" class="form-control h-48-px radius-8" placeholder="Min" min="0" step="0.01" value="<%= v.accidentRecoveryMin != null ? v.accidentRecoveryMin : '' %>">
+                                            <input type="number" name="accidentRecoveryMax" class="form-control h-48-px radius-8" placeholder="Max" min="0" step="0.01" value="<%= v.accidentRecoveryMax != null ? v.accidentRecoveryMax : '' %>">
+                                        </div>
+                                    </div>
+                                </div>
+                                </div>
+                            </div>
+
+                            <!-- Due dates (optional) - client requirement: tax, battery, service, oil -->
+                            <div class="card border radius-12 overflow-hidden mb-24">
+                                <div class="card-header bg-neutral-50 border-bottom py-14 px-20">
+                                    <h6 class="text-sm fw-semibold text-primary-light mb-0 d-flex align-items-center gap-2">
+                                        <iconify-icon icon="mdi:calendar-clock-outline" class="text-primary-600"></iconify-icon>
+                                        Due dates (optional)
+                                    </h6>
+                                </div>
+                                <div class="card-body p-20">
+                                    <div class="row g-3">
+                                        <div class="col-md-6">
+                                            <label class="form-label text-xs mb-4">Tax expiry date</label>
+                                            <input type="date" name="taxExpiryDate" class="form-control h-56-px bg-neutral-50 radius-12" value="<%= v.taxExpiryDate || '' %>">
+                                        </div>
+                                        <div class="col-md-6">
+                                            <label class="form-label text-xs mb-4">Next battery change date</label>
+                                            <input type="date" name="nextBatteryChangeDate" class="form-control h-56-px bg-neutral-50 radius-12" value="<%= v.nextBatteryChangeDate || '' %>">
+                                        </div>
+                                        <div class="col-md-6">
+                                            <label class="form-label text-xs mb-4">Next service date</label>
+                                            <input type="date" name="nextServiceDate" class="form-control h-56-px bg-neutral-50 radius-12" value="<%= v.nextServiceDate || '' %>">
+                                        </div>
+                                        <div class="col-md-6">
+                                            <label class="form-label text-xs mb-4">Next oil change date</label>
+                                            <input type="date" name="nextOilChangeDate" class="form-control h-56-px bg-neutral-50 radius-12" value="<%= v.nextOilChangeDate || '' %>">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <hr class="my-24">
+                            <div class="d-flex align-items-center justify-content-end gap-3">
+                                <a href="<%= typeof basePath !== 'undefined' ? basePath : '' %>/vehicle" class="btn border border-neutral-400 bg-hover-neutral-100 text-primary-light text-md px-24 py-12 radius-8 d-flex align-items-center gap-2">
+                                    <iconify-icon icon="mdi:close"></iconify-icon>
+                                    Cancel
+                                </a>
+                                <button type="submit" class="btn btn-primary text-md px-32 py-12 radius-8 d-flex align-items-center gap-2">
+                                    <iconify-icon icon="mdi:content-save-outline"></iconify-icon>
+                                    Save Vehicle
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Import Excel modal (static) -->
+<div class="modal fade" id="vehicleImportModal" tabindex="-1" aria-labelledby="vehicleImportModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content radius-16 bg-base">
+            <div class="modal-header py-16 px-24 border border-top-0 border-start-0 border-end-0">
+                <h5 class="modal-title d-flex align-items-center gap-2" id="vehicleImportModalLabel">
+                    <iconify-icon icon="mdi:file-excel-outline"></iconify-icon>
+                    Import Vehicles
+                </h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body p-24">
+                <p class="text-secondary-light mb-20">Please upload the Excel sheet of vehicles. Supported format: .xlsx, .xls</p>
+                <div class="border border-neutral-300 radius-12 p-24 text-center bg-neutral-50">
+                    <input type="file" id="vehicleExcelFile" class="d-none" accept=".xlsx,.xls">
+                    <label for="vehicleExcelFile" class="btn border border-primary-600 text-primary-600 bg-hover-primary-50 radius-8 d-inline-flex align-items-center gap-2 cursor-pointer mb-0">
+                        <iconify-icon icon="mdi:upload-outline"></iconify-icon>
+                        Choose Excel file
+                    </label>
+                    <span id="vehicleFileName" class="d-block text-sm text-secondary-light mt-12"></span>
+                </div>
+            </div>
+            <div class="modal-footer border-0 py-16 px-24">
+                <button type="button" class="btn border border-neutral-400 text-primary-light radius-8" data-bs-dismiss="modal">Cancel</button>
+                <button type="button" class="btn btn-primary radius-8" id="vehicleImportUploadBtn" disabled>Upload</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<% script = `
+<script src="/js/modules/vehicle.js"></script>
+<script>
+(function(){
+    var fileInput = document.getElementById('vehicleExcelFile');
+    var fileNameSpan = document.getElementById('vehicleFileName');
+    var uploadBtn = document.getElementById('vehicleImportUploadBtn');
+    if (fileInput && fileNameSpan && uploadBtn) {
+        fileInput.addEventListener('change', function(){
+            if (this.files && this.files[0]) {
+                fileNameSpan.textContent = this.files[0].name;
+                uploadBtn.disabled = false;
+            } else {
+                fileNameSpan.textContent = '';
+                uploadBtn.disabled = true;
+            }
+        });
+        uploadBtn.addEventListener('click', function(){
+            alert('Import from Excel will be available soon. This is a static UI for now.');
+        });
+    }
+})();
+</script>
+` %>

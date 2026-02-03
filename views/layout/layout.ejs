@@ -1,0 +1,30 @@
+<!-- meta tags and other links -->
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+  <%- include('../partials/head') %>
+  <body>
+  <% if (typeof basePath !== 'undefined' && basePath === '/staff') { %>
+    <%- include('../partials/staff_sidebar') %>
+  <% } else { %>
+    <%- include('../partials/owner_sidebar') %>
+  <% } %>
+
+    <main class="dashboard-main">
+      <%- include('../partials/navbar') %>
+
+        <div class="dashboard-main-body">
+            <%- include('../partials/breadcrumb'), {title:title, subTitle:subTitle} %> 
+
+            <%- body %>
+        </div>
+
+      <%- include('../partials/footer') %>
+    </main>
+    <%- include('../partials/scripts') %> 
+
+   <!-- Add the script block here -->
+   <% if (typeof script !== 'undefined') { %>
+    <%- script %>
+  <% } %>
+  </body>
+</html>

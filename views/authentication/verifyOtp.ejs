@@ -1,0 +1,60 @@
+<section class="auth bg-base d-flex flex-wrap">
+    <div class="auth-left d-lg-block d-none">
+        <div class="d-flex align-items-center flex-column h-100 justify-content-center">
+            <img src="/images/auth/auth-img.png" alt="">
+        </div>
+    </div>
+    <div class="auth-right py-32 px-24 d-flex flex-column justify-content-center">
+        <div class="max-w-464-px mx-auto w-100">
+            <div>
+                <a href="/authentication/signin" class="mb-40 max-w-290-px">
+                    <img src="/images/logo.png" alt="">
+                </a>
+                <h4 class="mb-12">Verify OTP</h4>
+                <p class="mb-8 text-secondary-light text-lg">Enter the 6-digit code sent to</p>
+                <p class="mb-24 text-primary-600 fw-semibold"><%= maskedEmail || "" %></p>
+            </div>
+
+            <% if (typeof error !== 'undefined' && error) { %>
+                <div class="alert alert-danger radius-12 mb-16">
+                    <%= error %>
+                </div>
+            <% } %>
+
+            <% if (typeof demoOtp !== 'undefined' && demoOtp) { %>
+                <div class="alert alert-warning radius-12 mb-16">
+                    <strong>Demo OTP:</strong> <%= demoOtp %> (Phase 1 demo)
+                </div>
+            <% } %>
+
+            <form method="POST" action="/authentication/verify-otp">
+                <div class="icon-field mb-16">
+                    <span class="icon top-50 translate-middle-y">
+                        <iconify-icon icon="mdi:shield-key-outline"></iconify-icon>
+                    </span>
+                    <input
+                        type="text"
+                        name="otp"
+                        inputmode="numeric"
+                        maxlength="6"
+                        class="form-control h-56-px bg-neutral-50 radius-12"
+                        placeholder="Enter OTP (6 digits)"
+                        required
+                    >
+                </div>
+
+                <button type="submit" class="btn btn-primary text-sm btn-sm px-12 py-16 w-100 radius-12 mt-16">
+                    Verify & Continue
+                </button>
+
+                <div class="mt-24 text-center text-sm">
+                    <p class="mb-0">
+                        Didn’t receive OTP?
+                        <a href="/authentication/signin" class="text-primary-600 fw-semibold">Go back</a>
+                    </p>
+                </div>
+            </form>
+        </div>
+    </div>
+</section>
+

@@ -1,0 +1,160 @@
+<div class="card h-100 p-0 radius-12">
+    <div class="card-body p-24">
+        <div class="row justify-content-center">
+            <div class="col-xxl-10 col-xl-11 col-lg-12">
+                <div class="card border radius-12 overflow-hidden">
+                    <div class="card-header bg-neutral-50 border-bottom py-16 px-24 d-flex align-items-center justify-content-between flex-wrap gap-2">
+                        <h6 class="text-md text-primary-light mb-0 d-flex align-items-center gap-2">
+                            <iconify-icon icon="mdi:file-document-edit-outline" class="text-primary-600"></iconify-icon>
+                            Create Rental
+                        </h6>
+                        <a href="<%= typeof basePath !== 'undefined' ? basePath : '' %>/rental" class="btn btn-outline-secondary btn-sm radius-8 d-flex align-items-center gap-2">
+                            <iconify-icon icon="mdi:arrow-left"></iconify-icon> Back
+                        </a>
+                    </div>
+                    <div class="card-body p-24">
+                        <% if (typeof error !== 'undefined' && error) { %>
+                        <div class="alert alert-danger radius-12 mb-24 d-flex align-items-center gap-2">
+                            <iconify-icon icon="mdi:alert-circle-outline"></iconify-icon>
+                            <%= error %>
+                        </div>
+                        <% } %>
+                        <form method="POST" action="<%= typeof basePath !== 'undefined' ? basePath : '' %>/rental/add" id="rental-form">
+                            <% const r = typeof rental !== 'undefined' && rental ? rental : {}; %>
+
+                            <!-- Customer & Vehicle -->
+                            <div class="card border radius-12 overflow-hidden mb-24">
+                                <div class="card-header bg-neutral-50 border-bottom py-14 px-20">
+                                    <h6 class="text-sm fw-semibold text-primary-light mb-0 d-flex align-items-center gap-2">
+                                        <iconify-icon icon="mdi:account-car-outline" class="text-primary-600"></iconify-icon>
+                                        Customer & Vehicle
+                                    </h6>
+                                </div>
+                                <div class="card-body p-20">
+                                    <div class="row g-3">
+                                        <div class="col-md-6">
+                                            <label class="form-label text-sm fw-medium text-primary-light">Customer <span class="text-danger">*</span></label>
+                                            <select name="customerId" id="customerId" class="form-select h-56-px bg-neutral-50 radius-12" required>
+                                                <option value="">Select customer</option>
+                                                <% customers.forEach((c) => { %>
+                                                <option value="<%= c.id %>" <%= r.customerId == c.id ? 'selected' : '' %>><%= c.name %> (<%= c.phone %>)</option>
+                                                <% }); %>
+                                            </select>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <label class="form-label text-sm fw-medium text-primary-light">Vehicle <span class="text-danger">*</span></label>
+                                            <select name="vehicleId" id="vehicleId" class="form-select h-56-px bg-neutral-50 radius-12" required>
+                                                <option value="">Select vehicle (available only)</option>
+                                                <% vehicles.forEach((v) => { %>
+                                                <option value="<%= v.id %>" data-daily="<%= v.dailyRate != null ? v.dailyRate : '' %>" data-weekly="<%= v.weeklyRate != null ? v.weeklyRate : '' %>" data-monthly="<%= v.monthlyRate != null ? v.monthlyRate : '' %>" data-hourly="<%= v.hourlyRate != null ? v.hourlyRate : '' %>" <%= r.vehicleId == v.id ? 'selected' : '' %>><%= v.make %> <%= v.model %> - <%= v.registrationNumber %> (₹<%= v.dailyRate %>/day)</option>
+                                                <% }); %>
+                                            </select>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Dates & Time -->
+                            <div class="card border radius-12 overflow-hidden mb-24">
+                                <div class="card-header bg-neutral-50 border-bottom py-14 px-20">
+                                    <h6 class="text-sm fw-semibold text-primary-light mb-0 d-flex align-items-center gap-2">
+                                        <iconify-icon icon="solar:calendar-outline" class="text-primary-600"></iconify-icon>
+                                        Rental Period
+                                    </h6>
+                                </div>
+                                <div class="card-body p-20">
+                                    <div class="row g-3">
+                                        <div class="col-md-3">
+                                            <label class="form-label text-sm fw-medium text-primary-light">Start date <span class="text-danger">*</span></label>
+                                            <input type="date" name="startDate" id="startDate" class="form-control h-56-px bg-neutral-50 radius-12" value="<%= r.startDate || '' %>" required>
+                                        </div>
+                                        <div class="col-md-3">
+                                            <label class="form-label text-sm fw-medium text-primary-light">Start time</label>
+                                            <input type="time" name="startTime" id="startTime" class="form-control h-56-px bg-neutral-50 radius-12" value="<%= r.startTime || '10:00' %>">
+                                        </div>
+                                        <div class="col-md-3">
+                                            <label class="form-label text-sm fw-medium text-primary-light">End date <span class="text-danger">*</span></label>
+                                            <input type="date" name="endDate" id="endDate" class="form-control h-56-px bg-neutral-50 radius-12" value="<%= r.endDate || '' %>" required>
+                                        </div>
+                                        <div class="col-md-3">
+                                            <label class="form-label text-sm fw-medium text-primary-light">End time</label>
+                                            <input type="time" name="endTime" id="endTime" class="form-control h-56-px bg-neutral-50 radius-12" value="<%= r.endTime || '10:00' %>">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Charge method (simplified: Daily / Weekly / Monthly / Hourly based on vehicle) -->
+                            <div class="card border radius-12 overflow-hidden mb-24">
+                                <div class="card-header bg-neutral-50 border-bottom py-14 px-20">
+                                    <h6 class="text-sm fw-semibold text-primary-light mb-0 d-flex align-items-center gap-2">
+                                        <iconify-icon icon="mdi:cash-multiple" class="text-primary-600"></iconify-icon>
+                                        Rate & Payment
+                                    </h6>
+                                </div>
+                                <div class="card-body p-20">
+                                    <div class="row g-3">
+                                        <div class="col-md-4">
+                                            <label class="form-label text-sm fw-medium text-primary-light">Charge method</label>
+                                            <select name="selectedChargeMethod" id="selectedChargeMethod" class="form-select h-56-px bg-neutral-50 radius-12">
+                                                <option value="DAILY" <%= (r.selectedChargeMethod || 'DAILY') === 'DAILY' ? 'selected' : '' %>>Daily</option>
+                                                <option value="WEEKLY" <%= (r.selectedChargeMethod || '') === 'WEEKLY' ? 'selected' : '' %>>Weekly</option>
+                                                <option value="MONTHLY" <%= (r.selectedChargeMethod || '') === 'MONTHLY' ? 'selected' : '' %>>Monthly</option>
+                                                <option value="HOURLY" <%= (r.selectedChargeMethod || '') === 'HOURLY' ? 'selected' : '' %>>Hourly</option>
+                                            </select>
+                                        </div>
+                                        <div class="col-md-4">
+                                            <label class="form-label text-sm fw-medium text-primary-light">Advance paid (₹)</label>
+                                            <input type="number" name="advancePaid" id="advancePaid" class="form-control h-56-px bg-neutral-50 radius-12" placeholder="0" min="0" step="0.01" value="<%= r.advancePaid != null ? r.advancePaid : '' %>">
+                                        </div>
+                                        <div class="col-md-4">
+                                            <label class="form-label text-sm fw-medium text-primary-light">Deposit (₹)</label>
+                                            <input type="number" name="deposit" id="deposit" class="form-control h-56-px bg-neutral-50 radius-12" placeholder="0" min="0" step="0.01" value="<%= r.deposit != null ? r.deposit : '' %>">
+                                        </div>
+                                        <div class="col-md-4">
+                                            <label class="form-label text-sm fw-medium text-primary-light">Helmets (if motorbike)</label>
+                                            <input type="number" name="helmetsQuantity" id="helmetsQuantity" class="form-control h-56-px bg-neutral-50 radius-12" placeholder="0" min="0" value="<%= r.helmetsQuantity != null ? r.helmetsQuantity : '' %>">
+                                        </div>
+                                    </div>
+                                    <p class="text-sm text-secondary-light mt-3 mb-0">Total amount will be calculated on submit based on period and selected rate.</p>
+                                </div>
+                            </div>
+
+                            <!-- Terms -->
+                            <div class="card border radius-12 overflow-hidden mb-24">
+                                <div class="card-header bg-neutral-50 border-bottom py-14 px-20">
+                                    <h6 class="text-sm fw-semibold text-primary-light mb-0 d-flex align-items-center gap-2">
+                                        <iconify-icon icon="mdi:file-document-check-outline" class="text-primary-600"></iconify-icon>
+                                        Terms & Conditions
+                                    </h6>
+                                </div>
+                                <div class="card-body p-20">
+                                    <div class="form-check">
+                                        <input type="checkbox" name="termsAccepted" id="termsAccepted" class="form-check-input" value="on" required>
+                                        <label class="form-check-label text-sm text-primary-light" for="termsAccepted">Customer accepts the rental terms and conditions</label>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <hr class="my-24">
+                            <div class="d-flex align-items-center justify-content-end gap-3">
+                                <a href="<%= typeof basePath !== 'undefined' ? basePath : '' %>/rental" class="btn border border-neutral-400 bg-hover-neutral-100 text-primary-light text-md px-24 py-12 radius-8 d-flex align-items-center gap-2">
+                                    <iconify-icon icon="mdi:close"></iconify-icon>
+                                    Cancel
+                                </a>
+                                <button type="submit" class="btn btn-primary text-md px-32 py-12 radius-8 d-flex align-items-center gap-2">
+                                    <iconify-icon icon="mdi:content-save-outline"></iconify-icon>
+                                    Create Rental
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<% script = `
+<script src="/js/modules/rental.js"></script>
+` %>

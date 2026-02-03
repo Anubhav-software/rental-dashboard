@@ -1,0 +1,46 @@
+<div class="card h-100 p-0 radius-12">
+    <div class="card-header border-bottom bg-base py-16 px-24 d-flex align-items-center flex-wrap gap-3 justify-content-between">
+        <h6 class="text-md fw-semibold text-primary-light mb-0 d-flex align-items-center gap-2">
+            <iconify-icon icon="mdi:chart-areaspline" class="text-primary-600"></iconify-icon>
+            Profit Report
+        </h6>
+        <form method="GET" action="<%= typeof basePath !== 'undefined' ? basePath : '' %>/reports/profit" class="d-flex align-items-center gap-2 flex-wrap">
+            <input type="date" name="from" class="form-control form-control-sm w-auto h-40-px radius-12" value="<%= from %>">
+            <input type="date" name="to" class="form-control form-control-sm w-auto h-40-px radius-12" value="<%= to %>">
+            <button type="submit" class="btn btn-sm btn-primary radius-8 h-40-px">Apply</button>
+        </form>
+    </div>
+    <div class="card-body p-24">
+        <p class="text-sm text-secondary-light mb-16">Period: <%= from %> to <%= to %></p>
+        <div class="row g-3 mb-24">
+            <div class="col-md-4">
+                <div class="card border radius-12 bg-success-50 border-success-200">
+                    <div class="card-body py-20 px-20">
+                        <span class="text-sm text-secondary-light">Revenue</span>
+                        <h5 class="fw-semibold text-success-600 mb-0 mt-4"><%= currencySymbol %><%= revenue %></h5>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="card border radius-12 bg-danger-50 border-danger-200">
+                    <div class="card-body py-20 px-20">
+                        <span class="text-sm text-secondary-light">Expenses</span>
+                        <h5 class="fw-semibold text-danger-600 mb-0 mt-4"><%= currencySymbol %><%= expenses %></h5>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="card border radius-12 <%= profit >= 0 ? 'bg-primary-50 border-primary-200' : 'bg-danger-50 border-danger-200' %>">
+                    <div class="card-body py-20 px-20">
+                        <span class="text-sm text-secondary-light">Net Profit</span>
+                        <h5 class="fw-semibold mb-0 mt-4 <%= profit >= 0 ? 'text-primary-600' : 'text-danger-600' %>"><%= currencySymbol %><%= profit %></h5>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="d-flex gap-2 flex-wrap">
+            <a href="<%= typeof basePath !== 'undefined' ? basePath : '' %>/reports/revenue?from=<%= from %>&to=<%= to %>" class="btn btn-outline-primary btn-sm radius-8">Revenue detail</a>
+            <a href="<%= typeof basePath !== 'undefined' ? basePath : '' %>/reports/expense?from=<%= from %>&to=<%= to %>" class="btn btn-outline-danger btn-sm radius-8">Expense detail</a>
+        </div>
+    </div>
+</div>

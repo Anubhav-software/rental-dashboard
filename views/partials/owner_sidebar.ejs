@@ -1,0 +1,105 @@
+<aside class="sidebar">
+    <button type="button" class="sidebar-close-btn">
+        <iconify-icon icon="radix-icons:cross-2"></iconify-icon>
+    </button>
+    <div>
+        <a href="<%= typeof basePath !== 'undefined' ? basePath : '/owner' %>/dashboard/index5" class="sidebar-logo">
+            <img src="/images/logo.png" alt="site logo" class="light-logo">
+            <img src="/images/logo-light.png" alt="site logo" class="dark-logo">
+            <img src="/images/logo-icon.png" alt="site logo" class="logo-icon">
+        </a>
+    </div>
+    <div class="sidebar-menu-area">
+        <ul class="sidebar-menu" id="sidebar-menu">
+            <li class="sidebar-menu-group-title">Owner Panel</li>
+
+            <li>
+                <a href="<%= typeof basePath !== 'undefined' ? basePath : '/owner' %>/dashboard/index5">
+                    <iconify-icon icon="solar:home-smile-angle-outline" class="menu-icon"></iconify-icon>
+                    <span>Dashboard</span>
+                </a>
+            </li>
+
+            <li class="sidebar-menu-group-title">Operations</li>
+            <li>
+                <a href="<%= typeof basePath !== 'undefined' ? basePath : '/owner' %>/vehicle">
+                    <iconify-icon icon="mdi:car-outline" class="menu-icon"></iconify-icon>
+                    <span>Vehicles</span>
+                </a>
+            </li>
+            <li>
+                <a href="<%= typeof basePath !== 'undefined' ? basePath : '/owner' %>/customer">
+                    <iconify-icon icon="mdi:account-group-outline" class="menu-icon"></iconify-icon>
+                    <span>Customers</span>
+                </a>
+            </li>
+            <li>
+                <a href="<%= typeof basePath !== 'undefined' ? basePath : '/owner' %>/rental">
+                    <iconify-icon icon="mdi:file-document-outline" class="menu-icon"></iconify-icon>
+                    <span>Rentals</span>
+                </a>
+            </li>
+            <li>
+                <a href="<%= typeof basePath !== 'undefined' ? basePath : '/owner' %>/return">
+                    <iconify-icon icon="mdi:backup-restore" class="menu-icon"></iconify-icon>
+                    <span>Returns</span>
+                </a>
+            </li>
+
+            <li class="sidebar-menu-group-title">Management</li>
+            <li>
+                <a href="<%= typeof basePath !== 'undefined' ? basePath : '/owner' %>/calendar">
+                    <iconify-icon icon="solar:calendar-outline" class="menu-icon"></iconify-icon>
+                    <span>Calendar</span>
+                </a>
+            </li>
+            <li>
+                <a href="javascript:void(0)">
+                    <iconify-icon icon="hugeicons:invoice-03" class="menu-icon"></iconify-icon>
+                    <span>Invoices</span>
+                </a>
+            </li>
+            <li>
+                <a href="<%= typeof basePath !== 'undefined' ? basePath : '/owner' %>/expense">
+                    <iconify-icon icon="mdi:cash-multiple" class="menu-icon"></iconify-icon>
+                    <span>Expenses</span>
+                </a>
+            </li>
+            <li>
+                <a href="<%= typeof basePath !== 'undefined' ? basePath : '/owner' %>/reports/profit">
+                    <iconify-icon icon="solar:pie-chart-outline" class="menu-icon"></iconify-icon>
+                    <span>Reports</span>
+                </a>
+            </li>
+
+            <li class="sidebar-menu-group-title">Admin</li>
+            <li>
+                <a href="<%= typeof basePath !== 'undefined' ? basePath : '/owner' %>/settings/company">
+                    <iconify-icon icon="mdi:domain" class="menu-icon"></iconify-icon>
+                    <span>Company Details</span>
+                </a>
+            </li>
+            <li>
+                <a href="<%= typeof basePath !== 'undefined' ? basePath : '/owner' %>/settings/theme">
+                    <iconify-icon icon="icon-park-outline:setting-two" class="menu-icon"></iconify-icon>
+                    <span>Settings</span>
+                </a>
+            </li>
+            <li>
+                <a href="<%= typeof basePath !== 'undefined' ? basePath : '/owner' %>/users/users-list">
+                    <iconify-icon icon="flowbite:users-group-outline" class="menu-icon"></iconify-icon>
+                    <span>Staff Management</span>
+                </a>
+            </li>
+
+            <li class="sidebar-menu-group-title">Account</li>
+            <li>
+                <a href="/authentication/logout">
+                    <iconify-icon icon="mdi:logout" class="menu-icon"></iconify-icon>
+                    <span>Logout</span>
+                </a>
+            </li>
+        </ul>
+    </div>
+</aside>
+

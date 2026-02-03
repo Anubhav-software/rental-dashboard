@@ -1,0 +1,5 @@
+<%# Reusable form input. Locals: name, id, label, type (default 'text'), placeholder, value, required (bool), inputClass %>
+<div class="mb-20">
+    <label for="<%= id || name %>" class="form-label fw-semibold text-primary-light text-sm mb-8"><%= label %><% if (required) { %> <span class="text-danger-600">*</span><% } %></label>
+    <input type="<%= type || 'text' %>" name="<%= name %>" id="<%= id || name %>" class="form-control radius-8 h-56-px <%= typeof inputClass !== 'undefined' ? inputClass : '' %>" placeholder="<%= typeof placeholder !== 'undefined' ? placeholder : '' %>" value="<%= typeof value !== 'undefined' ? value : '' %>" <% if (required) { %>required<% } %>>
+</div>

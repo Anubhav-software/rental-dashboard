@@ -1,0 +1,47 @@
+<div class="card h-100 p-0 radius-12">
+    <div class="card-header border-bottom bg-base py-16 px-24 d-flex align-items-center flex-wrap gap-3 justify-content-between">
+        <h6 class="text-md text-primary-light mb-0 d-flex align-items-center gap-2">
+            <iconify-icon icon="mdi:calendar-clock-outline" class="text-primary-600"></iconify-icon>
+            <%= range === 'week' ? 'Due this week' : 'Due today' %>
+        </h6>
+        <div class="d-flex align-items-center gap-2">
+            <a href="<%= typeof basePath !== 'undefined' ? basePath : '' %>/vehicle/due?range=today" class="btn btn-sm radius-8 <%= range === 'today' ? 'btn-primary' : 'btn-outline-primary' %>">Today</a>
+            <a href="<%= typeof basePath !== 'undefined' ? basePath : '' %>/vehicle/due?range=week" class="btn btn-sm radius-8 <%= range === 'week' ? 'btn-primary' : 'btn-outline-primary' %>">This week</a>
+            <a href="<%= typeof basePath !== 'undefined' ? basePath : '' %>/vehicle" class="btn btn-outline-secondary btn-sm radius-8 d-flex align-items-center gap-2">
+                <iconify-icon icon="mdi:arrow-left"></iconify-icon> Vehicle list
+            </a>
+        </div>
+    </div>
+    <div class="card-body p-24">
+        <% if (dueList.length === 0) { %>
+        <p class="text-secondary-light mb-0 py-24 text-center">No items due <%= range === 'week' ? 'this week' : 'today' %>. Add due dates in vehicle add/edit.</p>
+        <% } else { %>
+        <div class="table-responsive scroll-sm">
+            <table class="table bordered-table sm-table mb-0">
+                <thead>
+                    <tr>
+                        <th scope="col">Vehicle</th>
+                        <th scope="col">Registration</th>
+                        <th scope="col">Due type</th>
+                        <th scope="col">Due date</th>
+                        <th scope="col" class="text-center">Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <% dueList.forEach(function(item) { %>
+                    <tr>
+                        <td><span class="fw-medium text-primary-light"><%= item.vehicle.make || '-' %> <%= item.vehicle.model || '-' %></span></td>
+                        <td><span class="text-secondary-light"><%= item.vehicle.registrationNumber || '-' %></span></td>
+                        <td><span class="badge bg-warning-focus text-warning-600"><%= item.dueType %></span></td>
+                        <td><span class="text-primary-light"><%= item.dueDate %></span></td>
+                        <td class="text-center">
+                            <a href="<%= typeof basePath !== 'undefined' ? basePath : '' %>/vehicle/view/<%= item.vehicle.id %>" class="btn btn-sm btn-outline-primary radius-8">View</a>
+                        </td>
+                    </tr>
+                    <% }); %>
+                </tbody>
+            </table>
+        </div>
+        <% } %>
+    </div>
+</div>

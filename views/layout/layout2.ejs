@@ -1,0 +1,18 @@
+<!-- meta tags and other links -->
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+
+<%- include('../partials/head') %>
+
+<body>
+    <%- body %>
+   
+    <%- include('../partials/scripts') %> 
+    
+     <!-- Add the script block here -->
+   <% if (typeof script !== 'undefined') { %>
+    <%- script %>
+  <% } %>
+</body>
+
+</html>
