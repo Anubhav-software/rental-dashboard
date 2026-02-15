@@ -1,184 +1,119 @@
-<div class="card h-100 p-0 radius-12">
+<div class="card h-100 p-0 radius-12" id="customer-view-root" data-customer-id="<%= typeof customerId !== 'undefined' ? customerId : '' %>" data-base-path="<%= typeof basePath !== 'undefined' ? basePath : '' %>">
     <div class="card-body p-24">
-        <div class="row justify-content-center">
-            <div class="col-xxl-10 col-xl-11 col-lg-12">
-                <% const c = customer; %>
-
-                <!-- Customer title strip -->
-                <div class="card border radius-16 overflow-hidden mb-24 bg-primary-50 border-primary-200">
-                    <div class="card-body py-24 px-24">
-                        <div class="row align-items-center">
-                            <div class="col-auto">
-                                <div class="w-64-px h-64-px rounded-12 bg-primary-100 d-flex align-items-center justify-content-center">
-                                    <iconify-icon icon="mdi:account-outline" class="text-primary-600" style="font-size: 2rem;"></iconify-icon>
+        <div id="customer-view-loading" class="text-center text-secondary-light py-24">Loading customer…</div>
+        <div id="customer-view-error" class="d-none text-center text-danger py-24"></div>
+        <div id="customer-view-content" class="d-none">
+            <div class="row justify-content-center">
+                <div class="col-xxl-10 col-xl-11 col-lg-12">
+                    <!-- Customer title strip -->
+                    <div class="card border radius-16 overflow-hidden mb-24 bg-primary-50 border-primary-200">
+                        <div class="card-body py-24 px-24">
+                            <div class="row align-items-center">
+                                <div class="col-auto">
+                                    <div class="w-64-px h-64-px rounded-12 bg-primary-100 d-flex align-items-center justify-content-center">
+                                        <iconify-icon icon="mdi:account-outline" class="text-primary-600" style="font-size: 2rem;"></iconify-icon>
+                                    </div>
                                 </div>
-                            </div>
-                            <div class="col">
-                                <h5 class="fw-semibold text-primary-light mb-4"><%= c.name || '-' %></h5>
-                                <p class="text-sm text-secondary-light mb-0 d-flex align-items-center gap-2">
-                                    <iconify-icon icon="mdi:phone-outline"></iconify-icon>
-                                    <%= c.phone || '-' %>
-                                </p>
-                                <% if (c.email) { %>
-                                <p class="text-sm text-secondary-light mb-0 d-flex align-items-center gap-2 mt-4">
-                                    <iconify-icon icon="mdi:email-outline"></iconify-icon>
-                                    <%= c.email %>
-                                </p>
-                                <% } %>
-                            </div>
-                            <div class="col-auto">
-                                <% if (c.isBusinessCustomer) { %>
-                                <span class="bg-info-focus text-info-600 border border-info-main px-20 py-8 radius-8 fw-medium text-sm d-inline-flex align-items-center gap-2">
-                                    <iconify-icon icon="mdi:domain"></iconify-icon> B2B
-                                </span>
-                                <% } else { %>
-                                <span class="bg-neutral-200 text-neutral-600 border border-neutral-400 px-20 py-8 radius-8 fw-medium text-sm d-inline-flex align-items-center gap-2">
-                                    <iconify-icon icon="mdi:account"></iconify-icon> B2C
-                                </span>
-                                <% } %>
-                            </div>
-                            <div class="col-auto d-flex gap-2">
-                                <a href="<%= typeof basePath !== 'undefined' ? basePath : '' %>/customer/edit/<%= c.id %>" class="btn btn-success btn-sm radius-8 d-flex align-items-center gap-2">
-                                    <iconify-icon icon="lucide:edit"></iconify-icon> Edit
-                                </a>
-                                <a href="<%= typeof basePath !== 'undefined' ? basePath : '' %>/customer" class="btn btn-outline-secondary btn-sm radius-8 d-flex align-items-center gap-2">
-                                    <iconify-icon icon="mdi:arrow-left"></iconify-icon> Back
-                                </a>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="row g-3">
-                    <!-- Basic Information -->
-                    <div class="col-lg-6">
-                        <div class="card border radius-12 h-100 overflow-hidden">
-                            <div class="card-header bg-neutral-50 border-bottom py-14 px-20">
-                                <h6 class="text-sm fw-semibold text-primary-light mb-0 d-flex align-items-center gap-2">
-                                    <iconify-icon icon="solar:document-text-outline" class="text-primary-600"></iconify-icon>
-                                    Basic Information
-                                </h6>
-                            </div>
-                            <div class="card-body p-20">
-                                <div class="vehicle-view-row d-flex align-items-center py-10 border-bottom border-neutral-200">
-                                    <span class="text-secondary-light text-sm d-flex align-items-center gap-2" style="width: 130px;"><iconify-icon icon="mdi:account-outline"></iconify-icon> Name</span>
-                                    <span class="fw-medium text-primary-light"><%= c.name || '-' %></span>
+                                <div class="col">
+                                    <h5 class="fw-semibold text-primary-light mb-4" data-field="name">-</h5>
+                                    <p class="text-sm text-secondary-light mb-0 d-flex align-items-center gap-2">
+                                        <iconify-icon icon="mdi:phone-outline"></iconify-icon>
+                                        <span data-field="phone">-</span>
+                                    </p>
+                                    <p class="text-sm text-secondary-light mb-0 d-flex align-items-center gap-2 mt-4">
+                                        <iconify-icon icon="mdi:email-outline"></iconify-icon>
+                                        <span data-field="email">-</span>
+                                    </p>
                                 </div>
-                                <div class="vehicle-view-row d-flex align-items-center py-10 border-bottom border-neutral-200">
-                                    <span class="text-secondary-light text-sm d-flex align-items-center gap-2" style="width: 130px;"><iconify-icon icon="mdi:phone-outline"></iconify-icon> Phone</span>
-                                    <span class="fw-medium text-primary-light"><%= c.phone || '-' %></span>
-                                </div>
-                                <div class="vehicle-view-row d-flex align-items-center py-10 border-bottom border-neutral-200">
-                                    <span class="text-secondary-light text-sm d-flex align-items-center gap-2" style="width: 130px;"><iconify-icon icon="mdi:email-outline"></iconify-icon> Email</span>
-                                    <span class="fw-medium text-primary-light"><%= c.email || '-' %></span>
-                                </div>
-                                <div class="vehicle-view-row d-flex align-items-center py-10 border-bottom border-neutral-200">
-                                    <span class="text-secondary-light text-sm d-flex align-items-center gap-2" style="width: 130px;"><iconify-icon icon="mdi:earth"></iconify-icon> Nationality</span>
-                                    <span class="fw-medium text-primary-light"><%= c.nationality || '-' %></span>
-                                </div>
-                                <div class="vehicle-view-row d-flex align-items-center py-10 border-bottom border-neutral-200">
-                                    <span class="text-secondary-light text-sm d-flex align-items-center gap-2" style="width: 130px;"><iconify-icon icon="mdi:card-account-details-outline"></iconify-icon> Passport</span>
-                                    <span class="fw-medium text-primary-light"><%= c.passportNumber || '-' %></span>
-                                </div>
-                                <div class="vehicle-view-row d-flex align-items-center py-10">
-                                    <span class="text-secondary-light text-sm d-flex align-items-center gap-2" style="width: 130px;"><iconify-icon icon="mdi:home-outline"></iconify-icon> Hotel</span>
-                                    <span class="fw-medium text-primary-light"><%= c.hotelName || '-' %></span>
+                                <div class="col-auto d-flex gap-2" id="view-actions">
+                                    <a href="#" id="view-edit-link" class="btn btn-success btn-sm radius-8 d-flex align-items-center gap-2">
+                                        <iconify-icon icon="lucide:edit"></iconify-icon> Edit
+                                    </a>
+                                    <a href="#" id="view-back-link" class="btn btn-outline-secondary btn-sm radius-8 d-flex align-items-center gap-2">
+                                        <iconify-icon icon="mdi:arrow-left"></iconify-icon> Back
+                                    </a>
                                 </div>
                             </div>
                         </div>
                     </div>
 
-                    <!-- Personal Address -->
-                    <div class="col-lg-6">
-                        <div class="card border radius-12 h-100 overflow-hidden">
-                            <div class="card-header bg-neutral-50 border-bottom py-14 px-20">
-                                <h6 class="text-sm fw-semibold text-primary-light mb-0 d-flex align-items-center gap-2">
-                                    <iconify-icon icon="mdi:map-marker-outline" class="text-primary-600"></iconify-icon>
-                                    Personal Address
-                                </h6>
-                            </div>
-                            <div class="card-body p-20">
-                                <div class="vehicle-view-row d-flex align-items-center py-10 border-bottom border-neutral-200">
-                                    <span class="text-secondary-light text-sm d-flex align-items-center gap-2" style="width: 100px;"><iconify-icon icon="mdi:home-map-marker"></iconify-icon> Address</span>
-                                    <span class="fw-medium text-primary-light text-break"><%= c.address || '-' %></span>
+                    <div class="row g-3">
+                        <!-- Basic Information -->
+                        <div class="col-lg-6">
+                            <div class="card border radius-12 h-100 overflow-hidden">
+                                <div class="card-header bg-neutral-50 border-bottom py-14 px-20">
+                                    <h6 class="text-sm fw-semibold text-primary-light mb-0 d-flex align-items-center gap-2">
+                                        <iconify-icon icon="solar:document-text-outline" class="text-primary-600"></iconify-icon>
+                                        Basic Information
+                                    </h6>
                                 </div>
-                                <div class="vehicle-view-row d-flex align-items-center py-10 border-bottom border-neutral-200">
-                                    <span class="text-secondary-light text-sm d-flex align-items-center gap-2" style="width: 100px;"><iconify-icon icon="mdi:postage-stamp"></iconify-icon> Pincode</span>
-                                    <span class="fw-medium text-primary-light"><%= c.customerPincode || '-' %></span>
-                                </div>
-                                <div class="vehicle-view-row d-flex align-items-center py-10">
-                                    <span class="text-secondary-light text-sm d-flex align-items-center gap-2" style="width: 100px;"><iconify-icon icon="mdi:map-outline"></iconify-icon> State</span>
-                                    <span class="fw-medium text-primary-light"><%= c.customerState || '-' %></span>
+                                <div class="card-body p-20">
+                                    <div class="vehicle-view-row d-flex align-items-center py-10 border-bottom border-neutral-200">
+                                        <span class="text-secondary-light text-sm d-flex align-items-center gap-2" style="width: 130px;"><iconify-icon icon="mdi:account-outline"></iconify-icon> Name</span>
+                                        <span class="fw-medium text-primary-light" data-field="name">-</span>
+                                    </div>
+                                    <div class="vehicle-view-row d-flex align-items-center py-10 border-bottom border-neutral-200">
+                                        <span class="text-secondary-light text-sm d-flex align-items-center gap-2" style="width: 130px;"><iconify-icon icon="mdi:phone-outline"></iconify-icon> Phone</span>
+                                        <span class="fw-medium text-primary-light" data-field="phone">-</span>
+                                    </div>
+                                    <div class="vehicle-view-row d-flex align-items-center py-10 border-bottom border-neutral-200">
+                                        <span class="text-secondary-light text-sm d-flex align-items-center gap-2" style="width: 130px;"><iconify-icon icon="mdi:email-outline"></iconify-icon> Email</span>
+                                        <span class="fw-medium text-primary-light" data-field="email">-</span>
+                                    </div>
+                                    <div class="vehicle-view-row d-flex align-items-center py-10 border-bottom border-neutral-200">
+                                        <span class="text-secondary-light text-sm d-flex align-items-center gap-2" style="width: 130px;"><iconify-icon icon="mdi:earth"></iconify-icon> Nationality</span>
+                                        <span class="fw-medium text-primary-light" data-field="nationality">-</span>
+                                    </div>
+                                    <div class="vehicle-view-row d-flex align-items-center py-10 border-bottom border-neutral-200">
+                                        <span class="text-secondary-light text-sm d-flex align-items-center gap-2" style="width: 130px;"><iconify-icon icon="mdi:card-account-details-outline"></iconify-icon> Passport</span>
+                                        <span class="fw-medium text-primary-light" data-field="passportNumber">-</span>
+                                    </div>
+                                    <div class="vehicle-view-row d-flex align-items-center py-10">
+                                        <span class="text-secondary-light text-sm d-flex align-items-center gap-2" style="width: 130px;"><iconify-icon icon="mdi:home-outline"></iconify-icon> Hotel</span>
+                                        <span class="fw-medium text-primary-light" data-field="hotelName">-</span>
+                                    </div>
                                 </div>
                             </div>
                         </div>
 
-                        <!-- ID & License -->
-                        <div class="card border radius-12 mt-3 overflow-hidden">
-                            <div class="card-header bg-neutral-50 border-bottom py-14 px-20">
-                                <h6 class="text-sm fw-semibold text-primary-light mb-0 d-flex align-items-center gap-2">
-                                    <iconify-icon icon="mdi:card-account-details" class="text-primary-600"></iconify-icon>
-                                    ID Proof & License
-                                </h6>
-                            </div>
-                            <div class="card-body p-20">
-                                <div class="vehicle-view-row d-flex align-items-center py-10 border-bottom border-neutral-200">
-                                    <span class="text-secondary-light text-sm d-flex align-items-center gap-2" style="width: 120px;">ID type</span>
-                                    <span class="fw-medium text-primary-light"><%= c.idProofType || '-' %></span>
+                        <!-- Booking / Tour details (same as add customer) -->
+                        <div class="col-lg-6">
+                            <div class="card border radius-12 h-100 overflow-hidden">
+                                <div class="card-header bg-neutral-50 border-bottom py-14 px-20">
+                                    <h6 class="text-sm fw-semibold text-primary-light mb-0 d-flex align-items-center gap-2">
+                                        <iconify-icon icon="mdi:calendar-check-outline" class="text-primary-600"></iconify-icon>
+                                        Booking / Tour details
+                                    </h6>
                                 </div>
-                                <div class="vehicle-view-row d-flex align-items-center py-10 border-bottom border-neutral-200">
-                                    <span class="text-secondary-light text-sm d-flex align-items-center gap-2" style="width: 120px;">ID number</span>
-                                    <span class="fw-medium text-primary-light"><%= c.idProofNumber || '-' %></span>
-                                </div>
-                                <div class="vehicle-view-row d-flex align-items-center py-10">
-                                    <span class="text-secondary-light text-sm d-flex align-items-center gap-2" style="width: 120px;">License</span>
-                                    <span class="fw-medium text-primary-light"><%= c.licenseNumber || '-' %></span>
+                                <div class="card-body p-20">
+                                    <div class="vehicle-view-row d-flex align-items-center py-10 border-bottom border-neutral-200">
+                                        <span class="text-secondary-light text-sm d-flex align-items-center gap-2" style="width: 130px;">Booking date</span>
+                                        <span class="fw-medium text-primary-light" data-field="bookingDate">-</span>
+                                    </div>
+                                    <div class="vehicle-view-row d-flex align-items-center py-10 border-bottom border-neutral-200">
+                                        <span class="text-secondary-light text-sm d-flex align-items-center gap-2" style="width: 130px;">Date of tour</span>
+                                        <span class="fw-medium text-primary-light" data-field="dateOfTour">-</span>
+                                    </div>
+                                    <div class="vehicle-view-row d-flex align-items-center py-10 border-bottom border-neutral-200">
+                                        <span class="text-secondary-light text-sm d-flex align-items-center gap-2" style="width: 130px;">Number of people</span>
+                                        <span class="fw-medium text-primary-light" data-field="numberOfPeople">-</span>
+                                    </div>
+                                    <div class="vehicle-view-row d-flex align-items-center py-10 border-bottom border-neutral-200">
+                                        <span class="text-secondary-light text-sm d-flex align-items-center gap-2" style="width: 130px;"><iconify-icon icon="mdi:door-open"></iconify-icon> Room No</span>
+                                        <span class="fw-medium text-primary-light" data-field="roomNo">-</span>
+                                    </div>
+                                    <div class="vehicle-view-row d-flex align-items-center py-10">
+                                        <span class="text-secondary-light text-sm d-flex align-items-center gap-2" style="width: 130px;"><iconify-icon icon="mdi:account-check-outline"></iconify-icon> Confirmed by</span>
+                                        <span class="fw-medium text-primary-light" data-field="confirmedBy">-</span>
+                                    </div>
                                 </div>
                             </div>
                         </div>
                     </div>
                 </div>
-
-                <!-- B2B (if business customer) -->
-                <% if (c.isBusinessCustomer) { %>
-                <div class="card border radius-12 mt-3 overflow-hidden">
-                    <div class="card-header bg-neutral-50 border-bottom py-14 px-20">
-                        <h6 class="text-sm fw-semibold text-primary-light mb-0 d-flex align-items-center gap-2">
-                            <iconify-icon icon="mdi:domain" class="text-primary-600"></iconify-icon>
-                            Business Details
-                        </h6>
-                    </div>
-                    <div class="card-body p-20">
-                        <div class="row">
-                            <div class="col-md-6">
-                                <div class="vehicle-view-row d-flex align-items-center py-10 border-bottom border-neutral-200">
-                                    <span class="text-secondary-light text-sm d-flex align-items-center gap-2" style="width: 140px;">Tax ID</span>
-                                    <span class="fw-medium text-primary-light"><%= c.taxIdNumber || '-' %></span>
-                                </div>
-                                <div class="vehicle-view-row d-flex align-items-center py-10 border-bottom border-neutral-200">
-                                    <span class="text-secondary-light text-sm d-flex align-items-center gap-2" style="width: 140px;">Tax ID type</span>
-                                    <span class="fw-medium text-primary-light"><%= c.taxIdType || '-' %></span>
-                                </div>
-                                <div class="vehicle-view-row d-flex align-items-center py-10">
-                                    <span class="text-secondary-light text-sm d-flex align-items-center gap-2" style="width: 140px;">Business name</span>
-                                    <span class="fw-medium text-primary-light"><%= c.businessName || '-' %></span>
-                                </div>
-                            </div>
-                            <div class="col-md-6">
-                                <div class="vehicle-view-row d-flex align-items-center py-10 border-bottom border-neutral-200">
-                                    <span class="text-secondary-light text-sm d-flex align-items-center gap-2" style="width: 140px;">Company address</span>
-                                    <span class="fw-medium text-primary-light text-break"><%= c.customerCompanyAddress || '-' %></span>
-                                </div>
-                                <div class="vehicle-view-row d-flex align-items-center py-10">
-                                    <span class="text-secondary-light text-sm d-flex align-items-center gap-2" style="width: 140px;">Company pincode / state</span>
-                                    <span class="fw-medium text-primary-light"><%= (c.customerCompanyPincode || '-') + ' / ' + (c.customerCompanyState || '-') %></span>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <% } %>
             </div>
         </div>
     </div>
 </div>
+
+<% script = '<script src="/js/api/customerApi.js"></script><script src="/js/pages/customer-view.js"></script>' %>

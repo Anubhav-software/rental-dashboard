@@ -1,4 +1,4 @@
-<div class="card h-100 p-0 radius-12">
+<div class="card h-100 p-0 radius-12" id="return-list-card" data-base-path="<%= typeof basePath !== 'undefined' ? basePath : '' %>">
     <div class="card-header border-bottom bg-base py-16 px-24 d-flex align-items-center flex-wrap gap-3 justify-content-between">
         <h6 class="text-md fw-semibold text-primary-light mb-0 d-flex align-items-center gap-2">
             <iconify-icon icon="mdi:backup-restore" class="text-primary-600"></iconify-icon>
@@ -10,47 +10,33 @@
         </a>
     </div>
     <div class="card-body p-24">
-        <% if (rentals.length === 0) { %>
-        <div class="text-center text-secondary-light py-32">
+        <div id="return-list-loading" class="text-center text-secondary-light py-24">Loading active rentals…</div>
+        <div id="return-list-content" class="d-none">
+            <div class="table-responsive scroll-sm">
+                <table class="table bordered-table sm-table mb-0">
+                    <thead>
+                        <tr>
+                            <th scope="col">#</th>
+                            <th scope="col">Contract</th>
+                            <th scope="col">Customer</th>
+                            <th scope="col">Vehicle</th>
+                            <th scope="col">Expected return</th>
+                            <th scope="col">Deposit</th>
+                            <th scope="col" class="text-center">Action</th>
+                        </tr>
+                    </thead>
+                    <tbody id="return-list-tbody">
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        <div id="return-list-empty" class="d-none text-center text-secondary-light py-32">
             <iconify-icon icon="mdi:check-circle-outline" class="text-4xl mb-3 d-block text-success-600"></iconify-icon>
             <p class="mb-0">No active rentals. All vehicles are returned.</p>
             <a href="<%= typeof basePath !== 'undefined' ? basePath : '' %>/rental" class="btn btn-outline-primary btn-sm mt-16 radius-8">View all rentals</a>
         </div>
-        <% } else { %>
-        <div class="table-responsive scroll-sm">
-            <table class="table bordered-table sm-table mb-0">
-                <thead>
-                    <tr>
-                        <th scope="col">#</th>
-                        <th scope="col">Contract</th>
-                        <th scope="col">Customer</th>
-                        <th scope="col">Vehicle</th>
-                        <th scope="col">Expected return</th>
-                        <th scope="col">Deposit</th>
-                        <th scope="col" class="text-center">Action</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <% rentals.forEach((r, i) => { %>
-                    <% const cust = customersMap[r.customerId]; const veh = vehiclesMap[r.vehicleId]; %>
-                    <tr>
-                        <td><%= i + 1 %></td>
-                        <td><span class="text-md fw-medium text-primary-light"><%= r.contractNumber %></span></td>
-                        <td><span class="text-md fw-normal text-secondary-light"><%= cust ? cust.name : '-' %></span></td>
-                        <td><span class="text-md fw-normal text-secondary-light"><%= veh ? (veh.make + ' ' + veh.model) : '-' %></span></td>
-                        <td><span class="text-md fw-normal text-secondary-light"><%= r.expectedReturnDate %> <%= r.expectedReturnTime || '' %></span></td>
-                        <td><span class="text-md fw-normal text-secondary-light"><%= r.currencySymbol %><%= r.deposit != null ? r.deposit : 0 %></span></td>
-                        <td class="text-center">
-                            <a href="<%= typeof basePath !== 'undefined' ? basePath : '' %>/return/process/<%= r.id %>" class="btn btn-primary btn-sm radius-8 d-inline-flex align-items-center gap-2">
-                                <iconify-icon icon="mdi:backup-restore"></iconify-icon>
-                                Process return
-                            </a>
-                        </td>
-                    </tr>
-                    <% }); %>
-                </tbody>
-            </table>
-        </div>
-        <% } %>
+        <div id="return-list-error" class="d-none text-center text-danger py-24"></div>
     </div>
 </div>
+
+<% script = '<script src="/js/api/rentalApi.js"></script><script src="/js/pages/return-list-active.js"></script>' %>

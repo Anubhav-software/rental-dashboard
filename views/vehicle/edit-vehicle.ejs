@@ -1,6 +1,7 @@
-<div class="card h-100 p-0 radius-12">
+<div class="card h-100 p-0 radius-12" data-base-path="<%= typeof basePath !== 'undefined' ? basePath : '' %>" data-vehicle-id="<%= typeof vehicleId !== 'undefined' ? vehicleId : '' %>">
     <div class="card-body p-24">
-        <div class="row justify-content-center">
+        <div id="edit-loading" class="text-center text-secondary-light py-24 <%= (typeof vehicle !== 'undefined' && vehicle) ? 'd-none' : '' %>">Loading vehicle…</div>
+        <div id="edit-form-wrap" class="row justify-content-center <%= (typeof vehicle !== 'undefined' && vehicle) ? '' : 'd-none' %>">
             <div class="col-xxl-8 col-xl-10 col-lg-11">
                 <div class="card border radius-12 overflow-hidden">
                     <div class="card-header bg-neutral-50 border-bottom py-16 px-24">
@@ -16,8 +17,9 @@
                             <%= error %>
                         </div>
                         <% } %>
-                        <form method="POST" action="<%= typeof basePath !== 'undefined' ? basePath : '' %>/vehicle/edit/<%= vehicle.id %>" id="vehicle-form">
-                            <% const v = vehicle; %>
+                        <div id="edit-api-error" class="alert alert-danger radius-12 mb-24 d-none"></div>
+                        <form method="POST" action="#" id="vehicle-form" enctype="multipart/form-data">
+                            <% const v = typeof vehicle !== 'undefined' && vehicle ? vehicle : {}; %>
 
                             <!-- Part 1: Basic Information -->
                             <div class="card border radius-12 overflow-hidden mb-24">
@@ -86,62 +88,70 @@
                                             </select>
                                         </div>
                                     </div>
+                                    <div class="col-md-6">
+                                        <label class="form-label text-xs mb-4">Engine capacity (CC)</label>
+                                        <div class="icon-field">
+                                            <span class="icon top-50 translate-middle-y"><iconify-icon icon="mdi:engine-outline"></iconify-icon></span>
+                                            <input type="number" name="engineCapacityCc" class="form-control h-56-px bg-neutral-50 radius-12 ps-48" placeholder="e.g. 150, 1200" min="0" max="10000" value="<%= v.engineCapacityCc != null ? v.engineCapacityCc : (v.engine_capacity_cc != null ? v.engine_capacity_cc : '') %>">
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <label class="form-label text-xs mb-4">Vehicle photo (optional, change)</label>
+                                        <div id="edit-current-image-wrap" class="mb-8 d-none">
+                                            <span class="text-xs text-secondary-light d-block mb-4">Current photo</span>
+                                            <img id="edit-current-image" src="" alt="Current" class="rounded-8 border border-neutral-200" style="max-width: 120px; max-height: 120px; object-fit: cover;">
+                                        </div>
+                                        <input type="file" name="image" id="vehicle-image" class="form-control h-56-px bg-neutral-50 radius-12" accept="image/jpeg,image/png,image/jpg,image/gif,image/webp">
+                                        <div id="edit-image-preview" class="mt-8 d-none">
+                                            <span class="text-xs text-secondary-light d-block mb-4">New photo preview</span>
+                                            <img id="edit-image-preview-img" src="" alt="Preview" class="rounded-8 border border-neutral-200" style="max-width: 120px; max-height: 120px; object-fit: cover;">
+                                        </div>
+                                    </div>
                                 </div>
                                 </div>
                             </div>
 
-                            <!-- Part 2: Rental Rates -->
+                            <!-- Part 2: Rental Rates (optional) + Deposit (required) -->
                             <div class="card border radius-12 overflow-hidden mb-24">
                                 <div class="card-header bg-neutral-50 border-bottom py-14 px-20">
                                     <h6 class="text-sm fw-semibold text-primary-light mb-0 d-flex align-items-center gap-2">
                                         <iconify-icon icon="solar:wallet-money-outline" class="text-primary-600"></iconify-icon>
-                                        Rental Rates
+                                        Rental Rates (optional) &amp; Deposit (required)
                                     </h6>
                                 </div>
                                 <div class="card-body p-20">
+                                <p class="text-xs text-secondary-light mb-12">Daily, weekly and monthly rates are optional. Deposit is mandatory.</p>
                                 <div class="row g-3">
                                     <div class="col-md-6 col-lg-3">
                                         <div class="icon-field">
                                             <span class="icon top-50 translate-middle-y"><iconify-icon icon="mdi:currency-inr"></iconify-icon></span>
-                                            <input type="number" name="dailyRate" class="form-control h-56-px bg-neutral-50 radius-12 ps-48" placeholder="Daily rate" min="0" step="0.01" value="<%= v.dailyRate != null ? v.dailyRate : '' %>">
-                                        </div>
-                                    </div>
-                                    <div class="col-md-6 col-lg-3">
-                                        <div class="icon-field">
-                                            <span class="icon top-50 translate-middle-y"><iconify-icon icon="mdi:clock-outline"></iconify-icon></span>
-                                            <input type="number" name="hourlyRate" class="form-control h-56-px bg-neutral-50 radius-12 ps-48" placeholder="Hourly rate" min="0" step="0.01" value="<%= v.hourlyRate != null ? v.hourlyRate : '' %>">
+                                            <input type="number" name="dailyRate" class="form-control h-56-px bg-neutral-50 radius-12 ps-48" placeholder="Daily rate (optional)" min="0" step="0.01" value="<%= v.dailyRate != null ? v.dailyRate : '' %>">
                                         </div>
                                     </div>
                                     <div class="col-md-6 col-lg-3">
                                         <div class="icon-field">
                                             <span class="icon top-50 translate-middle-y"><iconify-icon icon="mdi:calendar-week"></iconify-icon></span>
-                                            <input type="number" name="weeklyRate" class="form-control h-56-px bg-neutral-50 radius-12 ps-48" placeholder="Weekly rate" min="0" step="0.01" value="<%= v.weeklyRate != null ? v.weeklyRate : '' %>">
+                                            <input type="number" name="weeklyRate" class="form-control h-56-px bg-neutral-50 radius-12 ps-48" placeholder="Weekly rate (optional)" min="0" step="0.01" value="<%= v.weeklyRate != null ? v.weeklyRate : '' %>">
                                         </div>
                                     </div>
                                     <div class="col-md-6 col-lg-3">
                                         <div class="icon-field">
                                             <span class="icon top-50 translate-middle-y"><iconify-icon icon="mdi:calendar-month"></iconify-icon></span>
-                                            <input type="number" name="monthlyRate" class="form-control h-56-px bg-neutral-50 radius-12 ps-48" placeholder="Monthly rate" min="0" step="0.01" value="<%= v.monthlyRate != null ? v.monthlyRate : '' %>">
+                                            <input type="number" name="monthlyRate" class="form-control h-56-px bg-neutral-50 radius-12 ps-48" placeholder="Monthly rate (optional)" min="0" step="0.01" value="<%= v.monthlyRate != null ? v.monthlyRate : '' %>">
                                         </div>
                                     </div>
                                     <div class="col-md-6 col-lg-3">
                                         <div class="icon-field">
-                                            <span class="icon top-50 translate-middle-y"><iconify-icon icon="mdi:clock-alert-outline"></iconify-icon></span>
-                                            <input type="number" name="lateReturnFeePerHour" class="form-control h-56-px bg-neutral-50 radius-12 ps-48" placeholder="Late return fee per hour" min="0" step="0.01" value="<%= v.lateReturnFeePerHour != null ? v.lateReturnFeePerHour : '' %>">
-                                        </div>
-                                    </div>
-                                    <div class="col-md-6 col-lg-3">
-                                        <div class="icon-field">
-                                            <span class="icon top-50 translate-middle-y"><iconify-icon icon="mdi:calendar-clock-outline"></iconify-icon></span>
-                                            <input type="number" name="lateReturnFeePerDay" class="form-control h-56-px bg-neutral-50 radius-12 ps-48" placeholder="Late return fee per day" min="0" step="0.01" value="<%= v.lateReturnFeePerDay != null ? v.lateReturnFeePerDay : '' %>">
+                                            <span class="icon top-50 translate-middle-y"><iconify-icon icon="mdi:shield-check-outline"></iconify-icon></span>
+                                            <input type="number" name="deposit" class="form-control h-56-px bg-neutral-50 radius-12 ps-48" placeholder="Deposit (required)" min="0" step="0.01" value="<%= v.deposit != null ? v.deposit : '' %>" required>
                                         </div>
                                     </div>
                                 </div>
                                 </div>
                             </div>
 
-                            <!-- Part 3: Owner (optional) -->
-                            <div class="card border radius-12 overflow-hidden mb-24" style="max-width: 500px;">
+                            <!-- Part 3: Owner (optional) — hidden: not mandatory -->
+                            <div class="card border radius-12 overflow-hidden mb-24 d-none" style="max-width: 500px;">
                                 <div class="card-header bg-neutral-50 border-bottom py-14 px-20">
                                     <h6 class="text-sm fw-semibold text-primary-light mb-0 d-flex align-items-center gap-2">
                                         <iconify-icon icon="mdi:account-outline" class="text-primary-600"></iconify-icon>
@@ -166,6 +176,41 @@
                                 </div>
                             </div>
 
+                            <!-- Part 3b: Rental charges by duration (required — at least one) -->
+                            <div class="card border radius-12 overflow-hidden mb-24">
+                                <div class="card-header bg-neutral-50 border-bottom py-14 px-20">
+                                    <h6 class="text-sm fw-semibold text-primary-light mb-0 d-flex align-items-center gap-2">
+                                        <iconify-icon icon="mdi:calendar-range" class="text-primary-600"></iconify-icon>
+                                        Rental charges by duration (required)
+                                    </h6>
+                                </div>
+                                <div class="card-body p-20">
+                                    <p class="text-xs text-secondary-light mb-16">Enter total amount for each duration. At least one amount is required.</p>
+                                    <div class="row g-3 mb-16">
+                                        <div class="col-12"><span class="text-sm fw-semibold text-primary-light">Days</span></div>
+                                        <div class="col-6 col-md-4 col-lg-2"><label class="form-label text-xs mb-4">1 day</label><input type="number" name="rate_day_1" class="form-control form-control-sm" placeholder="Amount" min="0" step="0.01"></div>
+                                        <div class="col-6 col-md-4 col-lg-2"><label class="form-label text-xs mb-4">2 days</label><input type="number" name="rate_day_2" class="form-control form-control-sm" placeholder="Amount" min="0" step="0.01"></div>
+                                        <div class="col-6 col-md-4 col-lg-2"><label class="form-label text-xs mb-4">3 days</label><input type="number" name="rate_day_3" class="form-control form-control-sm" placeholder="Amount" min="0" step="0.01"></div>
+                                        <div class="col-6 col-md-4 col-lg-2"><label class="form-label text-xs mb-4">4 days</label><input type="number" name="rate_day_4" class="form-control form-control-sm" placeholder="Amount" min="0" step="0.01"></div>
+                                        <div class="col-6 col-md-4 col-lg-2"><label class="form-label text-xs mb-4">5 days</label><input type="number" name="rate_day_5" class="form-control form-control-sm" placeholder="Amount" min="0" step="0.01"></div>
+                                        <div class="col-6 col-md-4 col-lg-2"><label class="form-label text-xs mb-4">6 days</label><input type="number" name="rate_day_6" class="form-control form-control-sm" placeholder="Amount" min="0" step="0.01"></div>
+                                        <div class="col-6 col-md-4 col-lg-2"><label class="form-label text-xs mb-4">7 days</label><input type="number" name="rate_day_7" class="form-control form-control-sm" placeholder="Amount" min="0" step="0.01"></div>
+                                    </div>
+                                    <div class="row g-3 mb-16">
+                                        <div class="col-12"><span class="text-sm fw-semibold text-primary-light">Weeks</span></div>
+                                        <div class="col-6 col-md-3"><label class="form-label text-xs mb-4">1 week</label><input type="number" name="rate_week_1" class="form-control form-control-sm" placeholder="Amount" min="0" step="0.01"></div>
+                                        <div class="col-6 col-md-3"><label class="form-label text-xs mb-4">2 weeks</label><input type="number" name="rate_week_2" class="form-control form-control-sm" placeholder="Amount" min="0" step="0.01"></div>
+                                        <div class="col-6 col-md-3"><label class="form-label text-xs mb-4">3 weeks</label><input type="number" name="rate_week_3" class="form-control form-control-sm" placeholder="Amount" min="0" step="0.01"></div>
+                                        <div class="col-6 col-md-3"><label class="form-label text-xs mb-4">4 weeks</label><input type="number" name="rate_week_4" class="form-control form-control-sm" placeholder="Amount" min="0" step="0.01"></div>
+                                    </div>
+                                    <div class="row g-3">
+                                        <div class="col-12"><span class="text-sm fw-semibold text-primary-light">Months</span></div>
+                                        <div class="col-6 col-md-3"><label class="form-label text-xs mb-4">2 months</label><input type="number" name="rate_month_2" class="form-control form-control-sm" placeholder="Amount" min="0" step="0.01"></div>
+                                        <div class="col-6 col-md-3"><label class="form-label text-xs mb-4">3 months</label><input type="number" name="rate_month_3" class="form-control form-control-sm" placeholder="Amount" min="0" step="0.01"></div>
+                                    </div>
+                                </div>
+                            </div>
+
                             <!-- Part 4: Status -->
                             <div class="card border radius-12 overflow-hidden mb-24" style="max-width: 320px;">
                                 <div class="card-header bg-neutral-50 border-bottom py-14 px-20">
@@ -177,17 +222,17 @@
                                 <div class="card-body p-20">
                                 <div class="icon-field">
                                     <span class="icon top-50 translate-middle-y"><iconify-icon icon="mdi:checkbox-marked-circle-outline"></iconify-icon></span>
-                                    <select name="status" class="form-select h-56-px bg-neutral-50 radius-12 ps-48">
-                                        <option value="Available" <%= (v.status || 'Available') === 'Available' ? 'selected' : '' %>>Available</option>
-                                        <option value="Rented" <%= (v.status || '') === 'Rented' ? 'selected' : '' %>>Rented</option>
-                                        <option value="Maintenance" <%= (v.status || '') === 'Maintenance' ? 'selected' : '' %>>Maintenance</option>
+                                    <select name="status" class="form-select h-56-px bg-neutral-50 radius-12 ps-48" required>
+                                        <option value="AVAILABLE" <%= (v.status || 'AVAILABLE') === 'AVAILABLE' ? 'selected' : '' %>>Available</option>
+                                        <option value="RENTED" <%= (v.status || '') === 'RENTED' ? 'selected' : '' %>>Rented</option>
+                                        <option value="MAINTENANCE" <%= (v.status || '') === 'MAINTENANCE' ? 'selected' : '' %>>Maintenance</option>
                                     </select>
                                 </div>
                                 </div>
                             </div>
 
-                            <!-- Part 5: Charges & Restrictions -->
-                            <div class="card border radius-12 overflow-hidden mb-24">
+                            <!-- Part 5: Charges & Restrictions (hidden per client preference) -->
+                            <div class="card border radius-12 overflow-hidden mb-24 d-none">
                                 <div class="card-header bg-neutral-50 border-bottom py-14 px-20">
                                     <h6 class="text-sm fw-semibold text-primary-light mb-0 d-flex align-items-center gap-2">
                                         <iconify-icon icon="mdi:cash-multiple" class="text-primary-600"></iconify-icon>
@@ -319,6 +364,4 @@
     </div>
 </div>
 
-<% script = `
-<script src="/js/modules/vehicle.js"></script>
-` %>
+<% script = '<script src="/js/api/vehicleApi.js"></script><script src="/js/modules/vehicle.js"></script><script src="/js/pages/vehicle-edit.js"></script>' %>

@@ -49,11 +49,11 @@
                     border-start-end-radius: 8px;
                 }
                 &:not(:last-child) {
-                    border-inline-end: 0 !important;
-                }    
+                    border-inline-end: 1px solid var(--neutral-200) !important;
+                }
                 &:not(:first-child) {
                     border-inline-start: 0 !important;
-                }    
+                }
                 &.bg-transparent {
                     background-color: transparent !important;
                 }        
@@ -80,8 +80,12 @@
                 color: var(--text-secondary-light);
                 padding: 16px !important;
                 border-bottom: 1px solid var(--neutral-200);
+                border-inline-end: 1px solid var(--neutral-200);
                 background-color: var(--white);
                 vertical-align: middle;
+                &:last-child {
+                    border-inline-end: none;
+                }
             }
         }
     }

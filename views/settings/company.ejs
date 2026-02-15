@@ -13,13 +13,248 @@
                         </a>
                     </div>
                     <div class="card-body p-24">
+                        <div id="company-api-error" class="alert alert-danger radius-12 mb-24 d-none"></div>
+                        <div id="company-api-success" class="alert alert-success radius-12 mb-24 d-none"></div>
                         <% if (typeof error !== 'undefined' && error) { %>
                         <div class="alert alert-danger radius-12 mb-24 d-flex align-items-center gap-2">
                             <iconify-icon icon="mdi:alert-circle-outline"></iconify-icon>
                             <%= error %>
                         </div>
                         <% } %>
-                        <form method="POST" action="<%= typeof basePath !== 'undefined' ? basePath : '' %>/settings/company" id="company-form">
+
+                        <!-- VIEW MODE: Display company details in cards -->
+                        <div id="company-view-container" style="display: none;">
+                            <div class="d-flex justify-content-between align-items-center mb-24">
+                                <h5 class="mb-0"></h5>
+                                <div class="d-flex gap-2">
+                                    <button type="button" id="edit-company-btn" class="btn btn-success radius-8 d-flex align-items-center gap-2">
+                                        <iconify-icon icon="mdi:pencil"></iconify-icon>
+                                        Edit
+                                    </button>
+                                </div>
+                            </div>
+
+                            <!-- Company Header Card -->
+                            <div class="card border-0 shadow-sm radius-12 mb-24" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);">
+                                <div class="card-body p-24">
+                                    <div class="d-flex align-items-center gap-3">
+                                        <div id="view-logo-container" class="w-64-px h-64-px bg-white bg-opacity-20 rounded-circle d-flex align-items-center justify-content-center d-none">
+                                            <img id="view-company-logo" src="" alt="Company Logo" style="max-width: 100%; max-height: 100%; object-fit: contain; border-radius: 50%;">
+                                        </div>
+                                        <div id="view-logo-icon" class="w-64-px h-64-px bg-white bg-opacity-20 rounded-circle d-flex align-items-center justify-content-center d-none">
+                                            <iconify-icon icon="mdi:domain" class="text-white" style="font-size: 32px;"></iconify-icon>
+                                        </div>
+                                        <div class="flex-grow-1">
+                                            <h4 class="text-white mb-1" id="view-company-name">-</h4>
+                                            <p class="text-white text-opacity-75 mb-0" id="view-company-registration">-</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Basic Information -->
+                            <div class="card border radius-12 overflow-hidden mb-24">
+                                <div class="card-header bg-neutral-50 border-bottom py-14 px-20">
+                                    <h6 class="text-sm fw-semibold text-primary-light mb-0 d-flex align-items-center gap-2">
+                                        <iconify-icon icon="mdi:information-outline" class="text-primary-600"></iconify-icon>
+                                        Basic Information
+                                    </h6>
+                                </div>
+                                <div class="card-body p-20">
+                                    <div class="row g-3">
+                                        <div class="col-md-6">
+                                            <div class="d-flex align-items-start gap-2">
+                                                <iconify-icon icon="mdi:phone" class="text-primary-600 mt-1"></iconify-icon>
+                                                <div>
+                                                    <p class="text-xs text-secondary-light mb-1">Phone</p>
+                                                    <p class="text-sm fw-medium text-primary-light mb-0" id="view-phone">-</p>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <div class="d-flex align-items-start gap-2">
+                                                <iconify-icon icon="mdi:email" class="text-primary-600 mt-1"></iconify-icon>
+                                                <div>
+                                                    <p class="text-xs text-secondary-light mb-1">Email</p>
+                                                    <p class="text-sm fw-medium text-primary-light mb-0" id="view-email">-</p>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <div class="d-flex align-items-start gap-2">
+                                                <iconify-icon icon="mdi:map-marker" class="text-primary-600 mt-1"></iconify-icon>
+                                                <div>
+                                                    <p class="text-xs text-secondary-light mb-1">Country</p>
+                                                    <p class="text-sm fw-medium text-primary-light mb-0" id="view-country">-</p>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-12">
+                                            <div class="d-flex align-items-start gap-2">
+                                                <iconify-icon icon="mdi:home-map-marker" class="text-primary-600 mt-1"></iconify-icon>
+                                                <div>
+                                                    <p class="text-xs text-secondary-light mb-1">Address</p>
+                                                    <p class="text-sm fw-medium text-primary-light mb-0" id="view-address">-</p>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Currency & Operating Hours -->
+                            <div class="card border radius-12 overflow-hidden mb-24">
+                                <div class="card-header bg-neutral-50 border-bottom py-14 px-20">
+                                    <h6 class="text-sm fw-semibold text-primary-light mb-0 d-flex align-items-center gap-2">
+                                        <iconify-icon icon="mdi:cash" class="text-primary-600"></iconify-icon>
+                                        Currency & Hours
+                                    </h6>
+                                </div>
+                                <div class="card-body p-20">
+                                    <div class="row g-3">
+                                        <div class="col-md-4">
+                                            <div class="d-flex align-items-start gap-2">
+                                                <iconify-icon icon="mdi:currency-usd" class="text-primary-600 mt-1"></iconify-icon>
+                                                <div>
+                                                    <p class="text-xs text-secondary-light mb-1">Currency Code</p>
+                                                    <p class="text-sm fw-medium text-primary-light mb-0" id="view-currency-code">-</p>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-4">
+                                            <div class="d-flex align-items-start gap-2">
+                                                <iconify-icon icon="mdi:currency-usd-circle" class="text-primary-600 mt-1"></iconify-icon>
+                                                <div>
+                                                    <p class="text-xs text-secondary-light mb-1">Currency Symbol</p>
+                                                    <p class="text-sm fw-medium text-primary-light mb-0" id="view-currency-symbol">-</p>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-4">
+                                            <div class="d-flex align-items-start gap-2">
+                                                <iconify-icon icon="mdi:clock-outline" class="text-primary-600 mt-1"></iconify-icon>
+                                                <div>
+                                                    <p class="text-xs text-secondary-light mb-1">Operating Hours</p>
+                                                    <p class="text-sm fw-medium text-primary-light mb-0" id="view-operating-hours">-</p>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Rental Rates -->
+                            <div class="card border radius-12 overflow-hidden mb-24">
+                                <div class="card-header bg-neutral-50 border-bottom py-14 px-20">
+                                    <h6 class="text-sm fw-semibold text-primary-light mb-0 d-flex align-items-center gap-2">
+                                        <iconify-icon icon="mdi:cash-multiple" class="text-primary-600"></iconify-icon>
+                                        Rental Configuration
+                                    </h6>
+                                </div>
+                                <div class="card-body p-20">
+                                    <div class="row g-3">
+                                        <div class="col-md-6">
+                                            <div class="d-flex align-items-start gap-2">
+                                                <iconify-icon icon="mdi:calculator" class="text-primary-600 mt-1"></iconify-icon>
+                                                <div>
+                                                    <p class="text-xs text-secondary-light mb-1">Charge Calculation Method</p>
+                                                    <p class="text-sm fw-medium text-primary-light mb-0" id="view-charge-method">-</p>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <div class="d-flex align-items-start gap-2">
+                                                <iconify-icon icon="mdi:check-circle-outline" class="text-success-600 mt-1"></iconify-icon>
+                                                <div>
+                                                    <p class="text-xs text-secondary-light mb-1">Enabled Rate Types</p>
+                                                    <p class="text-sm fw-medium text-primary-light mb-0" id="view-rate-types">-</p>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <div class="d-flex align-items-start gap-2">
+                                                <iconify-icon icon="mdi:file-document-outline" class="text-primary-600 mt-1"></iconify-icon>
+                                                <div>
+                                                    <p class="text-xs text-secondary-light mb-1">Contract Prefix</p>
+                                                    <p class="text-sm fw-medium text-primary-light mb-0" id="view-contract-prefix">-</p>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <div class="d-flex align-items-start gap-2">
+                                                <iconify-icon icon="mdi:receipt" class="text-primary-600 mt-1"></iconify-icon>
+                                                <div>
+                                                    <p class="text-xs text-secondary-light mb-1">Invoice Prefix</p>
+                                                    <p class="text-sm fw-medium text-primary-light mb-0" id="view-invoice-prefix">-</p>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Tax Configuration -->
+                            <div class="card border radius-12 overflow-hidden mb-24">
+                                <div class="card-header bg-neutral-50 border-bottom py-14 px-20">
+                                    <h6 class="text-sm fw-semibold text-primary-light mb-0 d-flex align-items-center gap-2">
+                                        <iconify-icon icon="mdi:percent" class="text-primary-600"></iconify-icon>
+                                        Tax Configuration
+                                    </h6>
+                                </div>
+                                <div class="card-body p-20">
+                                    <div class="row g-3">
+                                        <div class="col-md-4">
+                                            <div class="d-flex align-items-start gap-2">
+                                                <iconify-icon icon="mdi:tag" class="text-primary-600 mt-1"></iconify-icon>
+                                                <div>
+                                                    <p class="text-xs text-secondary-light mb-1">Tax System</p>
+                                                    <p class="text-sm fw-medium text-primary-light mb-0" id="view-tax-system">-</p>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-4">
+                                            <div class="d-flex align-items-start gap-2">
+                                                <iconify-icon icon="mdi:percent-outline" class="text-primary-600 mt-1"></iconify-icon>
+                                                <div>
+                                                    <p class="text-xs text-secondary-light mb-1">Tax Percentage</p>
+                                                    <p class="text-sm fw-medium text-primary-light mb-0" id="view-tax-percentage">-</p>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-4">
+                                            <div class="d-flex align-items-start gap-2">
+                                                <iconify-icon icon="mdi:identifier" class="text-primary-600 mt-1"></iconify-icon>
+                                                <div>
+                                                    <p class="text-xs text-secondary-light mb-1">Tax Registration No.</p>
+                                                    <p class="text-sm fw-medium text-primary-light mb-0" id="view-tax-registration">-</p>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <div class="d-flex align-items-start gap-2">
+                                                <iconify-icon icon="mdi:invoice-text" class="text-primary-600 mt-1"></iconify-icon>
+                                                <div>
+                                                    <p class="text-xs text-secondary-light mb-1">Invoice Type</p>
+                                                    <p class="text-sm fw-medium text-primary-light mb-0" id="view-invoice-type">-</p>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <div class="d-flex align-items-start gap-2">
+                                                <iconify-icon icon="mdi:cash-check" class="text-primary-600 mt-1"></iconify-icon>
+                                                <div>
+                                                    <p class="text-xs text-secondary-light mb-1">Expense Approval Threshold</p>
+                                                    <p class="text-sm fw-medium text-primary-light mb-0" id="view-expense-threshold">-</p>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- FORM MODE: Create/Edit company -->
+                        <form method="POST" action="#" id="company-form" style="display: none;">
                             <% const c = typeof company !== 'undefined' && company ? company : {}; %>
 
                             <!-- Basic Info -->
@@ -35,6 +270,19 @@
                                         <div class="col-md-6">
                                             <label class="form-label text-sm fw-medium text-primary-light">Company name <span class="text-danger">*</span></label>
                                             <input type="text" name="name" id="name" class="form-control h-56-px bg-neutral-50 radius-12" value="<%= c.name || '' %>" required>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <label class="form-label text-sm fw-medium text-primary-light d-flex align-items-center gap-2">
+                                                Company Logo
+                                                <small class="text-xs text-secondary-light">(Preferred: 168x40 pixels)</small>
+                                            </label>
+                                            <input type="file" id="logo-upload" name="logo" accept="image/*" class="form-control h-56-px bg-neutral-50 radius-12">
+                                            <div id="logo-preview" class="mt-2" style="display: none;">
+                                                <img id="logo-preview-img" src="" alt="Logo Preview" style="max-width: 168px; max-height: 40px; object-fit: contain; border: 1px solid #e5e7eb; padding: 5px; border-radius: 8px;">
+                                                <button type="button" id="remove-logo-btn" class="btn btn-sm btn-outline-danger mt-2">
+                                                    <iconify-icon icon="mdi:delete"></iconify-icon> Remove Logo
+                                                </button>
+                                            </div>
                                         </div>
                                         <div class="col-md-6">
                                             <label class="form-label text-sm fw-medium text-primary-light">Phone</label>
@@ -231,8 +479,11 @@
                             </div>
 
                             <div class="d-flex align-items-center justify-content-end gap-3">
-                                <a href="<%= typeof basePath !== 'undefined' ? basePath : '' %>/dashboard/index5" class="btn border border-neutral-400 bg-hover-neutral-100 text-primary-light text-md px-24 py-12 radius-8">Cancel</a>
-                                <button type="submit" class="btn btn-primary text-md px-32 py-12 radius-8 d-flex align-items-center gap-2">
+                                <button type="button" class="btn border border-neutral-400 bg-hover-neutral-100 text-primary-light text-md px-24 py-12 radius-8 d-none" id="cancel-edit-btn">
+                                    <iconify-icon icon="mdi:close"></iconify-icon>
+                                    Cancel
+                                </button>
+                                <button type="submit" class="btn btn-primary text-md px-32 py-12 radius-8 d-flex align-items-center gap-2" id="company-submit-btn">
                                     <iconify-icon icon="mdi:content-save-outline"></iconify-icon>
                                     Save Company
                                 </button>
@@ -244,3 +495,5 @@
         </div>
     </div>
 </div>
+
+<% script = `<script src="/js/modules/company.js"></script>` %>

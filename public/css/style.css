@@ -11634,7 +11634,7 @@ h6, .h6 {
 }
 
 .bordered-table thead tr th:not(:last-child) {
-  border-inline-end: 0 !important;
+  border-inline-end: 1px solid var(--neutral-200) !important;
 }
 
 .bordered-table thead tr th:not(:first-child) {
@@ -11661,8 +11661,13 @@ h6, .h6 {
   color: var(--text-secondary-light);
   padding: 16px !important;
   border-bottom: 1px solid var(--neutral-200);
+  border-inline-end: 1px solid var(--neutral-200);
   background-color: var(--white);
   vertical-align: middle;
+}
+
+.bordered-table tbody tr td:last-child {
+  border-inline-end: none;
 }
 
 .rounded-table {

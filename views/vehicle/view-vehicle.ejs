@@ -1,44 +1,39 @@
-<div class="card h-100 p-0 radius-12 border-0">
+<div class="card h-100 p-0 radius-12 border-0" data-base-path="<%= typeof basePath !== 'undefined' ? basePath : '' %>" data-vehicle-id="<%= typeof vehicleId !== 'undefined' ? vehicleId : '' %>">
     <div class="card-body p-24">
-        <div class="row justify-content-center">
+        <div id="view-loading" class="text-center text-secondary-light py-24 <%= (typeof vehicle !== 'undefined' && vehicle) ? 'd-none' : '' %>">Loading vehicle…</div>
+        <div id="view-content" class="row justify-content-center <%= (typeof vehicle !== 'undefined' && vehicle) ? '' : 'd-none' %>">
             <div class="col-xxl-10 col-xl-11 col-lg-12">
-                <% const v = vehicle; %>
+                <% const v = typeof vehicle !== 'undefined' && vehicle ? vehicle : {}; %>
 
                 <!-- Vehicle title strip -->
                 <div class="card border radius-16 overflow-hidden mb-24 bg-primary-50 border-primary-200">
                     <div class="card-body py-24 px-24">
                         <div class="row align-items-center">
                             <div class="col-auto">
-                                <div class="w-64-px h-64-px rounded-12 bg-primary-100 d-flex align-items-center justify-content-center">
-                                    <iconify-icon icon="mdi:car-side" class="text-primary-600" style="font-size: 2rem;"></iconify-icon>
+                                <div id="view-vehicle-image-wrap" class="w-64-px h-64-px rounded-12 bg-primary-100 d-flex align-items-center justify-content-center overflow-hidden" style="min-width: 64px;">
+                                    <img id="view-vehicle-image" class="d-none w-100 h-100 rounded-12" style="object-fit: cover;" alt="Vehicle">
+                                    <iconify-icon id="view-vehicle-image-placeholder" icon="mdi:car-side" class="text-primary-600" style="font-size: 2rem;"></iconify-icon>
                                 </div>
                             </div>
                             <div class="col">
-                                <h5 class="fw-semibold text-primary-light mb-4"><%= v.make || '-' %> <%= v.model || '-' %></h5>
+                                <h5 class="fw-semibold text-primary-light mb-4"><span data-field="make">-</span> <span data-field="model">-</span></h5>
                                 <p class="text-sm text-secondary-light mb-0 d-flex align-items-center gap-2">
                                     <iconify-icon icon="mdi:card-account-details-outline"></iconify-icon>
-                                    <%= v.registrationNumber || '-' %>
+                                    <span data-field="registrationNumber">-</span>
                                 </p>
                             </div>
                             <div class="col-auto">
-                                <% if (v.status === 'Available') { %>
-                                <span class="bg-success-focus text-success-600 border border-success-main px-20 py-8 radius-8 fw-medium text-sm d-inline-flex align-items-center gap-2">
-                                    <iconify-icon icon="mdi:check-circle-outline"></iconify-icon> Available
+                                <span id="view-status-badge" class="bg-neutral-200 text-neutral-600 border border-neutral-300 px-20 py-8 radius-8 fw-medium text-sm d-inline-flex align-items-center gap-2">
+                                    <iconify-icon icon="mdi:circle-outline"></iconify-icon> <span data-field="statusLabel">-</span>
                                 </span>
-                                <% } else if (v.status === 'Rented') { %>
-                                <span class="bg-info-focus text-info-600 border border-info-main px-20 py-8 radius-8 fw-medium text-sm d-inline-flex align-items-center gap-2">
-                                    <iconify-icon icon="mdi:key-outline"></iconify-icon> Rented
-                                </span>
-                                <% } else { %>
-                                <span class="bg-warning-focus text-warning-600 border border-warning-main px-20 py-8 radius-8 fw-medium text-sm d-inline-flex align-items-center gap-2">
-                                    <iconify-icon icon="mdi:wrench-outline"></iconify-icon> Maintenance
-                                </span>
-                                <% } %>
                             </div>
                             <div class="col-auto d-flex gap-2">
-                                <a href="<%= typeof basePath !== 'undefined' ? basePath : '' %>/vehicle/edit/<%= v.id %>" class="btn btn-success btn-sm radius-8 d-flex align-items-center gap-2">
+                                <a href="#" id="view-edit-link" class="btn btn-success btn-sm radius-8 d-flex align-items-center gap-2">
                                     <iconify-icon icon="lucide:edit"></iconify-icon> Edit
                                 </a>
+                                <button type="button" id="view-delete-btn" class="btn btn-danger btn-sm radius-8 d-flex align-items-center gap-2">
+                                    <iconify-icon icon="fluent:delete-24-regular"></iconify-icon> Delete
+                                </button>
                                 <a href="<%= typeof basePath !== 'undefined' ? basePath : '' %>/vehicle" class="btn btn-outline-secondary btn-sm radius-8 d-flex align-items-center gap-2">
                                     <iconify-icon icon="mdi:arrow-left"></iconify-icon> Back
                                 </a>
@@ -62,55 +57,55 @@
                                     <span class="text-secondary-light text-sm d-flex align-items-center gap-2" style="width: 130px;">
                                         <iconify-icon icon="mdi:car-side"></iconify-icon> Make
                                     </span>
-                                    <span class="fw-medium text-primary-light"><%= v.make || '-' %></span>
+                                    <span class="fw-medium text-primary-light" data-field="make"><%= v.make || '-' %></span>
                                 </div>
                                 <div class="vehicle-view-row d-flex align-items-center py-10 border-bottom border-neutral-200">
                                     <span class="text-secondary-light text-sm d-flex align-items-center gap-2" style="width: 130px;">
                                         <iconify-icon icon="mdi:car-cog"></iconify-icon> Model
                                     </span>
-                                    <span class="fw-medium text-primary-light"><%= v.model || '-' %></span>
+                                    <span class="fw-medium text-primary-light" data-field="model"><%= v.model || '-' %></span>
                                 </div>
                                 <div class="vehicle-view-row d-flex align-items-center py-10 border-bottom border-neutral-200">
                                     <span class="text-secondary-light text-sm d-flex align-items-center gap-2" style="width: 130px;">
                                         <iconify-icon icon="mdi:card-account-details-outline"></iconify-icon> Registration
                                     </span>
-                                    <span class="fw-medium text-primary-light"><%= v.registrationNumber || '-' %></span>
+                                    <span class="fw-medium text-primary-light" data-field="registrationNumber"><%= v.registrationNumber || '-' %></span>
                                 </div>
                                 <div class="vehicle-view-row d-flex align-items-center py-10 border-bottom border-neutral-200">
                                     <span class="text-secondary-light text-sm d-flex align-items-center gap-2" style="width: 130px;">
                                         <iconify-icon icon="mdi:format-list-group"></iconify-icon> Type
                                     </span>
-                                    <span class="fw-medium text-primary-light"><%= (v.vehicleType || 'CAR') === 'MOTORBIKE' ? 'Motorbike' : 'Car' %></span>
+                                    <span class="fw-medium text-primary-light" data-field="vehicleTypeLabel"><%= (v.vehicleType || 'CAR') === 'MOTORBIKE' ? 'Motorbike' : 'Car' %></span>
                                 </div>
                                 <div class="vehicle-view-row d-flex align-items-center py-10 border-bottom border-neutral-200">
                                     <span class="text-secondary-light text-sm d-flex align-items-center gap-2" style="width: 130px;">
                                         <iconify-icon icon="solar:calendar-outline"></iconify-icon> Year
                                     </span>
-                                    <span class="fw-medium text-primary-light"><%= v.year || '-' %></span>
+                                    <span class="fw-medium text-primary-light" data-field="year"><%= v.year != null ? v.year : '-' %></span>
                                 </div>
                                 <div class="vehicle-view-row d-flex align-items-center py-10 border-bottom border-neutral-200">
                                     <span class="text-secondary-light text-sm d-flex align-items-center gap-2" style="width: 130px;">
                                         <iconify-icon icon="mdi:palette-outline"></iconify-icon> Color
                                     </span>
-                                    <span class="fw-medium text-primary-light"><%= v.color || '-' %></span>
+                                    <span class="fw-medium text-primary-light" data-field="color"><%= v.color || '-' %></span>
                                 </div>
                                 <div class="vehicle-view-row d-flex align-items-center py-10 border-bottom border-neutral-200">
                                     <span class="text-secondary-light text-sm d-flex align-items-center gap-2" style="width: 130px;">
                                         <iconify-icon icon="mdi:seat-passenger"></iconify-icon> Seating
                                     </span>
-                                    <span class="fw-medium text-primary-light"><%= v.seatingCapacity != null ? v.seatingCapacity : '-' %></span>
+                                    <span class="fw-medium text-primary-light" data-field="seatingCapacity"><%= v.seatingCapacity != null ? v.seatingCapacity : '-' %></span>
                                 </div>
                                 <div class="vehicle-view-row d-flex align-items-center py-10">
                                     <span class="text-secondary-light text-sm d-flex align-items-center gap-2" style="width: 130px;">
                                         <iconify-icon icon="mdi:fuel"></iconify-icon> Fuel
                                     </span>
-                                    <span class="fw-medium text-primary-light"><%= v.fuelType || '-' %></span>
+                                    <span class="fw-medium text-primary-light" data-field="fuelType"><%= v.fuelType || '-' %></span>
                                 </div>
                             </div>
                         </div>
                     </div>
 
-                    <!-- Rental Rates card -->
+                    <!-- Rental Rates card: dailyRateTiers + Deposit -->
                     <div class="col-lg-6">
                         <div class="card border radius-12 h-100 overflow-hidden">
                             <div class="card-header bg-neutral-50 border-bottom py-14 px-20">
@@ -120,77 +115,22 @@
                                 </h6>
                             </div>
                             <div class="card-body p-20">
-                                <div class="vehicle-view-row d-flex align-items-center py-10 border-bottom border-neutral-200">
-                                    <span class="text-secondary-light text-sm d-flex align-items-center gap-2" style="width: 140px;">
-                                        <iconify-icon icon="mdi:calendar-today"></iconify-icon> Daily
-                                    </span>
-                                    <span class="fw-medium text-primary-light"><%= v.dailyRate != null ? v.dailyRate : '-' %></span>
+                                <div class="mb-12">
+                                    <span class="text-xs fw-semibold text-secondary-light text-uppercase">Charges by duration</span>
                                 </div>
-                                <div class="vehicle-view-row d-flex align-items-center py-10 border-bottom border-neutral-200">
+                                <div id="view-daily-rate-tiers" class="d-none"></div>
+                                <div class="vehicle-view-row d-flex align-items-center py-10 mt-12 pt-12 border-top border-neutral-200">
                                     <span class="text-secondary-light text-sm d-flex align-items-center gap-2" style="width: 140px;">
-                                        <iconify-icon icon="mdi:clock-outline"></iconify-icon> Hourly
+                                        <iconify-icon icon="mdi:shield-check-outline"></iconify-icon> Deposit
                                     </span>
-                                    <span class="fw-medium text-primary-light"><%= v.hourlyRate != null ? v.hourlyRate : '-' %></span>
-                                </div>
-                                <div class="vehicle-view-row d-flex align-items-center py-10 border-bottom border-neutral-200">
-                                    <span class="text-secondary-light text-sm d-flex align-items-center gap-2" style="width: 140px;">
-                                        <iconify-icon icon="mdi:calendar-week"></iconify-icon> Weekly
-                                    </span>
-                                    <span class="fw-medium text-primary-light"><%= v.weeklyRate != null ? v.weeklyRate : '-' %></span>
-                                </div>
-                                <div class="vehicle-view-row d-flex align-items-center py-10 border-bottom border-neutral-200">
-                                    <span class="text-secondary-light text-sm d-flex align-items-center gap-2" style="width: 140px;">
-                                        <iconify-icon icon="mdi:calendar-month"></iconify-icon> Monthly
-                                    </span>
-                                    <span class="fw-medium text-primary-light"><%= v.monthlyRate != null ? v.monthlyRate : '-' %></span>
-                                </div>
-                                <div class="vehicle-view-row d-flex align-items-center py-10 border-bottom border-neutral-200">
-                                    <span class="text-secondary-light text-sm d-flex align-items-center gap-2" style="width: 140px;">
-                                        <iconify-icon icon="mdi:clock-alert-outline"></iconify-icon> Late fee/hr
-                                    </span>
-                                    <span class="fw-medium text-primary-light"><%= v.lateReturnFeePerHour != null ? v.lateReturnFeePerHour : '-' %></span>
-                                </div>
-                                <div class="vehicle-view-row d-flex align-items-center py-10">
-                                    <span class="text-secondary-light text-sm d-flex align-items-center gap-2" style="width: 140px;">
-                                        <iconify-icon icon="mdi:calendar-clock-outline"></iconify-icon> Late fee/day
-                                    </span>
-                                    <span class="fw-medium text-primary-light"><%= v.lateReturnFeePerDay != null ? v.lateReturnFeePerDay : '-' %></span>
+                                    <span class="fw-medium text-primary-light" data-field="deposit"><%= v.deposit != null ? v.deposit : '-' %></span>
                                 </div>
                             </div>
                         </div>
                     </div>
                 </div>
 
-                <!-- Owner card - own row so it never merges with Charges -->
-                <div class="row mt-3">
-                    <div class="col-12">
-                        <div class="card border radius-12 overflow-hidden" style="max-width: 400px;">
-                            <div class="card-header bg-neutral-50 border-bottom py-14 px-20">
-                                <h6 class="text-sm fw-semibold text-primary-light mb-0 d-flex align-items-center gap-2">
-                                    <iconify-icon icon="mdi:account-outline" class="text-primary-600"></iconify-icon>
-                                    Owner
-                                </h6>
-                            </div>
-                            <div class="card-body p-20">
-                                <div class="vehicle-view-row d-flex align-items-center py-10 border-bottom border-neutral-200">
-                                    <span class="text-secondary-light text-sm d-flex align-items-center gap-2" style="width: 100px;">
-                                        <iconify-icon icon="mdi:account-badge-outline"></iconify-icon> Name
-                                    </span>
-                                    <span class="fw-medium text-primary-light"><%= v.ownerName || '-' %></span>
-                                </div>
-                                <div class="vehicle-view-row d-flex align-items-center py-10">
-                                    <span class="text-secondary-light text-sm d-flex align-items-center gap-2" style="width: 100px;">
-                                        <iconify-icon icon="mdi:phone-outline"></iconify-icon> Contact
-                                    </span>
-                                    <span class="fw-medium text-primary-light"><%= v.ownerContact || '-' %></span>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Due dates (client requirement: tax, battery, service, oil) -->
-                <% if (v.taxExpiryDate || v.nextBatteryChangeDate || v.nextServiceDate || v.nextOilChangeDate) { %>
+                <!-- Due dates: always show card so JS can fill taxExpiryDate, nextBatteryChangeDate, nextServiceDate, nextOilChangeDate -->
                 <div class="row mt-3">
                     <div class="col-12">
                         <div class="card border radius-12 overflow-hidden" style="max-width: 500px;">
@@ -201,38 +141,29 @@
                                 </h6>
                             </div>
                             <div class="card-body p-20">
-                                <% if (v.taxExpiryDate) { %>
                                 <div class="vehicle-view-row d-flex align-items-center py-10 border-bottom border-neutral-200">
                                     <span class="text-secondary-light text-sm d-flex align-items-center gap-2" style="width: 180px;">Tax expiry</span>
-                                    <span class="fw-medium text-primary-light"><%= v.taxExpiryDate %></span>
+                                    <span class="fw-medium text-primary-light" data-field="taxExpiryDate"><%= v.taxExpiryDate ? (typeof v.taxExpiryDate === 'string' ? v.taxExpiryDate.slice(0,10) : v.taxExpiryDate) : '-' %></span>
                                 </div>
-                                <% } %>
-                                <% if (v.nextBatteryChangeDate) { %>
                                 <div class="vehicle-view-row d-flex align-items-center py-10 border-bottom border-neutral-200">
                                     <span class="text-secondary-light text-sm d-flex align-items-center gap-2" style="width: 180px;">Next battery change</span>
-                                    <span class="fw-medium text-primary-light"><%= v.nextBatteryChangeDate %></span>
+                                    <span class="fw-medium text-primary-light" data-field="nextBatteryChangeDate"><%= v.nextBatteryChangeDate ? (typeof v.nextBatteryChangeDate === 'string' ? v.nextBatteryChangeDate.slice(0,10) : v.nextBatteryChangeDate) : '-' %></span>
                                 </div>
-                                <% } %>
-                                <% if (v.nextServiceDate) { %>
                                 <div class="vehicle-view-row d-flex align-items-center py-10 border-bottom border-neutral-200">
                                     <span class="text-secondary-light text-sm d-flex align-items-center gap-2" style="width: 180px;">Next service</span>
-                                    <span class="fw-medium text-primary-light"><%= v.nextServiceDate %></span>
+                                    <span class="fw-medium text-primary-light" data-field="nextServiceDate"><%= v.nextServiceDate ? (typeof v.nextServiceDate === 'string' ? v.nextServiceDate.slice(0,10) : v.nextServiceDate) : '-' %></span>
                                 </div>
-                                <% } %>
-                                <% if (v.nextOilChangeDate) { %>
                                 <div class="vehicle-view-row d-flex align-items-center py-10">
                                     <span class="text-secondary-light text-sm d-flex align-items-center gap-2" style="width: 180px;">Next oil change</span>
-                                    <span class="fw-medium text-primary-light"><%= v.nextOilChangeDate %></span>
+                                    <span class="fw-medium text-primary-light" data-field="nextOilChangeDate"><%= v.nextOilChangeDate ? (typeof v.nextOilChangeDate === 'string' ? v.nextOilChangeDate.slice(0,10) : v.nextOilChangeDate) : '-' %></span>
                                 </div>
-                                <% } %>
                             </div>
                         </div>
                     </div>
                 </div>
-                <% } %>
 
-                <!-- Charges & Restrictions card -->
-                <div class="card border radius-12 mt-3 overflow-hidden">
+                <!-- Charges & Restrictions (hidden per client preference) -->
+                <div class="card border radius-12 mt-3 overflow-hidden d-none">
                     <div class="card-header bg-neutral-50 border-bottom py-14 px-20">
                         <h6 class="text-sm fw-semibold text-primary-light mb-0 d-flex align-items-center gap-2">
                             <iconify-icon icon="mdi:cash-multiple" class="text-primary-600"></iconify-icon>
@@ -326,3 +257,5 @@
         </div>
     </div>
 </div>
+
+<% script = '<script src="/js/api/vehicleApi.js"></script><script src="/js/pages/vehicle-view.js"></script>' %>

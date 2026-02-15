@@ -1,4 +1,4 @@
-<div class="card h-100 p-0 radius-12">
+<div class="card h-100 p-0 radius-12" data-base-path="<%= typeof basePath !== 'undefined' ? basePath : '' %>">
     <div class="card-body p-24">
         <div class="row justify-content-center">
             <div class="col-xxl-10 col-xl-11 col-lg-12">
@@ -16,8 +16,9 @@
                             <%= error %>
                         </div>
                         <% } %>
-                        <form method="POST" action="<%= typeof basePath !== 'undefined' ? basePath : '' %>/customer/add" id="customer-form">
+                        <form id="customer-form" method="POST" action="#">
                             <% const c = typeof customer !== 'undefined' && customer ? customer : {}; %>
+                            <% const showMinimalCustomerForm = (typeof useMinimalCustomerForm !== 'undefined' ? useMinimalCustomerForm : true); %>
 
                             <!-- Part 1: Basic Information -->
                             <div class="card border radius-12 overflow-hidden mb-24">
@@ -50,25 +51,64 @@
                                         <div class="col-md-6">
                                             <div class="icon-field">
                                                 <span class="icon top-50 translate-middle-y"><iconify-icon icon="mdi:earth"></iconify-icon></span>
-                                                <input type="text" name="nationality" class="form-control h-56-px bg-neutral-50 radius-12 ps-48" placeholder="Nationality" value="<%= c.nationality || '' %>">
+                                                <input type="text" name="nationality" id="nationality" class="form-control h-56-px bg-neutral-50 radius-12 ps-48" placeholder="Nationality" value="<%= c.nationality || '' %>" required>
                                             </div>
                                         </div>
                                         <div class="col-md-6">
                                             <div class="icon-field">
                                                 <span class="icon top-50 translate-middle-y"><iconify-icon icon="mdi:card-account-details-outline"></iconify-icon></span>
-                                                <input type="text" name="passportNumber" class="form-control h-56-px bg-neutral-50 radius-12 ps-48" placeholder="Passport number" value="<%= c.passportNumber || '' %>">
+                                                <input type="text" name="passportNumber" id="passportNumber" class="form-control h-56-px bg-neutral-50 radius-12 ps-48" placeholder="Passport number" value="<%= c.passportNumber || '' %>" required>
                                             </div>
                                         </div>
                                         <div class="col-md-6">
                                             <div class="icon-field">
                                                 <span class="icon top-50 translate-middle-y"><iconify-icon icon="mdi:home-outline"></iconify-icon></span>
-                                                <input type="text" name="hotelName" class="form-control h-56-px bg-neutral-50 radius-12 ps-48" placeholder="Hotel name (pickup/delivery)" value="<%= c.hotelName || '' %>">
+                                                <input type="text" name="hotelName" id="hotelName" class="form-control h-56-px bg-neutral-50 radius-12 ps-48" placeholder="Hotel name (pickup/delivery)" value="<%= c.hotelName || '' %>" required>
                                             </div>
                                         </div>
                                     </div>
                                 </div>
                             </div>
 
+                            <!-- Booking / Tour details (required for API) -->
+                            <div class="card border radius-12 overflow-hidden mb-24">
+                                <div class="card-header bg-neutral-50 border-bottom py-14 px-20">
+                                    <h6 class="text-sm fw-semibold text-primary-light mb-0 d-flex align-items-center gap-2">
+                                        <iconify-icon icon="mdi:calendar-check-outline" class="text-primary-600"></iconify-icon>
+                                        Booking / Tour details
+                                    </h6>
+                                </div>
+                                <div class="card-body p-20">
+                                    <div class="row g-3">
+                                        <div class="col-md-6">
+                                            <label class="form-label text-sm">Booking date</label>
+                                            <input type="date" name="bookingDate" id="bookingDate" class="form-control h-56-px bg-neutral-50 radius-12" value="<%= c.bookingDate ? (typeof c.bookingDate === 'string' ? c.bookingDate.slice(0,10) : c.bookingDate.toISOString?.().slice(0,10)) : '' %>" required>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <label class="form-label text-sm">Date of tour</label>
+                                            <input type="date" name="dateOfTour" id="dateOfTour" class="form-control h-56-px bg-neutral-50 radius-12" value="<%= c.dateOfTour ? (typeof c.dateOfTour === 'string' ? c.dateOfTour.slice(0,10) : c.dateOfTour.toISOString?.().slice(0,10)) : '' %>" required>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <label class="form-label text-sm">Number of people</label>
+                                            <input type="number" name="numberOfPeople" id="numberOfPeople" class="form-control h-56-px bg-neutral-50 radius-12" placeholder="0" min="0" value="<%= c.numberOfPeople != null ? c.numberOfPeople : '' %>" required>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <div class="icon-field">
+                                                <span class="icon top-50 translate-middle-y"><iconify-icon icon="mdi:door-open"></iconify-icon></span>
+                                                <input type="text" name="roomNo" id="roomNo" class="form-control h-56-px bg-neutral-50 radius-12 ps-48" placeholder="Room number" value="<%= c.roomNo || '' %>" required>
+                                            </div>
+                                        </div>
+                                        <div class="col-12">
+                                            <div class="icon-field">
+                                                <span class="icon top-50 translate-middle-y"><iconify-icon icon="mdi:account-check-outline"></iconify-icon></span>
+                                                <input type="text" name="confirmedBy" id="confirmedBy" class="form-control h-56-px bg-neutral-50 radius-12 ps-48" placeholder="Confirmed by" value="<%= c.confirmedBy || '' %>" required>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <% if (!showMinimalCustomerForm) { %>
                             <!-- Part 2: Personal Address -->
                             <div class="card border radius-12 overflow-hidden mb-24">
                                 <div class="card-header bg-neutral-50 border-bottom py-14 px-20">
@@ -198,10 +238,11 @@
                                     </div>
                                 </div>
                             </div>
+                            <% } %>
 
                             <hr class="my-24">
                             <div class="d-flex align-items-center justify-content-end gap-3">
-                                <a href="<%= typeof basePath !== 'undefined' ? basePath : '' %>/customer" class="btn border border-neutral-400 bg-hover-neutral-100 text-primary-light text-md px-24 py-12 radius-8 d-flex align-items-center gap-2">
+                                <a href="#" id="add-customer-cancel-link" class="btn border border-neutral-400 bg-hover-neutral-100 text-primary-light text-md px-24 py-12 radius-8 d-flex align-items-center gap-2">
                                     <iconify-icon icon="mdi:close"></iconify-icon>
                                     Cancel
                                 </a>
@@ -218,6 +259,4 @@
     </div>
 </div>
 
-<% script = `
-<script src="/js/modules/customer.js"></script>
-` %>
+<% script = '<script src="/js/api/customerApi.js"></script><script src="/js/modules/customer.js"></script><script src="/js/pages/customer-add.js"></script>' %>

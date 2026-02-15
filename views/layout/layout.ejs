@@ -20,11 +20,17 @@
 
       <%- include('../partials/footer') %>
     </main>
+    <script src="/js/config.js"></script>
+    <script src="/js/api/authApi.js"></script>
+    <script src="/js/api/companyApi.js"></script>
+    <script src="/js/api/authGuard.js"></script>
+    <script src="/js/api/sidebarControl.js"></script>
+    <script src="/js/api/companyLogo.js"></script>
     <%- include('../partials/scripts') %> 
 
-   <!-- Add the script block here -->
+   <!-- Add the script block here. If script does not end with </script>, close the tag (for view/edit vehicle inline scripts). -->
    <% if (typeof script !== 'undefined') { %>
-    <%- script %>
+    <%- script %><% if (typeof script === 'string' && !/<\/script>\s*$/.test(script)) { %></script><% } %>
   <% } %>
   </body>
 </html>

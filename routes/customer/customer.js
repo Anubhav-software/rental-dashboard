@@ -76,23 +76,12 @@ let nextId = 4;
 const trim = (x) => (x != null && typeof x === "string" ? x.trim() : "");
 const orNull = (x) => (trim(x) === "" ? null : trim(x));
 
-// List customers (with optional search)
+// List customers — data loaded client-side via GET /api/customers (search, page, limit)
 router.get("/", (req, res) => {
-  let list = [...demoCustomers];
-  const search = (req.query.search || "").trim().toLowerCase();
-  if (search) {
-    list = list.filter(
-      (c) =>
-        (c.name || "").toLowerCase().includes(search) ||
-        (c.phone || "").toLowerCase().includes(search) ||
-        (c.email || "").toLowerCase().includes(search)
-    );
-  }
   res.render("customer/list-customers", {
     title: "Customers",
     subTitle: "Customer List",
-    customers: list,
-    query: { search: req.query.search || "" },
+    query: { search: req.query.search || "", page: req.query.page || 1, limit: req.query.limit || 20 },
   });
 });
 
@@ -147,82 +136,29 @@ router.post("/add", (req, res) => {
     customerCompanyState: isB2B ? orNull(body.customerCompanyState) : null,
   };
   demoCustomers.push(newCustomer);
-  return res.redirect((req.baseUrl || "") + "/customer");
+  var listPath = (req.baseUrl || "").replace(/\/$/, "");
+  return res.redirect(listPath);
 });
 
-// Edit customer form
+// Edit customer — data loaded client-side via GET /api/customers/:id, submit via PATCH /api/customers/:id
 router.get("/edit/:id", (req, res) => {
-  const id = parseInt(req.params.id, 10);
-  const customer = demoCustomers.find((c) => c.id === id);
-  if (!customer) return res.redirect((req.baseUrl || "") + "/customer");
-  res.render("customer/edit-customer", { title: "Customers", subTitle: "Edit Customer", customer, error: null });
+  res.render("customer/edit-customer", {
+    title: "Customers",
+    subTitle: "Edit Customer",
+    customerId: req.params.id,
+  });
 });
 
-// Edit customer submit
-router.post("/edit/:id", (req, res) => {
-  const id = parseInt(req.params.id, 10);
-  const customer = demoCustomers.find((c) => c.id === id);
-  if (!customer) return res.redirect((req.baseUrl || "") + "/customer");
-  const body = req.body || {};
-  const name = trim(body.name);
-  const phone = trim(body.phone);
-  if (!name || !phone) {
-    return res.status(400).render("customer/edit-customer", {
-      title: "Customers",
-      subTitle: "Edit Customer",
-      customer: { ...customer, ...body },
-      error: "Name and Phone are required",
-    });
-  }
-  const duplicate = demoCustomers.find(
-    (c) => c.id !== id && (c.phone || "").replace(/\D/g, "") === (phone || "").replace(/\D/g, "")
-  );
-  if (duplicate) {
-    return res.status(409).render("customer/edit-customer", {
-      title: "Customers",
-      subTitle: "Edit Customer",
-      customer: { ...customer, ...body },
-      error: "A customer with this phone number already exists",
-    });
-  }
-  const isB2B = body.isBusinessCustomer === "on" || body.isBusinessCustomer === "1";
-  customer.name = name;
-  customer.phone = phone;
-  customer.email = orNull(body.email);
-  customer.nationality = orNull(body.nationality);
-  customer.passportNumber = orNull(body.passportNumber);
-  customer.hotelName = orNull(body.hotelName);
-  customer.address = orNull(body.address);
-  customer.customerPincode = orNull(body.customerPincode);
-  customer.customerState = orNull(body.customerState);
-  customer.idProofType = orNull(body.idProofType);
-  customer.idProofNumber = orNull(body.idProofNumber);
-  customer.licenseNumber = orNull(body.licenseNumber);
-  customer.isBusinessCustomer = isB2B;
-  customer.taxIdNumber = isB2B ? orNull(body.taxIdNumber) : null;
-  customer.taxIdType = isB2B ? orNull(body.taxIdType) : null;
-  customer.businessName = isB2B ? orNull(body.businessName) : null;
-  customer.customerCompanyAddress = isB2B ? orNull(body.customerCompanyAddress) : null;
-  customer.customerCompanyPincode = isB2B ? orNull(body.customerCompanyPincode) : null;
-  customer.customerCompanyState = isB2B ? orNull(body.customerCompanyState) : null;
-  return res.redirect((req.baseUrl || "") + "/customer");
-});
-
-// View customer
+// View customer — data loaded client-side via GET /api/customers/:id
 router.get("/view/:id", (req, res) => {
-  const id = parseInt(req.params.id, 10);
-  const customer = demoCustomers.find((c) => c.id === id);
-  if (!customer) return res.redirect((req.baseUrl || "") + "/customer");
-  res.render("customer/view-customer", { title: "Customers", subTitle: "View Customer", customer });
+  res.render("customer/view-customer", {
+    title: "Customers",
+    subTitle: "View Customer",
+    customerId: req.params.id,
+  });
 });
 
-// Delete customer
-router.post("/delete/:id", (req, res) => {
-  const id = parseInt(req.params.id, 10);
-  const idx = demoCustomers.findIndex((c) => c.id === id);
-  if (idx !== -1) demoCustomers.splice(idx, 1);
-  return res.redirect((req.baseUrl || "") + "/customer");
-});
+// Delete customer — handled client-side via DELETE /api/customers/:id (list page)
 
 // Expose for rental module (customer dropdown)
 router.demoCustomers = demoCustomers;

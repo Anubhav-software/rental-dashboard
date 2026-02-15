@@ -34,8 +34,14 @@
                 </a>
             </li>
             <li>
+                <a href="<%= typeof basePath !== 'undefined' ? basePath : '/owner' %>/rental/add">
+                    <iconify-icon icon="mdi:file-document-edit-outline" class="menu-icon"></iconify-icon>
+                    <span>Create Rental</span>
+                </a>
+            </li>
+            <li>
                 <a href="<%= typeof basePath !== 'undefined' ? basePath : '/owner' %>/rental">
-                    <iconify-icon icon="mdi:file-document-outline" class="menu-icon"></iconify-icon>
+                    <iconify-icon icon="mdi:format-list-bulleted" class="menu-icon"></iconify-icon>
                     <span>Rentals</span>
                 </a>
             </li>

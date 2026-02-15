@@ -55,9 +55,8 @@ coverage/
 *.iso
 *.dmg
 
-# User uploads (if you add uploads folder later)
-uploads/
-public/uploads/
+# User uploads – kept in repo (clone will get uploads folder)
+# (uploads/ and public/uploads/ are tracked)
 temp/
 tmp/
 

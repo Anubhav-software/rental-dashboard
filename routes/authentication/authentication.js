@@ -17,27 +17,19 @@ router.get("/forgot-password", (req, res) => {
 });
 
 router.get("/signin", (req, res) => {
-  // If already logged in, go to dashboard
-  if (req.session?.user) return res.redirect(req.session.user.role === "STAFF" ? "/staff/dashboard/index5" : "/owner/dashboard/index5");
   res.render("authentication/signin", { title: "Dashboard", subTitle: "SubTitle", layout: "../views/layout/layout2" });
 });
 
 router.get("/signup", (req, res) => {
-  if (req.session?.user) return res.redirect(req.session.user.role === "STAFF" ? "/staff/dashboard/index5" : "/owner/dashboard/index5");
   res.render("authentication/signup", { title: "Dashboard", subTitle: "SubTitle", layout: "../views/layout/layout2" });
 });
 
 router.get("/verify-otp", (req, res) => {
-  if (req.session?.user) return res.redirect(req.session.user.role === "STAFF" ? "/staff/dashboard/index5" : "/owner/dashboard/index5");
-  if (!req.session?.pendingOtp) return res.redirect("/authentication/signin");
   res.render("authentication/verifyOtp", {
     title: "Dashboard",
     subTitle: "SubTitle",
     layout: "../views/layout/layout2",
-    maskedEmail: req.session.pendingUser?.email ? req.session.pendingUser.email.replace(/(.{2}).+(@.+)/, "$1****$2") : "",
-    // Demo: show otp on screen (remove later)
-    demoOtp: req.session.pendingOtp,
-    error: null,
+    maskedEmail: "",
   });
 });
 

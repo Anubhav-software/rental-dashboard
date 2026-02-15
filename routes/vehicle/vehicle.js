@@ -33,90 +33,41 @@ const demoVehicles = [
 
 let nextId = 4;
 
-// List vehicles (with optional search & status filter)
+// List vehicles — render shell; data loaded client-side via vehicleApi.list()
 router.get("/", (req, res) => {
-  let list = [...demoVehicles];
-  const search = (req.query.search || "").trim().toLowerCase();
-  const statusFilter = (req.query.status || "").trim();
-
-  if (search) {
-    list = list.filter(
-      (v) =>
-        (v.make || "").toLowerCase().includes(search) ||
-        v.model.toLowerCase().includes(search) ||
-        (v.registrationNumber && v.registrationNumber.toLowerCase().includes(search))
-    );
-  }
-  if (statusFilter) {
-    list = list.filter((v) => v.status === statusFilter);
-  }
-
+  const status = (req.query.status || "").trim();
+  const vehicle_type = (req.query.vehicle_type || "").trim();
+  const page = Math.max(1, parseInt(req.query.page, 10) || 1);
+  const limit = Math.min(100, Math.max(1, parseInt(req.query.limit, 10) || 20));
   res.render("vehicle/list-vehicles", {
     title: "Vehicles",
     subTitle: "Vehicle List",
-    vehicles: list,
-    query: { search: req.query.search || "", status: statusFilter },
+    vehicles: [],
+    query: { status, vehicle_type, page, limit },
+    pagination: { total: 0, page, limit, totalPages: 0 },
   });
 });
 
-// Download CSV template for vehicle import/export (readable headers + dummy rows)
+// Download CSV template for vehicle import — only fields that exist on the add vehicle form (no extra columns).
+// Same columns as backend bulk template so upload works; snake_case headers for parser.
 router.get("/template/download", (req, res) => {
   const headers = [
-    "Make",
-    "Model",
-    "Registration Number",
-    "Vehicle Type",
-    "Year",
-    "Color",
-    "Seating Capacity",
-    "Fuel Type",
-    "Daily Rate",
-    "Hourly Rate",
-    "Weekly Rate",
-    "Monthly Rate",
-    "Late Return Fee Per Hour",
-    "Late Return Fee Per Day",
-    "Owner Name",
-    "Owner Contact",
-    "Status",
-    "Geographic Restriction Enabled",
-    "Allowed Geographic Area",
-    "Geographic Violation Fine",
-    "Early Return Refund Allowed",
-    "Early Return Penalty %",
-    "Helmet Damage Min",
-    "Helmet Damage Max",
-    "Key Lost Min",
-    "Key Lost Max",
-    "Puncture Repair Min",
-    "Puncture Repair Max",
-    "Pickup Fee Min",
-    "Pickup Fee Max",
-    "Oil Change Min",
-    "Oil Change Max",
-    "Battery Rundown Charge",
-    "Accident Recovery Min",
-    "Accident Recovery Max",
-    "Tax Expiry Date",
-    "Next Battery Change Date",
-    "Next Service Date",
-    "Next Oil Change Date",
+    "registration_number", "vehicle_type", "make", "model", "status",
+    "year", "color", "seating_capacity", "fuel_type", "engine_capacity_cc",
+    "daily_rate", "weekly_rate", "monthly_rate", "deposit",
+    "rate_1_day", "rate_2_days", "rate_3_days", "rate_4_days", "rate_5_days", "rate_6_days", "rate_7_days",
+    "rate_14_days", "rate_21_days", "rate_28_days", "rate_60_days", "rate_90_days",
+    "tax_expiry_date", "next_battery_change_date", "next_service_date", "next_oil_change_date",
+    "image_url",
   ];
-  // Dummy entries: CAR and MOTORBIKE examples
-  const dummyRows = [
-    ["Toyota", "Camry", "TN-01-AB-1234", "CAR", "2022", "White", "5", "Petrol", "2500", "200", "15000", "50000", "100", "500", "Fleet Owner", "+91 9876543210", "Available", "0", "", "", "1", "0", "", "", "", "", "", "", "", "", "", "", "", "", "", "2025-12-31", "2025-06-15", "2025-03-01", "2025-02-01"],
-    ["Honda", "Activa", "TN-02-XY-5678", "MOTORBIKE", "2023", "Red", "2", "Petrol", "800", "80", "4500", "", "50", "200", "", "", "Available", "0", "", "", "0", "", "500", "2000", "1000", "5000", "200", "800", "100", "500", "150", "400", "300", "1000", "3000", "", "", "", ""],
-  ];
+  const sampleRow = ["ABC-1234", "CAR", "Honda", "Civic", "AVAILABLE", "2022", "White", "5", "Petrol", "1200", "50", "300", "1000", "5000", "300", "600", "900", "1200", "1400", "1500", "1600", "2800", "4000", "5000", "10000", "15000", "2026-12-31", "2026-12-31", "2026-12-31", "2026-12-31", ""];
   const escapeCsv = (cell) => {
     const s = cell == null ? "" : String(cell);
     if (s.includes(",") || s.includes('"') || s.includes("\n")) return '"' + s.replace(/"/g, '""') + '"';
     return s;
   };
   const csvLine = (arr) => arr.map(escapeCsv).join(",");
-  let csv = "\uFEFF" + csvLine(headers) + "\r\n";
-  dummyRows.forEach((row) => {
-    csv += csvLine(row) + "\r\n";
-  });
+  let csv = "\uFEFF" + csvLine(headers) + "\r\n" + csvLine(sampleRow) + "\r\n";
   res.setHeader("Content-Type", "text/csv; charset=utf-8");
   res.setHeader("Content-Disposition", 'attachment; filename="vehicle-import-template.csv"');
   res.send(csv);
@@ -264,85 +215,6 @@ router.post("/add", (req, res) => {
   return res.redirect((req.baseUrl || "") + "/vehicle");
 });
 
-// Edit vehicle form
-router.get("/edit/:id", (req, res) => {
-  const id = parseInt(req.params.id, 10);
-  const vehicle = demoVehicles.find((v) => v.id === id);
-  if (!vehicle) return res.redirect((req.baseUrl || "") + "/vehicle");
-  res.render("vehicle/edit-vehicle", { title: "Vehicles", subTitle: "Edit Vehicle", vehicle, error: null });
-});
-
-// Edit vehicle submit
-router.post("/edit/:id", (req, res) => {
-  const id = parseInt(req.params.id, 10);
-  const vehicle = demoVehicles.find((v) => v.id === id);
-  if (!vehicle) return res.redirect((req.baseUrl || "") + "/vehicle");
-  const body = req.body || {};
-  const make = (body.make || "").trim();
-  const model = (body.model || "").trim();
-  const registrationNumber = (body.registrationNumber || "").trim();
-  if (!make || !model || !registrationNumber) {
-    return res.status(400).render("vehicle/edit-vehicle", {
-      title: "Vehicles",
-      subTitle: "Edit Vehicle",
-      vehicle: { ...vehicle, ...body },
-      error: "Make, Model and Registration Number are required",
-    });
-  }
-  const duplicate = demoVehicles.find((v) => v.id !== id && (v.registrationNumber || "").toLowerCase() === registrationNumber.toLowerCase());
-  if (duplicate) {
-    return res.status(409).render("vehicle/edit-vehicle", {
-      title: "Vehicles",
-      subTitle: "Edit Vehicle",
-      vehicle: { ...vehicle, ...body },
-      error: "Registration number already exists",
-    });
-  }
-  const statusVal = ["Available", "Rented", "Maintenance"].includes(body.status) ? body.status : vehicle.status;
-  const vehicleType = ["MOTORBIKE", "CAR"].includes(body.vehicleType) ? body.vehicleType : vehicle.vehicleType || "CAR";
-  const num = (x) => (x !== "" && x !== undefined && x !== null ? parseFloat(String(x)) : null);
-  vehicle.make = make;
-  vehicle.model = model;
-  vehicle.registrationNumber = registrationNumber;
-  vehicle.vehicleType = vehicleType;
-  vehicle.year = body.year ? parseInt(body.year, 10) : null;
-  vehicle.color = (body.color || "").trim() || null;
-  vehicle.seatingCapacity = body.seatingCapacity ? parseInt(body.seatingCapacity, 10) : null;
-  vehicle.fuelType = (body.fuelType || "").trim() || null;
-  vehicle.dailyRate = num(body.dailyRate);
-  vehicle.weeklyRate = num(body.weeklyRate);
-  vehicle.monthlyRate = num(body.monthlyRate);
-  vehicle.hourlyRate = num(body.hourlyRate);
-  vehicle.ownerName = (body.ownerName || "").trim() || null;
-  vehicle.ownerContact = (body.ownerContact || "").trim() || null;
-  vehicle.status = statusVal;
-  vehicle.lateReturnFeePerHour = num(body.lateReturnFeePerHour);
-  vehicle.lateReturnFeePerDay = num(body.lateReturnFeePerDay);
-  vehicle.geographicRestrictionEnabled = body.geographicRestrictionEnabled === "on" || body.geographicRestrictionEnabled === "1";
-  vehicle.allowedGeographicArea = (body.allowedGeographicArea || "").trim() || null;
-  vehicle.geographicViolationFine = num(body.geographicViolationFine);
-  vehicle.earlyReturnRefundAllowed = body.earlyReturnRefundAllowed === "on" || body.earlyReturnRefundAllowed === "1";
-  vehicle.earlyReturnPenaltyPercentage = num(body.earlyReturnPenaltyPercentage);
-  vehicle.helmetDamageMin = num(body.helmetDamageMin);
-  vehicle.helmetDamageMax = num(body.helmetDamageMax);
-  vehicle.keyLostMin = num(body.keyLostMin);
-  vehicle.keyLostMax = num(body.keyLostMax);
-  vehicle.punctureRepairMin = num(body.punctureRepairMin);
-  vehicle.punctureRepairMax = num(body.punctureRepairMax);
-  vehicle.pickupFeeMin = num(body.pickupFeeMin);
-  vehicle.pickupFeeMax = num(body.pickupFeeMax);
-  vehicle.oilChangeMin = num(body.oilChangeMin);
-  vehicle.oilChangeMax = num(body.oilChangeMax);
-  vehicle.batteryRundownCharge = num(body.batteryRundownCharge);
-  vehicle.accidentRecoveryMin = num(body.accidentRecoveryMin);
-  vehicle.accidentRecoveryMax = num(body.accidentRecoveryMax);
-  vehicle.taxExpiryDate = (body.taxExpiryDate || "").trim() || null;
-  vehicle.nextBatteryChangeDate = (body.nextBatteryChangeDate || "").trim() || null;
-  vehicle.nextServiceDate = (body.nextServiceDate || "").trim() || null;
-  vehicle.nextOilChangeDate = (body.nextOilChangeDate || "").trim() || null;
-  return res.redirect((req.baseUrl || "") + "/vehicle");
-});
-
 // Due today / due this week list (client requirement: daily due list)
 function getDueList(range = "today") {
   const today = new Date();
@@ -380,19 +252,20 @@ router.get("/due", (req, res) => {
   });
 });
 
-// View vehicle
+// View vehicle — render shell; data loaded client-side via vehicleApi.getById(id)
 router.get("/view/:id", (req, res) => {
-  const id = parseInt(req.params.id, 10);
-  const vehicle = demoVehicles.find((v) => v.id === id);
-  if (!vehicle) return res.redirect((req.baseUrl || "") + "/vehicle");
-  res.render("vehicle/view-vehicle", { title: "Vehicles", subTitle: "View Vehicle", vehicle });
+  const vehicleId = req.params.id;
+  res.render("vehicle/view-vehicle", { title: "Vehicles", subTitle: "View Vehicle", vehicle: null, vehicleId });
 });
 
-// Delete vehicle
+// Edit vehicle — render shell; data loaded client-side via vehicleApi.getById(id), submit via PATCH
+router.get("/edit/:id", (req, res) => {
+  const vehicleId = req.params.id;
+  res.render("vehicle/edit-vehicle", { title: "Vehicles", subTitle: "Edit Vehicle", vehicle: null, vehicleId, error: null });
+});
+
+// Delete vehicle — dashboard uses client-side vehicleApi.delete(id) from list and view pages; this route kept for legacy POST form
 router.post("/delete/:id", (req, res) => {
-  const id = parseInt(req.params.id, 10);
-  const idx = demoVehicles.findIndex((v) => v.id === id);
-  if (idx !== -1) demoVehicles.splice(idx, 1);
   return res.redirect((req.baseUrl || "") + "/vehicle");
 });
 

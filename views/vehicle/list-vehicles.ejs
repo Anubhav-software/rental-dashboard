@@ -1,21 +1,27 @@
-<div class="card h-100 p-0 radius-12">
+<div class="card h-100 p-0 radius-12" id="vehicle-list-card" data-base-path="<%= typeof basePath !== 'undefined' ? basePath : '' %>" data-page="<%= query.page %>" data-limit="<%= query.limit %>">
     <div class="card-header border-bottom bg-base py-16 px-24 d-flex align-items-center flex-wrap gap-3 justify-content-between">
         <div class="d-flex align-items-center flex-wrap gap-3">
-            <form method="GET" action="<%= typeof basePath !== 'undefined' ? basePath : '' %>/vehicle" class="navbar-search d-flex align-items-center gap-2">
-                <input type="text" class="bg-base h-40-px w-auto" name="search" placeholder="Search make, model, reg no" value="<%= query.search %>">
-                <iconify-icon icon="ion:search-outline" class="icon"></iconify-icon>
-            </form>
-            <form method="GET" action="<%= typeof basePath !== 'undefined' ? basePath : '' %>/vehicle" class="d-flex align-items-center gap-2">
-                <input type="hidden" name="search" value="<%= query.search %>">
-                <select name="status" class="form-select form-select-sm w-auto ps-12 py-6 radius-12 h-40-px" onchange="this.form.submit()">
-                    <option value="">All status</option>
-                    <option value="Available" <%= query.status === 'Available' ? 'selected' : '' %>>Available</option>
-                    <option value="Rented" <%= query.status === 'Rented' ? 'selected' : '' %>>Rented</option>
-                    <option value="Maintenance" <%= query.status === 'Maintenance' ? 'selected' : '' %>>Maintenance</option>
-                </select>
-            </form>
+            <div class="d-flex align-items-center gap-2 position-relative" style="min-width: 200px;">
+                <iconify-icon icon="mdi:magnify" class="text-secondary-light position-absolute" style="left: 10px; top: 50%; transform: translateY(-50%); font-size: 1.1rem;"></iconify-icon>
+                <input type="text" id="vehicle-search" class="form-control form-control-sm ps-36 py-8 radius-12 h-40-px" placeholder="Search registration, make, model…" autocomplete="off">
+            </div>
+            <select id="filter-status" class="form-select form-select-sm w-auto ps-12 py-6 radius-12 h-40-px" title="Filter by status">
+                <option value="">All status</option>
+                <option value="AVAILABLE" <%= query.status === 'AVAILABLE' ? 'selected' : '' %>>Available</option>
+                <option value="RENTED" <%= query.status === 'RENTED' ? 'selected' : '' %>>Rented</option>
+                <option value="MAINTENANCE" <%= query.status === 'MAINTENANCE' ? 'selected' : '' %>>Maintenance</option>
+            </select>
+            <select id="filter-vehicle-type" class="form-select form-select-sm w-auto ps-12 py-6 radius-12 h-40-px" title="Filter by type">
+                <option value="">All types</option>
+                <option value="CAR" <%= query.vehicle_type === 'CAR' ? 'selected' : '' %>>Car</option>
+                <option value="MOTORBIKE" <%= query.vehicle_type === 'MOTORBIKE' ? 'selected' : '' %>>Motorbike</option>
+            </select>
         </div>
         <div class="d-flex align-items-center gap-2">
+            <button type="button" class="btn border border-neutral-400 bg-hover-neutral-100 text-primary-light text-sm btn-sm px-12 py-12 radius-8 d-flex align-items-center gap-2" data-bs-toggle="modal" data-bs-target="#vehicleBulkUploadModal">
+                <iconify-icon icon="mdi:file-upload-outline" class="icon text-xl line-height-1"></iconify-icon>
+                Bulk upload
+            </button>
             <button type="button" class="btn border border-neutral-400 bg-hover-neutral-100 text-primary-light text-sm btn-sm px-12 py-12 radius-8 d-flex align-items-center gap-2" data-bs-toggle="modal" data-bs-target="#vehicleExportModal">
                 <iconify-icon icon="mdi:file-export-outline" class="icon text-xl line-height-1"></iconify-icon>
                 Export
@@ -27,69 +33,78 @@
         </div>
     </div>
     <div class="card-body p-24">
-        <div class="table-responsive scroll-sm">
-            <table class="table bordered-table sm-table mb-0">
-                <thead>
-                    <tr>
-                        <th scope="col">#</th>
-                        <th scope="col">Make</th>
-                        <th scope="col">Model</th>
-                        <th scope="col">Registration</th>
-                        <th scope="col">Type</th>
-                        <th scope="col">Year</th>
-                        <th scope="col">Daily Rate</th>
-                        <th scope="col">Tax expiry</th>
-                        <th scope="col">Next service</th>
-                        <th scope="col" class="text-center">Status</th>
-                        <th scope="col" class="text-center">Action</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <% if (vehicles.length === 0) { %>
-                    <tr>
-                        <td colspan="11" class="text-center text-secondary-light py-24">No vehicles found.</td>
-                    </tr>
-                    <% } else { %>
-                    <% vehicles.forEach((v, i) => { %>
-                    <tr>
-                        <td><%= i + 1 %></td>
-                        <td><span class="text-md fw-normal text-secondary-light"><%= v.make || '-' %></span></td>
-                        <td><span class="text-md fw-normal text-secondary-light"><%= v.model %></span></td>
-                        <td><span class="text-md fw-normal text-secondary-light"><%= v.registrationNumber %></span></td>
-                        <td><span class="text-md fw-normal text-secondary-light"><%= (v.vehicleType || 'CAR') === 'MOTORBIKE' ? 'Motorbike' : 'Car' %></span></td>
-                        <td><span class="text-md fw-normal text-secondary-light"><%= v.year || '-' %></span></td>
-                        <td><span class="text-md fw-normal text-secondary-light"><%= v.dailyRate != null ? v.dailyRate : '-' %></span></td>
-                        <td><span class="text-md fw-normal text-secondary-light"><%= v.taxExpiryDate || '-' %></span></td>
-                        <td><span class="text-md fw-normal text-secondary-light"><%= v.nextServiceDate || '-' %></span></td>
-                        <td class="text-center">
-                            <% if (v.status === 'Available') { %>
-                            <span class="bg-success-focus text-success-600 border border-success-main px-24 py-4 radius-4 fw-medium text-sm">Available</span>
-                            <% } else if (v.status === 'Rented') { %>
-                            <span class="bg-info-focus text-info-600 border border-info-main px-24 py-4 radius-4 fw-medium text-sm">Rented</span>
-                            <% } else { %>
-                            <span class="bg-warning-focus text-warning-600 border border-warning-main px-24 py-4 radius-4 fw-medium text-sm">Maintenance</span>
-                            <% } %>
-                        </td>
-                        <td class="text-center">
-                            <div class="d-flex align-items-center gap-10 justify-content-center">
-                                <a href="<%= typeof basePath !== 'undefined' ? basePath : '' %>/vehicle/view/<%= v.id %>" class="bg-info-focus bg-hover-info-200 text-info-600 fw-medium w-40-px h-40-px d-flex justify-content-center align-items-center rounded-circle text-decoration-none">
-                                    <iconify-icon icon="majesticons:eye-line" class="icon text-xl"></iconify-icon>
-                                </a>
-                                <a href="<%= typeof basePath !== 'undefined' ? basePath : '' %>/vehicle/edit/<%= v.id %>" class="bg-success-focus text-success-600 bg-hover-success-200 fw-medium w-40-px h-40-px d-flex justify-content-center align-items-center rounded-circle text-decoration-none">
-                                    <iconify-icon icon="lucide:edit" class="menu-icon"></iconify-icon>
-                                </a>
-                                <form action="<%= typeof basePath !== 'undefined' ? basePath : '' %>/vehicle/delete/<%= v.id %>" method="POST" class="d-inline mb-0 vehicle-delete-form">
-                                    <button type="submit" class="remove-item-btn bg-danger-focus bg-hover-danger-200 text-danger-600 fw-medium w-40-px h-40-px d-flex justify-content-center align-items-center rounded-circle border-0">
-                                        <iconify-icon icon="fluent:delete-24-regular" class="menu-icon"></iconify-icon>
-                                    </button>
-                                </form>
-                            </div>
-                        </td>
-                    </tr>
-                    <% }); %>
-                    <% } %>
-                </tbody>
-            </table>
+        <div id="vehicle-list-loading" class="text-center text-secondary-light py-24">Loading vehicles…</div>
+        <div id="vehicle-list-content" class="d-none">
+            <div class="table-responsive scroll-sm">
+                <table class="table bordered-table sm-table mb-0">
+                    <thead>
+                        <tr>
+                            <th scope="col">#</th>
+                            <th scope="col">Image</th>
+                            <th scope="col">Registration</th>
+                            <th scope="col">Type</th>
+                            <th scope="col">Make</th>
+                            <th scope="col">Model</th>
+                            <th scope="col">Status</th>
+                            <th scope="col">Year</th>
+                            <th scope="col">Color</th>
+                            <th scope="col">Daily Rate</th>
+                            <th scope="col">Tax expiry</th>
+                            <th scope="col">Next service</th>
+                            <th scope="col" class="text-center">Action</th>
+                        </tr>
+                    </thead>
+                    <tbody id="vehicle-list-tbody">
+                    </tbody>
+                </table>
+            </div>
+            <div id="vehicle-list-pagination" class="d-flex align-items-center justify-content-between mt-16 flex-wrap gap-2">
+            </div>
+        </div>
+        <div id="vehicle-list-error" class="d-none text-center text-danger py-24"></div>
+    </div>
+</div>
+
+<!-- Bulk upload modal -->
+<div class="modal fade" id="vehicleBulkUploadModal" tabindex="-1" aria-labelledby="vehicleBulkUploadModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content radius-16 bg-base">
+            <div class="modal-header py-16 px-24 border border-top-0 border-start-0 border-end-0">
+                <h5 class="modal-title d-flex align-items-center gap-2" id="vehicleBulkUploadModalLabel">
+                    <iconify-icon icon="mdi:file-upload-outline"></iconify-icon>
+                    Bulk upload vehicles
+                </h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body p-24">
+                <p class="text-secondary-light mb-16">Upload a CSV or Excel file to add multiple vehicles. Use the template to get the correct column format.</p>
+                <div class="d-flex flex-wrap gap-2 mb-20">
+                    <button type="button" id="bulk-download-template-btn" class="btn border border-primary-600 text-primary-600 bg-hover-primary-50 radius-8 d-inline-flex align-items-center gap-2">
+                        <iconify-icon icon="mdi:download-outline"></iconify-icon>
+                        Download CSV template
+                    </button>
+                </div>
+                <div class="mb-16">
+                    <label class="form-label text-sm mb-8">Select file (CSV or Excel)</label>
+                    <input type="file" id="bulk-upload-file" class="form-control radius-12" accept=".csv,.xls,.xlsx">
+                    <span id="bulk-upload-filename" class="text-sm text-secondary-light mt-4 d-block"></span>
+                </div>
+                <div id="bulk-upload-result" class="d-none mt-16">
+                    <div id="bulk-upload-success" class="alert alert-success radius-12 mb-12 d-none"></div>
+                    <div id="bulk-upload-failed-wrap" class="d-none">
+                        <p class="text-sm fw-medium text-primary-light mb-8">Failed rows</p>
+                        <div id="bulk-upload-failed-list" class="bg-neutral-50 radius-8 p-12 text-sm overflow-auto" style="max-height: 200px;"></div>
+                    </div>
+                </div>
+                <div id="bulk-upload-error" class="alert alert-danger radius-12 mt-16 d-none"></div>
+            </div>
+            <div class="modal-footer border-0 py-16 px-24">
+                <button type="button" class="btn border border-neutral-400 text-primary-light radius-8" data-bs-dismiss="modal">Close</button>
+                <button type="button" id="bulk-upload-submit-btn" class="btn btn-primary radius-8 d-flex align-items-center gap-2" disabled>
+                    <iconify-icon icon="mdi:upload-outline"></iconify-icon>
+                    Upload
+                </button>
+            </div>
         </div>
     </div>
 </div>
@@ -120,5 +135,269 @@
 </div>
 
 <% script = `
+<script src="/js/api/vehicleApi.js"></script>
 <script src="/js/modules/vehicle.js"></script>
+<script>
+(function () {
+  var card = document.getElementById('vehicle-list-card');
+  var loadingEl = document.getElementById('vehicle-list-loading');
+  var contentEl = document.getElementById('vehicle-list-content');
+  var errorEl = document.getElementById('vehicle-list-error');
+  var tbody = document.getElementById('vehicle-list-tbody');
+  var paginationEl = document.getElementById('vehicle-list-pagination');
+  var basePath = (card && card.getAttribute('data-base-path')) || '';
+
+  function getFilters() {
+    var statusEl = document.getElementById('filter-status');
+    var typeEl = document.getElementById('filter-vehicle-type');
+    var initialPage = card && card.getAttribute('data-page');
+    var initialLimit = card && card.getAttribute('data-limit');
+    return {
+      status: (statusEl && statusEl.value) || '',
+      vehicle_type: (typeEl && typeEl.value) || '',
+      page: parseInt(sessionStorage.getItem('vehicleListPage') || initialPage || '1', 10),
+      limit: parseInt(initialLimit || '20', 10)
+    };
+  }
+
+  function setPage(p) {
+    sessionStorage.setItem('vehicleListPage', String(p));
+  }
+
+  function formatDate(d) {
+    if (!d) return '-';
+    if (typeof d === 'string') return d.slice(0, 10);
+    return d.toISOString ? d.toISOString().slice(0, 10) : '-';
+  }
+
+  function statusLabel(s) {
+    if (s === 'AVAILABLE') return 'Available';
+    if (s === 'RENTED') return 'Rented';
+    if (s === 'MAINTENANCE') return 'Maintenance';
+    return s || '-';
+  }
+
+  function typeLabel(t) {
+    if (t === 'MOTORBIKE') return 'Motorbike';
+    if (t === 'CAR') return 'Car';
+    return t || '-';
+  }
+
+  function imageUrl(filename) {
+    if (!filename) return null;
+    var base = (window.API_BASE_URL || '').replace(/\\/$/, '');
+    return base + '/uploads/Vehicle-images/' + encodeURIComponent(filename);
+  }
+
+  function searchableText(v) {
+    var parts = [
+      v.registrationNumber || '',
+      v.make || '',
+      v.model || '',
+      typeLabel(v.vehicleType),
+      (v.year != null ? String(v.year) : ''),
+      v.color || '',
+      statusLabel(v.status)
+    ];
+    return parts.join(' ').toLowerCase();
+  }
+
+  function renderRow(v, index) {
+    var imgSrc = imageUrl(v.image);
+    var imgHtml = imgSrc
+      ? '<img src="' + imgSrc + '" alt="" class="rounded" style="width:40px;height:40px;object-fit:cover;">'
+      : '<span class="text-secondary-light text-sm">-</span>';
+    var statusClass = v.status === 'AVAILABLE' ? 'bg-success-focus text-success-600 border-success-main'
+      : v.status === 'RENTED' ? 'bg-info-focus text-info-600 border-info-main'
+      : 'bg-warning-focus text-warning-600 border-warning-main';
+    var tr = document.createElement('tr');
+    tr.setAttribute('data-vehicle-search', searchableText(v));
+    tr.innerHTML =
+      '<td>' + (index + 1) + '</td>' +
+      '<td>' + imgHtml + '</td>' +
+      '<td><span class="text-md fw-normal text-secondary-light">' + (v.registrationNumber || '-') + '</span></td>' +
+      '<td><span class="text-md fw-normal text-secondary-light">' + typeLabel(v.vehicleType) + '</span></td>' +
+      '<td><span class="text-md fw-normal text-secondary-light">' + (v.make || '-') + '</span></td>' +
+      '<td><span class="text-md fw-normal text-secondary-light">' + (v.model || '-') + '</span></td>' +
+      '<td class="text-center"><span class="border px-24 py-4 radius-4 fw-medium text-sm ' + statusClass + '">' + statusLabel(v.status) + '</span></td>' +
+      '<td><span class="text-md fw-normal text-secondary-light">' + (v.year != null ? v.year : '-') + '</span></td>' +
+      '<td><span class="text-md fw-normal text-secondary-light">' + (v.color || '-') + '</span></td>' +
+      '<td><span class="text-md fw-normal text-secondary-light">' + (v.dailyRate != null ? v.dailyRate : '-') + '</span></td>' +
+      '<td><span class="text-md fw-normal text-secondary-light">' + formatDate(v.taxExpiryDate) + '</span></td>' +
+      '<td><span class="text-md fw-normal text-secondary-light">' + formatDate(v.nextServiceDate) + '</span></td>' +
+      '<td class="text-center"><div class="d-flex align-items-center gap-10 justify-content-center">' +
+      '<a href="' + basePath + '/vehicle/view/' + encodeURIComponent(v.id) + '" class="bg-info-focus bg-hover-info-200 text-info-600 fw-medium w-40-px h-40-px d-flex justify-content-center align-items-center rounded-circle text-decoration-none"><iconify-icon icon="majesticons:eye-line" class="icon text-xl"></iconify-icon></a>' +
+      '<a href="' + basePath + '/vehicle/edit/' + encodeURIComponent(v.id) + '" class="bg-success-focus text-success-600 bg-hover-success-200 fw-medium w-40-px h-40-px d-flex justify-content-center align-items-center rounded-circle text-decoration-none"><iconify-icon icon="lucide:edit" class="menu-icon"></iconify-icon></a>' +
+      '<button type="button" class="vehicle-delete-btn remove-item-btn bg-danger-focus bg-hover-danger-200 text-danger-600 fw-medium w-40-px h-40-px d-flex justify-content-center align-items-center rounded-circle border-0" data-vehicle-id="' + encodeURIComponent(v.id) + '"><iconify-icon icon="fluent:delete-24-regular" class="menu-icon"></iconify-icon></button>' +
+      '</div></td>';
+    var deleteBtn = tr.querySelector('.vehicle-delete-btn');
+    if (deleteBtn) {
+      deleteBtn.addEventListener('click', function () {
+        var id = this.getAttribute('data-vehicle-id');
+        if (!id || !window.vehicleApi || !window.vehicleApi.delete) return;
+        if (!confirm('Are you sure you want to delete this vehicle?')) return;
+        window.vehicleApi.delete(id).then(function () {
+          if (window.showToast) window.showToast('Vehicle deleted successfully.', 'success');
+          loadList();
+        }).catch(function (err) {
+          if (window.showToast) window.showToast(err.message || 'Delete failed', 'error');
+          else alert(err.message || 'Delete failed');
+        });
+      });
+    }
+    return tr;
+  }
+
+  function renderPagination(pagination) {
+    if (!pagination || pagination.totalPages <= 1) {
+      paginationEl.innerHTML = '<span class="text-secondary-light text-sm">Page ' + (pagination ? pagination.page : 1) + ' of ' + (pagination ? pagination.totalPages : 1) + '</span>';
+      return;
+    }
+    var p = pagination.page;
+    var totalPages = pagination.totalPages;
+    var prevDisabled = p <= 1 ? ' disabled' : '';
+    var nextDisabled = p >= totalPages ? ' disabled' : '';
+    paginationEl.innerHTML =
+      '<span class="text-secondary-light text-sm">Page ' + p + ' of ' + totalPages + ' (' + (pagination.total || 0) + ' total)</span>' +
+      '<div class="d-flex gap-2">' +
+      '<button type="button" class="btn btn-sm border border-neutral-400 radius-8' + prevDisabled + '" id="vehicle-prev-page">Previous</button>' +
+      '<button type="button" class="btn btn-sm border border-neutral-400 radius-8' + nextDisabled + '" id="vehicle-next-page">Next</button>' +
+      '</div>';
+    var prevBtn = document.getElementById('vehicle-prev-page');
+    var nextBtn = document.getElementById('vehicle-next-page');
+    if (prevBtn && !prevDisabled) prevBtn.addEventListener('click', function () { setPage(p - 1); loadList(); });
+    if (nextBtn && !nextDisabled) nextBtn.addEventListener('click', function () { setPage(p + 1); loadList(); });
+  }
+
+  function loadList() {
+    if (!window.vehicleApi || !window.vehicleApi.list) {
+      loadingEl.classList.add('d-none');
+      errorEl.classList.remove('d-none');
+      errorEl.textContent = 'Vehicle API not loaded.';
+      return;
+    }
+    loadingEl.classList.remove('d-none');
+    contentEl.classList.add('d-none');
+    errorEl.classList.add('d-none');
+    var params = getFilters();
+    setPage(params.page);
+    // Only send status/vehicle_type when set; empty string causes backend validation error
+    if (!params.status) delete params.status;
+    if (!params.vehicle_type) delete params.vehicle_type;
+    window.vehicleApi.list(params).then(function (data) {
+      loadingEl.classList.add('d-none');
+      var vehicles = (data && data.vehicles) ? data.vehicles : [];
+      var pagination = (data && data.pagination) ? data.pagination : { page: 1, limit: 20, total: 0, totalPages: 0 };
+      tbody.innerHTML = '';
+      if (vehicles.length === 0) {
+        tbody.innerHTML = '<tr><td colspan="13" class="text-center text-secondary-light py-24">No vehicles found.</td></tr>';
+      } else {
+        vehicles.forEach(function (v, i) { tbody.appendChild(renderRow(v, i)); });
+      }
+      renderPagination(pagination);
+      contentEl.classList.remove('d-none');
+    }).catch(function (err) {
+      loadingEl.classList.add('d-none');
+      errorEl.classList.remove('d-none');
+      errorEl.textContent = err.message || 'Failed to load vehicles.';
+    });
+  }
+
+  function filterTableBySearch() {
+    var searchEl = document.getElementById('vehicle-search');
+    var q = (searchEl && searchEl.value) ? searchEl.value.trim().toLowerCase() : '';
+    var rows = tbody ? tbody.querySelectorAll('tr[data-vehicle-search]') : [];
+    rows.forEach(function (tr) {
+      var text = tr.getAttribute('data-vehicle-search') || '';
+      tr.style.display = q === '' || text.indexOf(q) !== -1 ? '' : 'none';
+    });
+  }
+
+  var searchEl = document.getElementById('vehicle-search');
+  if (searchEl) searchEl.addEventListener('input', filterTableBySearch);
+  if (searchEl) searchEl.addEventListener('keyup', filterTableBySearch);
+
+  var statusEl = document.getElementById('filter-status');
+  var typeEl = document.getElementById('filter-vehicle-type');
+  if (statusEl) statusEl.addEventListener('change', function () { setPage(1); loadList(); });
+  if (typeEl) typeEl.addEventListener('change', function () { setPage(1); loadList(); });
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', loadList);
+  } else {
+    loadList();
+  }
+
+  // Bulk upload modal
+  var bulkDownloadBtn = document.getElementById('bulk-download-template-btn');
+  var bulkFileInput = document.getElementById('bulk-upload-file');
+  var bulkFilenameSpan = document.getElementById('bulk-upload-filename');
+  var bulkSubmitBtn = document.getElementById('bulk-upload-submit-btn');
+  var bulkResultEl = document.getElementById('bulk-upload-result');
+  var bulkSuccessEl = document.getElementById('bulk-upload-success');
+  var bulkFailedWrap = document.getElementById('bulk-upload-failed-wrap');
+  var bulkFailedList = document.getElementById('bulk-upload-failed-list');
+  var bulkErrorEl = document.getElementById('bulk-upload-error');
+  if (bulkDownloadBtn && window.vehicleApi && window.vehicleApi.downloadBulkTemplate) {
+    bulkDownloadBtn.addEventListener('click', function () {
+      bulkDownloadBtn.disabled = true;
+      window.vehicleApi.downloadBulkTemplate().then(function () { bulkDownloadBtn.disabled = false; }).catch(function () { bulkDownloadBtn.disabled = false; });
+    });
+  }
+  if (bulkFileInput && bulkFilenameSpan && bulkSubmitBtn) {
+    bulkFileInput.addEventListener('change', function () {
+      if (this.files && this.files[0]) {
+        bulkFilenameSpan.textContent = this.files[0].name;
+        bulkSubmitBtn.disabled = false;
+      } else {
+        bulkFilenameSpan.textContent = '';
+        bulkSubmitBtn.disabled = true;
+      }
+      if (bulkResultEl) bulkResultEl.classList.add('d-none');
+      if (bulkErrorEl) bulkErrorEl.classList.add('d-none');
+    });
+  }
+  if (bulkSubmitBtn && bulkFileInput && window.vehicleApi && window.vehicleApi.bulkUpload) {
+    bulkSubmitBtn.addEventListener('click', function () {
+      var file = bulkFileInput.files && bulkFileInput.files[0];
+      if (!file) return;
+      bulkSubmitBtn.disabled = true;
+      if (bulkErrorEl) bulkErrorEl.classList.add('d-none');
+      window.vehicleApi.bulkUpload(file).then(function (data) {
+        bulkSubmitBtn.disabled = false;
+        if (bulkFileInput) bulkFileInput.value = '';
+        if (bulkFilenameSpan) bulkFilenameSpan.textContent = '';
+        if (bulkResultEl) bulkResultEl.classList.remove('d-none');
+        var created = (data && data.created) ? data.created : 0;
+        var failed = (data && data.failed) ? data.failed : [];
+        if (bulkSuccessEl) {
+          bulkSuccessEl.classList.remove('d-none');
+          bulkSuccessEl.textContent = created + ' vehicle(s) created successfully.';
+        }
+        if (bulkFailedWrap && bulkFailedList) {
+          if (failed.length > 0) {
+            bulkFailedWrap.classList.remove('d-none');
+            bulkFailedList.innerHTML = failed.map(function (f) {
+              var errs = Array.isArray(f.errors) ? f.errors : [f.errors];
+              var msg = errs.map(function (e) { return typeof e === 'string' ? e : (e.message || JSON.stringify(e)); }).join('; ');
+              return '<div class="mb-4">Row ' + (f.row != null ? f.row : f.rowIndex) + ': ' + msg + '</div>';
+            }).join('');
+          } else {
+            bulkFailedWrap.classList.add('d-none');
+            bulkFailedList.innerHTML = '';
+          }
+        }
+        loadList();
+      }).catch(function (err) {
+        bulkSubmitBtn.disabled = false;
+        if (bulkResultEl) bulkResultEl.classList.add('d-none');
+        if (bulkErrorEl) {
+          bulkErrorEl.classList.remove('d-none');
+          bulkErrorEl.textContent = (err.data && err.data.error) ? err.data.error : (err.message || 'Upload failed.');
+        }
+      });
+    });
+  }
+})();
+</script>
 ` %>

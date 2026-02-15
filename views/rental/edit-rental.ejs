@@ -1,0 +1,104 @@
+<div class="card h-100 p-0 radius-12" id="rental-edit-root" data-base-path="<%= typeof basePath !== 'undefined' ? basePath : '' %>" data-rental-id="<%= typeof rentalId !== 'undefined' ? rentalId : '' %>">
+    <div class="card-body p-24">
+        <p id="rental-edit-loading" class="text-center text-secondary-light py-24">Loading rental…</p>
+        <div id="rental-edit-error" class="d-none text-center text-danger py-24"></div>
+        <div id="rental-edit-form-wrap" class="d-none row justify-content-center">
+            <div class="col-xxl-10 col-xl-11 col-lg-12">
+                <div class="card border radius-12 overflow-hidden">
+                    <div class="card-header bg-neutral-50 border-bottom py-16 px-24 d-flex align-items-center justify-content-between flex-wrap gap-2">
+                        <h6 class="text-md text-primary-light mb-0">Edit Rental</h6>
+                        <a href="#" id="rental-edit-back" class="btn btn-outline-secondary btn-sm radius-8 d-flex align-items-center gap-2"><iconify-icon icon="mdi:arrow-left"></iconify-icon> Back</a>
+                    </div>
+                    <div class="card-body p-24">
+                        <form id="rental-edit-form">
+                            <div class="card border radius-12 overflow-hidden mb-24">
+                                <div class="card-header bg-neutral-50 border-bottom py-14 px-20"><h6 class="text-sm fw-semibold text-primary-light mb-0">Customer & Vehicle</h6></div>
+                                <div class="card-body p-20">
+                                    <div class="row g-3">
+                                        <div class="col-md-6">
+                                            <label class="form-label text-sm fw-medium text-primary-light">Customer <span class="text-danger">*</span></label>
+                                            <select name="customerId" id="edit-customerId" class="form-select h-56-px bg-neutral-50 radius-12" required></select>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <label class="form-label text-sm fw-medium text-primary-light">Vehicle <span class="text-danger">*</span></label>
+                                            <select name="vehicleId" id="edit-vehicleId" class="form-select h-56-px bg-neutral-50 radius-12" required></select>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="card border radius-12 overflow-hidden mb-24">
+                                <div class="card-header bg-neutral-50 border-bottom py-14 px-20"><h6 class="text-sm fw-semibold text-primary-light mb-0">Rental Period</h6></div>
+                                <div class="card-body p-20">
+                                    <div class="row g-3">
+                                        <div class="col-md-3">
+                                            <label class="form-label text-sm fw-medium text-primary-light">Start date <span class="text-danger">*</span></label>
+                                            <input type="date" name="startDate" id="edit-startDate" class="form-control h-56-px bg-neutral-50 radius-12" required>
+                                        </div>
+                                        <div class="col-md-3">
+                                            <label class="form-label text-sm fw-medium text-primary-light">Start time</label>
+                                            <input type="time" name="startTime" id="edit-startTime" class="form-control h-56-px bg-neutral-50 radius-12">
+                                        </div>
+                                        <div class="col-md-3">
+                                            <label class="form-label text-sm fw-medium text-primary-light">End date <span class="text-danger">*</span></label>
+                                            <input type="date" name="endDate" id="edit-endDate" class="form-control h-56-px bg-neutral-50 radius-12" required>
+                                        </div>
+                                        <div class="col-md-3">
+                                            <label class="form-label text-sm fw-medium text-primary-light">End time</label>
+                                            <input type="time" name="endTime" id="edit-endTime" class="form-control h-56-px bg-neutral-50 radius-12">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="card border radius-12 overflow-hidden mb-24">
+                                <div class="card-header bg-neutral-50 border-bottom py-14 px-20"><h6 class="text-sm fw-semibold text-primary-light mb-0">Rate & Payment</h6></div>
+                                <div class="card-body p-20">
+                                    <div class="row g-3">
+                                        <div class="col-md-4">
+                                            <label class="form-label text-sm fw-medium text-primary-light">Charge method</label>
+                                            <select name="selectedChargeMethod" id="edit-selectedChargeMethod" class="form-select h-56-px bg-neutral-50 radius-12">
+                                                <option value="DAILY">Daily</option>
+                                                <option value="WEEKLY">Weekly</option>
+                                                <option value="MONTHLY">Monthly</option>
+                                                <option value="HOURLY">Hourly</option>
+                                            </select>
+                                        </div>
+                                        <div class="col-md-4">
+                                            <label class="form-label text-sm fw-medium text-primary-light">Total amount <span class="text-danger">*</span></label>
+                                            <input type="number" name="totalAmount" id="edit-totalAmount" class="form-control h-56-px bg-neutral-50 radius-12" min="0" step="0.01" required>
+                                        </div>
+                                        <div class="col-md-4">
+                                            <label class="form-label text-sm fw-medium text-primary-light">Advance paid</label>
+                                            <input type="number" name="advancePaid" id="edit-advancePaid" class="form-control h-56-px bg-neutral-50 radius-12" min="0" step="0.01">
+                                        </div>
+                                        <div class="col-md-4">
+                                            <label class="form-label text-sm fw-medium text-primary-light">Deposit</label>
+                                            <input type="number" name="deposit" id="edit-deposit" class="form-control h-56-px bg-neutral-50 radius-12" min="0" step="0.01">
+                                        </div>
+                                        <div class="col-md-4">
+                                            <label class="form-label text-sm fw-medium text-primary-light">Helmets</label>
+                                            <input type="number" name="helmetsQuantity" id="edit-helmetsQuantity" class="form-control h-56-px bg-neutral-50 radius-12" min="0" placeholder="0">
+                                        </div>
+                                    </div>
+                                    <div id="edit-calculation-breakdown" class="d-none mt-3 p-3 rounded-3 border border-start border-4 border-primary bg-light">
+                                        <div class="d-flex align-items-center gap-2 mb-1">
+                                            <iconify-icon icon="mdi:calculator-variant" class="text-primary fs-5"></iconify-icon>
+                                            <span class="fw-semibold text-sm">Calculation</span>
+                                        </div>
+                                        <p id="edit-calculation-text" class="text-sm text-body mb-0 small"></p>
+                                    </div>
+                                    <p class="text-sm text-secondary-light mt-3 mb-0">Changing rental dates will auto-update the total amount from the vehicle's duration-based rates. You can edit the amount if needed.</p>
+                                </div>
+                            </div>
+                            <div class="d-flex align-items-center justify-content-end gap-3">
+                                <a href="#" id="rental-edit-cancel" class="btn border border-neutral-400 bg-hover-neutral-100 text-primary-light text-md px-24 py-12 radius-8">Cancel</a>
+                                <button type="submit" class="btn btn-primary text-md px-32 py-12 radius-8">Update Rental</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<% script = '<script src="/js/api/rentalApi.js"></script><script src="/js/api/vehicleApi.js"></script><script src="/js/api/customerApi.js"></script><script src="/js/pages/rental-edit.js"></script>' %>

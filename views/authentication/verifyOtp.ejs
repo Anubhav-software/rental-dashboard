@@ -1,33 +1,25 @@
 <section class="auth bg-base d-flex flex-wrap">
     <div class="auth-left d-lg-block d-none">
         <div class="d-flex align-items-center flex-column h-100 justify-content-center">
-            <img src="/images/auth/auth-img.png" alt="">
+            <img src="/images/vehicle.png" alt="Car Rental" style="max-width: 85%; max-height: 650px; height: auto; object-fit: contain;">
         </div>
     </div>
     <div class="auth-right py-32 px-24 d-flex flex-column justify-content-center">
         <div class="max-w-464-px mx-auto w-100">
             <div>
-                <a href="/authentication/signin" class="mb-40 max-w-290-px">
-                    <img src="/images/logo.png" alt="">
-                </a>
                 <h4 class="mb-12">Verify OTP</h4>
                 <p class="mb-8 text-secondary-light text-lg">Enter the 6-digit code sent to</p>
-                <p class="mb-24 text-primary-600 fw-semibold"><%= maskedEmail || "" %></p>
+                <p id="verify-email-display" class="mb-24 text-primary-600 fw-semibold"><%= maskedEmail || "" %></p>
             </div>
 
+            <div id="verify-error" class="alert alert-danger radius-12 mb-16 d-none"></div>
             <% if (typeof error !== 'undefined' && error) { %>
                 <div class="alert alert-danger radius-12 mb-16">
                     <%= error %>
                 </div>
             <% } %>
 
-            <% if (typeof demoOtp !== 'undefined' && demoOtp) { %>
-                <div class="alert alert-warning radius-12 mb-16">
-                    <strong>Demo OTP:</strong> <%= demoOtp %> (Phase 1 demo)
-                </div>
-            <% } %>
-
-            <form method="POST" action="/authentication/verify-otp">
+            <form id="verify-otp-form" method="POST" action="#" novalidate>
                 <div class="icon-field mb-16">
                     <span class="icon top-50 translate-middle-y">
                         <iconify-icon icon="mdi:shield-key-outline"></iconify-icon>
@@ -58,3 +50,4 @@
     </div>
 </section>
 
+<% script = `<script src="/js/modules/auth-verifyOtp.js"></script>` %>

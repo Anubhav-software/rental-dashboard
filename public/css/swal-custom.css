@@ -1,0 +1,96 @@
+/**
+ * SweetAlert2 custom theme: alignment, color scheme, spacing
+ */
+
+/* Modal container: rounded, shadow, max-width, padding */
+.swal2-popup {
+  padding: 2rem 2rem 1.75rem !important;
+  border-radius: 16px !important;
+  box-shadow: 0 24px 48px rgba(0, 0, 0, 0.15) !important;
+  max-width: 420px !important;
+  text-align: center !important;
+}
+
+/* Title: centered, color, weight, spacing */
+.swal2-title {
+  text-align: center !important;
+  color: #1a1d21 !important;
+  font-size: 1.35rem !important;
+  font-weight: 600 !important;
+  padding: 0 0.5rem !important;
+  margin-bottom: 0.5rem !important;
+  line-height: 1.4 !important;
+}
+
+/* Message text: centered, color, line-height */
+.swal2-html-container {
+  text-align: center !important;
+  color: #4a5568 !important;
+  font-size: 0.95rem !important;
+  line-height: 1.5 !important;
+  margin: 0 0 1.25rem 0 !important;
+  padding: 0 !important;
+}
+
+/* Icon: centered, warning (amber) color scheme */
+.swal2-icon {
+  margin: 0 auto 1rem !important;
+}
+
+.swal2-icon.swal2-warning {
+  border-color: #f59e0b !important;
+  color: #f59e0b !important;
+}
+
+.swal2-icon.swal2-warning .swal2-icon-content {
+  color: #f59e0b !important;
+}
+
+/* Buttons container: centered, gap */
+.swal2-actions {
+  margin: 0 !important;
+  margin-top: 0.25rem !important;
+  gap: 12px !important;
+  justify-content: center !important;
+  flex-wrap: wrap !important;
+}
+
+/* Confirm button: primary blue, rounded, padding */
+.swal2-confirm {
+  border-radius: 10px !important;
+  padding: 10px 24px !important;
+  font-weight: 600 !important;
+  font-size: 0.95rem !important;
+  background: linear-gradient(135deg, #0d6efd 0%, #0a58ca 100%) !important;
+  border: none !important;
+  box-shadow: 0 2px 8px rgba(13, 110, 253, 0.35) !important;
+  transition: transform 0.15s ease, box-shadow 0.15s ease !important;
+}
+
+.swal2-confirm:hover {
+  transform: translateY(-1px) !important;
+  box-shadow: 0 4px 12px rgba(13, 110, 253, 0.4) !important;
+}
+
+/* Cancel button: neutral, rounded, padding */
+.swal2-cancel {
+  border-radius: 10px !important;
+  padding: 10px 24px !important;
+  font-weight: 600 !important;
+  font-size: 0.95rem !important;
+  background-color: #f1f3f5 !important;
+  color: #495057 !important;
+  border: 1px solid #dee2e6 !important;
+  transition: background-color 0.15s ease, transform 0.15s ease !important;
+}
+
+.swal2-cancel:hover {
+  background-color: #e9ecef !important;
+  color: #212529 !important;
+  transform: translateY(-1px) !important;
+}
+
+/* Backdrop */
+.swal2-container {
+  padding: 10px !important;
+}

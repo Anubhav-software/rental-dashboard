@@ -1,4 +1,4 @@
-<div class="card h-100 p-0 radius-12">
+<div class="card h-100 p-0 radius-12" data-base-path="<%= typeof basePath !== 'undefined' ? basePath : '' %>">
     <div class="card-body p-24">
         <div class="row justify-content-center">
             <div class="col-xxl-8 col-xl-10 col-lg-11">
@@ -26,7 +26,8 @@
                             <%= error %>
                         </div>
                         <% } %>
-                        <form method="POST" action="<%= typeof basePath !== 'undefined' ? basePath : '' %>/vehicle/add" id="vehicle-form">
+                        <div id="vehicle-api-error" class="alert alert-danger radius-12 mb-24 d-none"></div>
+                        <form method="POST" action="#" id="vehicle-form" enctype="multipart/form-data">
                             <% const v = typeof vehicle !== 'undefined' && vehicle ? vehicle : {}; %>
 
                             <!-- Part 1: Basic Information -->
@@ -96,62 +97,65 @@
                                             </select>
                                         </div>
                                     </div>
+                                    <div class="col-md-6">
+                                        <label class="form-label text-xs mb-4">Engine capacity (CC)</label>
+                                        <div class="icon-field">
+                                            <span class="icon top-50 translate-middle-y"><iconify-icon icon="mdi:engine-outline"></iconify-icon></span>
+                                            <input type="number" name="engineCapacityCc" class="form-control h-56-px bg-neutral-50 radius-12 ps-48" placeholder="e.g. 150, 1200" min="0" max="10000" value="<%= v.engineCapacityCc != null ? v.engineCapacityCc : (v.engine_capacity_cc != null ? v.engine_capacity_cc : '') %>">
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <label class="form-label text-xs mb-4">Vehicle photo (optional)</label>
+                                        <input type="file" name="image" id="vehicle-image" class="form-control h-56-px bg-neutral-50 radius-12" accept="image/jpeg,image/png,image/jpg,image/gif,image/webp">
+                                        <div id="add-image-preview" class="mt-8 d-none">
+                                            <img id="add-image-preview-img" src="" alt="Preview" class="rounded-8 border border-neutral-200" style="max-width: 120px; max-height: 120px; object-fit: cover;">
+                                        </div>
+                                    </div>
                                 </div>
                                 </div>
                             </div>
 
-                            <!-- Part 2: Rental Rates -->
+                            <!-- Part 2: Rental Rates (optional) + Deposit (required) -->
                             <div class="card border radius-12 overflow-hidden mb-24">
                                 <div class="card-header bg-neutral-50 border-bottom py-14 px-20">
                                     <h6 class="text-sm fw-semibold text-primary-light mb-0 d-flex align-items-center gap-2">
                                         <iconify-icon icon="solar:wallet-money-outline" class="text-primary-600"></iconify-icon>
-                                        Rental Rates
+                                        Rental Rates (optional) &amp; Deposit (required)
                                     </h6>
                                 </div>
                                 <div class="card-body p-20">
+                                <p class="text-xs text-secondary-light mb-12">Daily, weekly and monthly rates are optional. Deposit is mandatory.</p>
                                 <div class="row g-3">
                                     <div class="col-md-6 col-lg-3">
                                         <div class="icon-field">
                                             <span class="icon top-50 translate-middle-y"><iconify-icon icon="mdi:currency-inr"></iconify-icon></span>
-                                            <input type="number" name="dailyRate" class="form-control h-56-px bg-neutral-50 radius-12 ps-48" placeholder="Daily rate" min="0" step="0.01" value="<%= v.dailyRate != null ? v.dailyRate : '' %>">
-                                        </div>
-                                    </div>
-                                    <div class="col-md-6 col-lg-3">
-                                        <div class="icon-field">
-                                            <span class="icon top-50 translate-middle-y"><iconify-icon icon="mdi:clock-outline"></iconify-icon></span>
-                                            <input type="number" name="hourlyRate" class="form-control h-56-px bg-neutral-50 radius-12 ps-48" placeholder="Hourly rate" min="0" step="0.01" value="<%= v.hourlyRate != null ? v.hourlyRate : '' %>">
+                                            <input type="number" name="dailyRate" class="form-control h-56-px bg-neutral-50 radius-12 ps-48" placeholder="Daily rate (optional)" min="0" step="0.01" value="<%= v.dailyRate != null ? v.dailyRate : '' %>">
                                         </div>
                                     </div>
                                     <div class="col-md-6 col-lg-3">
                                         <div class="icon-field">
                                             <span class="icon top-50 translate-middle-y"><iconify-icon icon="mdi:calendar-week"></iconify-icon></span>
-                                            <input type="number" name="weeklyRate" class="form-control h-56-px bg-neutral-50 radius-12 ps-48" placeholder="Weekly rate" min="0" step="0.01" value="<%= v.weeklyRate != null ? v.weeklyRate : '' %>">
+                                            <input type="number" name="weeklyRate" class="form-control h-56-px bg-neutral-50 radius-12 ps-48" placeholder="Weekly rate (optional)" min="0" step="0.01" value="<%= v.weeklyRate != null ? v.weeklyRate : '' %>">
                                         </div>
                                     </div>
                                     <div class="col-md-6 col-lg-3">
                                         <div class="icon-field">
                                             <span class="icon top-50 translate-middle-y"><iconify-icon icon="mdi:calendar-month"></iconify-icon></span>
-                                            <input type="number" name="monthlyRate" class="form-control h-56-px bg-neutral-50 radius-12 ps-48" placeholder="Monthly rate" min="0" step="0.01" value="<%= v.monthlyRate != null ? v.monthlyRate : '' %>">
+                                            <input type="number" name="monthlyRate" class="form-control h-56-px bg-neutral-50 radius-12 ps-48" placeholder="Monthly rate (optional)" min="0" step="0.01" value="<%= v.monthlyRate != null ? v.monthlyRate : '' %>">
                                         </div>
                                     </div>
                                     <div class="col-md-6 col-lg-3">
                                         <div class="icon-field">
-                                            <span class="icon top-50 translate-middle-y"><iconify-icon icon="mdi:clock-alert-outline"></iconify-icon></span>
-                                            <input type="number" name="lateReturnFeePerHour" class="form-control h-56-px bg-neutral-50 radius-12 ps-48" placeholder="Late return fee per hour" min="0" step="0.01" value="<%= v.lateReturnFeePerHour != null ? v.lateReturnFeePerHour : '' %>">
-                                        </div>
-                                    </div>
-                                    <div class="col-md-6 col-lg-3">
-                                        <div class="icon-field">
-                                            <span class="icon top-50 translate-middle-y"><iconify-icon icon="mdi:calendar-clock-outline"></iconify-icon></span>
-                                            <input type="number" name="lateReturnFeePerDay" class="form-control h-56-px bg-neutral-50 radius-12 ps-48" placeholder="Late return fee per day" min="0" step="0.01" value="<%= v.lateReturnFeePerDay != null ? v.lateReturnFeePerDay : '' %>">
+                                            <span class="icon top-50 translate-middle-y"><iconify-icon icon="mdi:shield-check-outline"></iconify-icon></span>
+                                            <input type="number" name="deposit" class="form-control h-56-px bg-neutral-50 radius-12 ps-48" placeholder="Deposit (required)" min="0" step="0.01" value="<%= v.deposit != null ? v.deposit : '' %>" required>
                                         </div>
                                     </div>
                                 </div>
                                 </div>
                             </div>
 
-                            <!-- Part 3: Owner (optional) -->
-                            <div class="card border radius-12 overflow-hidden mb-24" style="max-width: 500px;">
+                            <!-- Part 3: Owner (optional) — hidden: not mandatory, keep form simple -->
+                            <div class="card border radius-12 overflow-hidden mb-24 d-none" style="max-width: 500px;">
                                 <div class="card-header bg-neutral-50 border-bottom py-14 px-20">
                                     <h6 class="text-sm fw-semibold text-primary-light mb-0 d-flex align-items-center gap-2">
                                         <iconify-icon icon="mdi:account-outline" class="text-primary-600"></iconify-icon>
@@ -176,6 +180,80 @@
                                 </div>
                             </div>
 
+                            <!-- Part 3b: Rental charges by duration (mandatory — at least one required) -->
+                            <div class="card border radius-12 overflow-hidden mb-24">
+                                <div class="card-header bg-neutral-50 border-bottom py-14 px-20">
+                                    <h6 class="text-sm fw-semibold text-primary-light mb-0 d-flex align-items-center gap-2">
+                                        <iconify-icon icon="mdi:calendar-range" class="text-primary-600"></iconify-icon>
+                                        Rental charges by duration (required)
+                                    </h6>
+                                </div>
+                                <div class="card-body p-20">
+                                    <p class="text-xs text-secondary-light mb-16">Enter total amount for each duration. At least one amount is required. Example: 1 day = 500, 1 week = 2500.</p>
+                                    <div class="row g-3 mb-16">
+                                        <div class="col-12"><span class="text-sm fw-semibold text-primary-light">Days</span></div>
+                                        <div class="col-6 col-md-4 col-lg-2">
+                                            <label class="form-label text-xs mb-4">1 day</label>
+                                            <input type="number" name="rate_day_1" class="form-control form-control-sm" placeholder="Amount" min="0" step="0.01">
+                                        </div>
+                                        <div class="col-6 col-md-4 col-lg-2">
+                                            <label class="form-label text-xs mb-4">2 days</label>
+                                            <input type="number" name="rate_day_2" class="form-control form-control-sm" placeholder="Amount" min="0" step="0.01">
+                                        </div>
+                                        <div class="col-6 col-md-4 col-lg-2">
+                                            <label class="form-label text-xs mb-4">3 days</label>
+                                            <input type="number" name="rate_day_3" class="form-control form-control-sm" placeholder="Amount" min="0" step="0.01">
+                                        </div>
+                                        <div class="col-6 col-md-4 col-lg-2">
+                                            <label class="form-label text-xs mb-4">4 days</label>
+                                            <input type="number" name="rate_day_4" class="form-control form-control-sm" placeholder="Amount" min="0" step="0.01">
+                                        </div>
+                                        <div class="col-6 col-md-4 col-lg-2">
+                                            <label class="form-label text-xs mb-4">5 days</label>
+                                            <input type="number" name="rate_day_5" class="form-control form-control-sm" placeholder="Amount" min="0" step="0.01">
+                                        </div>
+                                        <div class="col-6 col-md-4 col-lg-2">
+                                            <label class="form-label text-xs mb-4">6 days</label>
+                                            <input type="number" name="rate_day_6" class="form-control form-control-sm" placeholder="Amount" min="0" step="0.01">
+                                        </div>
+                                        <div class="col-6 col-md-4 col-lg-2">
+                                            <label class="form-label text-xs mb-4">7 days</label>
+                                            <input type="number" name="rate_day_7" class="form-control form-control-sm" placeholder="Amount" min="0" step="0.01">
+                                        </div>
+                                    </div>
+                                    <div class="row g-3 mb-16">
+                                        <div class="col-12"><span class="text-sm fw-semibold text-primary-light">Weeks</span></div>
+                                        <div class="col-6 col-md-3">
+                                            <label class="form-label text-xs mb-4">1 week</label>
+                                            <input type="number" name="rate_week_1" class="form-control form-control-sm" placeholder="Amount" min="0" step="0.01">
+                                        </div>
+                                        <div class="col-6 col-md-3">
+                                            <label class="form-label text-xs mb-4">2 weeks</label>
+                                            <input type="number" name="rate_week_2" class="form-control form-control-sm" placeholder="Amount" min="0" step="0.01">
+                                        </div>
+                                        <div class="col-6 col-md-3">
+                                            <label class="form-label text-xs mb-4">3 weeks</label>
+                                            <input type="number" name="rate_week_3" class="form-control form-control-sm" placeholder="Amount" min="0" step="0.01">
+                                        </div>
+                                        <div class="col-6 col-md-3">
+                                            <label class="form-label text-xs mb-4">4 weeks</label>
+                                            <input type="number" name="rate_week_4" class="form-control form-control-sm" placeholder="Amount" min="0" step="0.01">
+                                        </div>
+                                    </div>
+                                    <div class="row g-3">
+                                        <div class="col-12"><span class="text-sm fw-semibold text-primary-light">Months</span></div>
+                                        <div class="col-6 col-md-3">
+                                            <label class="form-label text-xs mb-4">2 months</label>
+                                            <input type="number" name="rate_month_2" class="form-control form-control-sm" placeholder="Amount" min="0" step="0.01">
+                                        </div>
+                                        <div class="col-6 col-md-3">
+                                            <label class="form-label text-xs mb-4">3 months</label>
+                                            <input type="number" name="rate_month_3" class="form-control form-control-sm" placeholder="Amount" min="0" step="0.01">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
                             <!-- Part 4: Status -->
                             <div class="card border radius-12 overflow-hidden mb-24" style="max-width: 320px;">
                                 <div class="card-header bg-neutral-50 border-bottom py-14 px-20">
@@ -187,17 +265,17 @@
                                 <div class="card-body p-20">
                                 <div class="icon-field">
                                     <span class="icon top-50 translate-middle-y"><iconify-icon icon="mdi:checkbox-marked-circle-outline"></iconify-icon></span>
-                                    <select name="status" class="form-select h-56-px bg-neutral-50 radius-12 ps-48">
-                                        <option value="Available" <%= (v.status || 'Available') === 'Available' ? 'selected' : '' %>>Available</option>
-                                        <option value="Rented" <%= (v.status || '') === 'Rented' ? 'selected' : '' %>>Rented</option>
-                                        <option value="Maintenance" <%= (v.status || '') === 'Maintenance' ? 'selected' : '' %>>Maintenance</option>
+                                    <select name="status" class="form-select h-56-px bg-neutral-50 radius-12 ps-48" required>
+                                        <option value="AVAILABLE" <%= (v.status || 'AVAILABLE') === 'AVAILABLE' ? 'selected' : '' %>>Available</option>
+                                        <option value="RENTED" <%= (v.status || '') === 'RENTED' ? 'selected' : '' %>>Rented</option>
+                                        <option value="MAINTENANCE" <%= (v.status || '') === 'MAINTENANCE' ? 'selected' : '' %>>Maintenance</option>
                                     </select>
                                 </div>
                                 </div>
                             </div>
 
-                            <!-- Part 5: Charges & Restrictions -->
-                            <div class="card border radius-12 overflow-hidden mb-24">
+                            <!-- Part 5: Charges & Restrictions (hidden per client preference - keep form simple) -->
+                            <div class="card border radius-12 overflow-hidden mb-24 d-none" id="vehicle-charges-section">
                                 <div class="card-header bg-neutral-50 border-bottom py-14 px-20">
                                     <h6 class="text-sm fw-semibold text-primary-light mb-0 d-flex align-items-center gap-2">
                                         <iconify-icon icon="mdi:cash-multiple" class="text-primary-600"></iconify-icon>
@@ -360,26 +438,164 @@
 </div>
 
 <% script = `
+<script src="/js/api/vehicleApi.js"></script>
 <script src="/js/modules/vehicle.js"></script>
 <script>
 (function(){
-    var fileInput = document.getElementById('vehicleExcelFile');
-    var fileNameSpan = document.getElementById('vehicleFileName');
-    var uploadBtn = document.getElementById('vehicleImportUploadBtn');
-    if (fileInput && fileNameSpan && uploadBtn) {
-        fileInput.addEventListener('change', function(){
-            if (this.files && this.files[0]) {
-                fileNameSpan.textContent = this.files[0].name;
-                uploadBtn.disabled = false;
-            } else {
-                fileNameSpan.textContent = '';
-                uploadBtn.disabled = true;
-            }
+  var basePath = (document.getElementById('vehicle-form') && document.getElementById('vehicle-form').closest('[data-base-path]')) 
+    ? document.getElementById('vehicle-form').closest('[data-base-path]').getAttribute('data-base-path') 
+    : (typeof window !== 'undefined' && window.location.pathname.indexOf('/staff') === 0 ? '/staff' : '/owner');
+  var form = document.getElementById('vehicle-form');
+  var errorEl = document.getElementById('vehicle-api-error');
+
+  function numVal(v) {
+    if (v === '' || v === null || v === undefined) return undefined;
+    var n = parseFloat(String(v).trim());
+    return isNaN(n) ? undefined : n;
+  }
+  function intVal(v) {
+    if (v === '' || v === null || v === undefined) return undefined;
+    var n = parseInt(String(v).trim(), 10);
+    return isNaN(n) ? undefined : n;
+  }
+  function strVal(v) {
+    var s = (v == null ? '' : v).toString().trim();
+    return s === '' ? undefined : s;
+  }
+  function dateVal(v) {
+    var s = strVal(v);
+    if (!s) return undefined;
+    return s;
+  }
+
+  if (form && window.vehicleApi && window.vehicleApi.create) {
+    form.addEventListener('submit', function(e) {
+      e.preventDefault();
+      var fd = new FormData(form);
+      var body = {
+        registrationNumber: strVal(fd.get('registrationNumber')) || '',
+        vehicleType: strVal(fd.get('vehicleType')) || 'CAR',
+        make: strVal(fd.get('make')) || '',
+        model: strVal(fd.get('model')) || '',
+        status: strVal(fd.get('status')) || 'AVAILABLE'
+      };
+      if (body.registrationNumber === '' || body.make === '' || body.model === '') {
+        var msg = 'Registration number, Make and Model are required.';
+        if (window.showToast) window.showToast(msg, 'error');
+        else if (errorEl) { errorEl.classList.remove('d-none'); errorEl.textContent = msg; }
+        return;
+      }
+      var depositVal = numVal(fd.get('deposit'));
+      if (depositVal == null || depositVal < 0) {
+        var msg2 = 'Deposit is required.';
+        if (window.showToast) window.showToast(msg2, 'error');
+        else if (errorEl) { errorEl.classList.remove('d-none'); errorEl.textContent = msg2; }
+        return;
+      }
+      var year = intVal(fd.get('year'));
+      if (year != null) body.year = year;
+      var color = strVal(fd.get('color'));
+      if (color != null) body.color = color;
+      var seatingCapacity = intVal(fd.get('seatingCapacity'));
+      if (seatingCapacity != null) body.seatingCapacity = seatingCapacity;
+      var fuelType = strVal(fd.get('fuelType'));
+      if (fuelType != null) body.fuelType = fuelType;
+      var engineCapacityCc = intVal(fd.get('engineCapacityCc'));
+      if (engineCapacityCc != null) body.engineCapacityCc = engineCapacityCc;
+      var dailyRate = numVal(fd.get('dailyRate'));
+      if (dailyRate != null) body.dailyRate = dailyRate;
+      var weeklyRate = numVal(fd.get('weeklyRate'));
+      if (weeklyRate != null) body.weeklyRate = weeklyRate;
+      var monthlyRate = numVal(fd.get('monthlyRate'));
+      if (monthlyRate != null) body.monthlyRate = monthlyRate;
+      var deposit = numVal(fd.get('deposit'));
+      if (deposit != null) body.deposit = deposit;
+      var tiers = [];
+      var dayDurations = [1,2,3,4,5,6,7];
+      for (var d = 0; d < dayDurations.length; d++) {
+        var days = dayDurations[d];
+        var total = numVal(fd.get('rate_day_' + days));
+        if (total != null && total >= 0) tiers.push({ min_days: days, max_days: days, rate_per_day: total / days });
+      }
+      var weekDurations = [1,2,3,4];
+      for (var w = 0; w < weekDurations.length; w++) {
+        var weeks = weekDurations[w];
+        var days = weeks * 7;
+        var total = numVal(fd.get('rate_week_' + weeks));
+        if (total != null && total >= 0) tiers.push({ min_days: days, max_days: days, rate_per_day: total / days });
+      }
+      var monthDurations = [2,3];
+      for (var m = 0; m < monthDurations.length; m++) {
+        var months = monthDurations[m];
+        var days = months * 30;
+        var total = numVal(fd.get('rate_month_' + months));
+        if (total != null && total >= 0) tiers.push({ min_days: days, max_days: days, rate_per_day: total / days });
+      }
+      if (tiers.length === 0) {
+        var msg3 = 'Please enter at least one rental charge by duration (e.g. 1 day, 1 week, or 2 months).';
+        if (window.showToast) window.showToast(msg3, 'error');
+        else if (errorEl) { errorEl.classList.remove('d-none'); errorEl.textContent = msg3; }
+        return;
+      }
+      body.dailyRateTiers = tiers;
+      var taxExpiryDate = dateVal(fd.get('taxExpiryDate'));
+      if (taxExpiryDate) body.taxExpiryDate = taxExpiryDate;
+      var nextBatteryChangeDate = dateVal(fd.get('nextBatteryChangeDate'));
+      if (nextBatteryChangeDate) body.nextBatteryChangeDate = nextBatteryChangeDate;
+      var nextServiceDate = dateVal(fd.get('nextServiceDate'));
+      if (nextServiceDate) body.nextServiceDate = nextServiceDate;
+      var nextOilChangeDate = dateVal(fd.get('nextOilChangeDate'));
+      if (nextOilChangeDate) body.nextOilChangeDate = nextOilChangeDate;
+
+      var imageInput = document.getElementById('vehicle-image');
+      var imageFile = (imageInput && imageInput.files && imageInput.files[0]) ? imageInput.files[0] : null;
+      if (errorEl) { errorEl.classList.add('d-none'); errorEl.textContent = ''; }
+      var btn = form.querySelector('button[type=submit]');
+      if (btn) btn.disabled = true;
+      window.vehicleApi.create(body, imageFile)
+        .then(function() {
+          if (window.showToast) window.showToast('Vehicle added successfully!', 'success');
+          setTimeout(function() { window.location.href = basePath + '/vehicle'; }, 800);
+        })
+        .catch(function(err) {
+          if (btn) btn.disabled = false;
+          var msg = (err.data && err.data.error) ? err.data.error : (err.message || 'Failed to create vehicle.');
+          if (window.showToast) window.showToast(msg, 'error');
+          else if (errorEl) { errorEl.classList.remove('d-none'); errorEl.textContent = msg; }
         });
-        uploadBtn.addEventListener('click', function(){
-            alert('Import from Excel will be available soon. This is a static UI for now.');
-        });
-    }
+    });
+  }
+
+  var imageInput = document.getElementById('vehicle-image');
+  var previewWrap = document.getElementById('add-image-preview');
+  var previewImg = document.getElementById('add-image-preview-img');
+  if (imageInput && previewWrap && previewImg) {
+    imageInput.addEventListener('change', function() {
+      if (this.files && this.files[0]) {
+        previewImg.src = URL.createObjectURL(this.files[0]);
+        previewWrap.classList.remove('d-none');
+      } else {
+        previewImg.src = '';
+        previewWrap.classList.add('d-none');
+      }
+    });
+  }
+  var fileInput = document.getElementById('vehicleExcelFile');
+  var fileNameSpan = document.getElementById('vehicleFileName');
+  var uploadBtn = document.getElementById('vehicleImportUploadBtn');
+  if (fileInput && fileNameSpan && uploadBtn) {
+    fileInput.addEventListener('change', function(){
+      if (this.files && this.files[0]) {
+        fileNameSpan.textContent = this.files[0].name;
+        uploadBtn.disabled = false;
+      } else {
+        fileNameSpan.textContent = '';
+        uploadBtn.disabled = true;
+      }
+    });
+    uploadBtn.addEventListener('click', function(){
+      alert('Import from Excel will be available in Bulk Upload phase.');
+    });
+  }
 })();
-</script>
 ` %>

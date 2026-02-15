@@ -98,50 +98,53 @@ function getAvailableVehicles() {
   return demoVehicles.filter((v) => v.status === "Available");
 }
 
-// List all rentals (optional status filter)
+// List all rentals — shell; data loaded client-side via rentalApi.list()
 router.get("/", (req, res) => {
-  let list = [...demoRentals];
-  const statusFilter = (req.query.status || "").trim();
-  if (statusFilter) {
-    list = list.filter((r) => r.status === statusFilter);
-  }
-  const vehiclesMap = Object.fromEntries(demoVehicles.map((v) => [v.id, v]));
-  const customersMap = Object.fromEntries(demoCustomers.map((c) => [c.id, c]));
+  const query = {
+    status: (req.query.status || "").trim(),
+    vehicle_id: (req.query.vehicle_id || "").trim(),
+    customer_id: (req.query.customer_id || "").trim(),
+    start_date_from: (req.query.start_date_from || "").trim(),
+    start_date_to: (req.query.start_date_to || "").trim(),
+    page: Math.max(1, parseInt(req.query.page, 10) || 1),
+    limit: Math.min(100, Math.max(1, parseInt(req.query.limit, 10) || 20)),
+  };
   res.render("rental/list-rentals", {
     title: "Rentals",
     subTitle: "Rental List",
-    rentals: list,
-    vehiclesMap,
-    customersMap,
-    query: { status: statusFilter },
+    rentals: [],
+    query,
     activeOnly: false,
   });
 });
 
-// List active rentals only
+// List active rentals only — same view, activeOnly true; client-side loads status=ACTIVE
 router.get("/active", (req, res) => {
-  const list = demoRentals.filter((r) => r.status === "ACTIVE");
-  const vehiclesMap = Object.fromEntries(demoVehicles.map((v) => [v.id, v]));
-  const customersMap = Object.fromEntries(demoCustomers.map((c) => [c.id, c]));
+  const query = {
+    status: "ACTIVE",
+    vehicle_id: (req.query.vehicle_id || "").trim(),
+    customer_id: (req.query.customer_id || "").trim(),
+    start_date_from: (req.query.start_date_from || "").trim(),
+    start_date_to: (req.query.start_date_to || "").trim(),
+    page: Math.max(1, parseInt(req.query.page, 10) || 1),
+    limit: Math.min(100, Math.max(1, parseInt(req.query.limit, 10) || 20)),
+  };
   res.render("rental/list-rentals", {
     title: "Rentals",
     subTitle: "Active Rentals",
-    rentals: list,
-    vehiclesMap,
-    customersMap,
-    query: { status: "ACTIVE" },
+    rentals: [],
+    query,
     activeOnly: true,
   });
 });
 
-// Create rental form
+// Create rental form — dropdowns filled client-side via vehicleApi (AVAILABLE) + customerApi
 router.get("/add", (req, res) => {
-  const available = getAvailableVehicles();
   res.render("rental/create-rental", {
     title: "Rentals",
     subTitle: "Create Rental",
-    customers: demoCustomers,
-    vehicles: available,
+    customers: [],
+    vehicles: [],
     rental: null,
     error: null,
   });
@@ -286,20 +289,24 @@ router.post("/add", (req, res) => {
   return res.redirect((req.baseUrl || "") + "/rental/view/" + newRental.id);
 });
 
-// View rental (contract-style)
+// View rental — shell; data loaded client-side via rentalApi.getById(id, true)
 router.get("/view/:id", (req, res) => {
-  const id = parseInt(req.params.id, 10);
-  const rental = demoRentals.find((r) => r.id === id);
-  if (!rental) return res.redirect((req.baseUrl || "") + "/rental");
-  const vehicle = demoVehicles.find((v) => v.id === rental.vehicleId);
-  const customer = demoCustomers.find((c) => c.id === rental.customerId);
+  const rentalId = req.params.id;
   res.render("rental/view-rental", {
     title: "Rentals",
     subTitle: "View Rental",
-    rental,
-    vehicle: vehicle || null,
-    customer: customer || null,
+    rentalId,
     query: req.query || {},
+  });
+});
+
+// Edit rental — shell; data loaded client-side via rentalApi.getById(id); submit via PATCH
+router.get("/edit/:id", (req, res) => {
+  const rentalId = req.params.id;
+  res.render("rental/edit-rental", {
+    title: "Rentals",
+    subTitle: "Edit Rental",
+    rentalId,
   });
 });
 

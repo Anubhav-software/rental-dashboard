@@ -1,484 +1,398 @@
 <div class="card h-100 p-0 radius-12">
     <div class="card-header border-bottom bg-base py-16 px-24 d-flex align-items-center flex-wrap gap-3 justify-content-between">
-        <div class="d-flex align-items-center flex-wrap gap-3">
-            <span class="text-md fw-medium text-secondary-light mb-0">Show</span>
-            <select class="form-select form-select-sm w-auto ps-12 py-6 radius-12 h-40-px">
-                <option>1</option>
-                <option>2</option>
-                <option>3</option>
-                <option>4</option>
-                <option>5</option>
-                <option>6</option>
-                <option>7</option>
-                <option>8</option>
-                <option>9</option>
-                <option>10</option>
-            </select>
-            <form class="navbar-search">
-                <input type="text" class="bg-base h-40-px w-auto" name="search" placeholder="Search">
-                <iconify-icon icon="ion:search-outline" class="icon"></iconify-icon>
-            </form>
-            <select class="form-select form-select-sm w-auto ps-12 py-6 radius-12 h-40-px">
-                <option>Status</option>
-                <option>Active</option>
-                <option>Inactive</option>
-            </select>
-        </div>
-        <a href="/users/add-user" class="btn btn-primary text-sm btn-sm px-12 py-12 radius-8 d-flex align-items-center gap-2">
+        <h6 class="text-md fw-medium text-secondary-light mb-0 d-flex align-items-center gap-2">
+            <iconify-icon icon="flowbite:users-group-outline" class="text-primary-600"></iconify-icon>
+            Staff Management
+        </h6>
+        <button type="button" class="btn btn-primary text-sm btn-sm px-12 py-12 radius-8 d-flex align-items-center gap-2" data-bs-toggle="modal" data-bs-target="#addStaffModal">
             <iconify-icon icon="ic:baseline-plus" class="icon text-xl line-height-1"></iconify-icon>
-            Add New User
-        </a>
+            Add New Staff
+        </button>
     </div>
     <div class="card-body p-24">
-        <div class="table-responsive scroll-sm">
-            <table class="table bordered-table sm-table mb-0">
-                <thead>
-                    <tr>
-                        <th scope="col">
-                            <div class="d-flex align-items-center gap-10">
-                                <div class="form-check style-check d-flex align-items-center">
-                                    <input class="form-check-input radius-4 border input-form-dark" type="checkbox" name="checkbox" id="selectAll">
-                                </div>
-                                S.L
-                            </div>
-                        </th>
-                        <th scope="col">Join Date</th>
-                        <th scope="col">Name</th>
-                        <th scope="col">Email</th>
-                        <th scope="col">Department</th>
-                        <th scope="col">Designation</th>
-                        <th scope="col" class="text-center">Status</th>
-                        <th scope="col" class="text-center">Action</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr>
-                        <td>
-                            <div class="d-flex align-items-center gap-10">
-                                <div class="form-check style-check d-flex align-items-center">
-                                    <input class="form-check-input radius-4 border border-neutral-400" type="checkbox" name="checkbox" id="SL">
-                                </div>
-                                01
-                            </div>
-                        </td>
-                        <td>25 Jan 2024</td>
-                        <td>
-                            <div class="d-flex align-items-center">
-                                <img src="/images/user-list/user-list1.png" alt="" class="w-40-px h-40-px rounded-circle flex-shrink-0 me-12 overflow-hidden">
-                                <div class="flex-grow-1">
-                                    <span class="text-md mb-0 fw-normal text-secondary-light">Kathryn Murphy</span>
-                                </div>
-                            </div>
-                        </td>
-                        <td><span class="text-md mb-0 fw-normal text-secondary-light">osgoodwy@gmail.com</span></td>
-                        <td>HR</td>
-                        <td>Manager</td>
-                        <td class="text-center">
-                            <span class="bg-success-focus text-success-600 border border-success-main px-24 py-4 radius-4 fw-medium text-sm">Active</span>
-                        </td>
-                        <td class="text-center">
-                            <div class="d-flex align-items-center gap-10 justify-content-center">
-                                <button type="button" class="bg-info-focus bg-hover-info-200 text-info-600 fw-medium w-40-px h-40-px d-flex justify-content-center align-items-center rounded-circle">
-                                    <iconify-icon icon="majesticons:eye-line" class="icon text-xl"></iconify-icon>
-                                </button>
-                                <button type="button" class="bg-success-focus text-success-600 bg-hover-success-200 fw-medium w-40-px h-40-px d-flex justify-content-center align-items-center rounded-circle">
-                                    <iconify-icon icon="lucide:edit" class="menu-icon"></iconify-icon>
-                                </button>
-                                <button type="button" class="remove-item-btn bg-danger-focus bg-hover-danger-200 text-danger-600 fw-medium w-40-px h-40-px d-flex justify-content-center align-items-center rounded-circle">
-                                    <iconify-icon icon="fluent:delete-24-regular" class="menu-icon"></iconify-icon>
-                                </button>
-                            </div>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>
-                            <div class="d-flex align-items-center gap-10">
-                                <div class="form-check style-check d-flex align-items-center">
-                                    <input class="form-check-input radius-4 border border-neutral-400" type="checkbox" name="checkbox" id="SL">
-                                </div>
-                                02
-                            </div>
-                        </td>
-                        <td>25 Jan 2024</td>
-                        <td>
-                            <div class="d-flex align-items-center">
-                                <img src="/images/user-list/user-list2.png" alt="" class="w-40-px h-40-px rounded-circle flex-shrink-0 me-12 overflow-hidden">
-                                <div class="flex-grow-1">
-                                    <span class="text-md mb-0 fw-normal text-secondary-light">Annette Black</span>
-                                </div>
-                            </div>
-                        </td>
-                        <td><span class="text-md mb-0 fw-normal text-secondary-light">redaniel@gmail.com</span></td>
-                        <td>Design</td>
-                        <td>UI UX Designer</td>
-                        <td class="text-center">
-                            <span class="bg-neutral-200 text-neutral-600 border border-neutral-400 px-24 py-4 radius-4 fw-medium text-sm">Inactive</span>
-                        </td>
-                        <td class="text-center">
-                            <div class="d-flex align-items-center gap-10 justify-content-center">
-                                <button type="button" class="bg-info-focus bg-hover-info-200 text-info-600 fw-medium w-40-px h-40-px d-flex justify-content-center align-items-center rounded-circle">
-                                    <iconify-icon icon="majesticons:eye-line" class="icon text-xl"></iconify-icon>
-                                </button>
-                                <button type="button" class="bg-success-focus text-success-600 bg-hover-success-200 fw-medium w-40-px h-40-px d-flex justify-content-center align-items-center rounded-circle">
-                                    <iconify-icon icon="lucide:edit" class="menu-icon"></iconify-icon>
-                                </button>
-                                <button type="button" class="remove-item-btn bg-danger-focus bg-hover-danger-200 text-danger-600 fw-medium w-40-px h-40-px d-flex justify-content-center align-items-center rounded-circle">
-                                    <iconify-icon icon="fluent:delete-24-regular" class="menu-icon"></iconify-icon>
-                                </button>
-                            </div>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>
-                            <div class="d-flex align-items-center gap-10">
-                                <div class="form-check style-check d-flex align-items-center">
-                                    <input class="form-check-input radius-4 border border-neutral-400" type="checkbox" name="checkbox" id="SL">
-                                </div>
-                                03
-                            </div>
-                        </td>
-                        <td>10 Feb 2024</td>
-                        <td>
-                            <div class="d-flex align-items-center">
-                                <img src="/images/user-list/user-list3.png" alt="" class="w-40-px h-40-px rounded-circle flex-shrink-0 me-12 overflow-hidden">
-                                <div class="flex-grow-1">
-                                    <span class="text-md mb-0 fw-normal text-secondary-light">Ronald Richards</span>
-                                </div>
-                            </div>
-                        </td>
-                        <td><span class="text-md mb-0 fw-normal text-secondary-light">seannand@mail.ru</span></td>
-                        <td>Design</td>
-                        <td>UI UX Designer</td>
-                        <td class="text-center">
-                            <span class="bg-success-focus text-success-600 border border-success-main px-24 py-4 radius-4 fw-medium text-sm">Active</span>
-                        </td>
-                        <td class="text-center">
-                            <div class="d-flex align-items-center gap-10 justify-content-center">
-                                <button type="button" class="bg-info-focus bg-hover-info-200 text-info-600 fw-medium w-40-px h-40-px d-flex justify-content-center align-items-center rounded-circle">
-                                    <iconify-icon icon="majesticons:eye-line" class="icon text-xl"></iconify-icon>
-                                </button>
-                                <button type="button" class="bg-success-focus text-success-600 bg-hover-success-200 fw-medium w-40-px h-40-px d-flex justify-content-center align-items-center rounded-circle">
-                                    <iconify-icon icon="lucide:edit" class="menu-icon"></iconify-icon>
-                                </button>
-                                <button type="button" class="remove-item-btn bg-danger-focus bg-hover-danger-200 text-danger-600 fw-medium w-40-px h-40-px d-flex justify-content-center align-items-center rounded-circle">
-                                    <iconify-icon icon="fluent:delete-24-regular" class="menu-icon"></iconify-icon>
-                                </button>
-                            </div>
-                        </td>
-                    </tr>
-
-                    <tr>
-                        <td>
-                            <div class="d-flex align-items-center gap-10">
-                                <div class="form-check style-check d-flex align-items-center">
-                                    <input class="form-check-input radius-4 border border-neutral-400" type="checkbox" name="checkbox" id="SL">
-                                </div>
-                                04
-                            </div>
-                        </td>
-                        <td>10 Feb 2024</td>
-                        <td>
-                            <div class="d-flex align-items-center">
-                                <img src="/images/user-list/user-list4.png" alt="" class="w-40-px h-40-px rounded-circle flex-shrink-0 me-12 overflow-hidden">
-                                <div class="flex-grow-1">
-                                    <span class="text-md mb-0 fw-normal text-secondary-light">Eleanor Pena</span>
-                                </div>
-                            </div>
-                        </td>
-                        <td><span class="text-md mb-0 fw-normal text-secondary-light">miyokoto@mail.ru</span></td>
-                        <td>Design</td>
-                        <td>UI UX Designer</td>
-                        <td class="text-center">
-                            <span class="bg-success-focus text-success-600 border border-success-main px-24 py-4 radius-4 fw-medium text-sm">Active</span>
-                        </td>
-                        <td class="text-center">
-                            <div class="d-flex align-items-center gap-10 justify-content-center">
-                                <button type="button" class="bg-info-focus bg-hover-info-200 text-info-600 fw-medium w-40-px h-40-px d-flex justify-content-center align-items-center rounded-circle">
-                                    <iconify-icon icon="majesticons:eye-line" class="icon text-xl"></iconify-icon>
-                                </button>
-                                <button type="button" class="bg-success-focus text-success-600 bg-hover-success-200 fw-medium w-40-px h-40-px d-flex justify-content-center align-items-center rounded-circle">
-                                    <iconify-icon icon="lucide:edit" class="menu-icon"></iconify-icon>
-                                </button>
-                                <button type="button" class="remove-item-btn bg-danger-focus bg-hover-danger-200 text-danger-600 fw-medium w-40-px h-40-px d-flex justify-content-center align-items-center rounded-circle">
-                                    <iconify-icon icon="fluent:delete-24-regular" class="menu-icon"></iconify-icon>
-                                </button>
-                            </div>
-                        </td>
-                    </tr>
-
-                    <tr>
-                        <td>
-                            <div class="d-flex align-items-center gap-10">
-                                <div class="form-check style-check d-flex align-items-center">
-                                    <input class="form-check-input radius-4 border border-neutral-400" type="checkbox" name="checkbox" id="SL">
-                                </div>
-                                05
-                            </div>
-                        </td>
-                        <td>15 March 2024</td>
-                        <td>
-                            <div class="d-flex align-items-center">
-                                <img src="/images/user-list/user-list5.png" alt="" class="w-40-px h-40-px rounded-circle flex-shrink-0 me-12 overflow-hidden">
-                                <div class="flex-grow-1">
-                                    <span class="text-md mb-0 fw-normal text-secondary-light">Leslie Alexander</span>
-                                </div>
-                            </div>
-                        </td>
-                        <td><span class="text-md mb-0 fw-normal text-secondary-light">icadahli@gmail.com</span></td>
-                        <td>Design</td>
-                        <td>UI UX Designer</td>
-                        <td class="text-center">
-                            <span class="bg-neutral-200 text-neutral-600 border border-neutral-400 px-24 py-4 radius-4 fw-medium text-sm">Inactive</span>
-                        </td>
-                        <td class="text-center">
-                            <div class="d-flex align-items-center gap-10 justify-content-center">
-                                <button type="button" class="bg-info-focus bg-hover-info-200 text-info-600 fw-medium w-40-px h-40-px d-flex justify-content-center align-items-center rounded-circle">
-                                    <iconify-icon icon="majesticons:eye-line" class="icon text-xl"></iconify-icon>
-                                </button>
-                                <button type="button" class="bg-success-focus text-success-600 bg-hover-success-200 fw-medium w-40-px h-40-px d-flex justify-content-center align-items-center rounded-circle">
-                                    <iconify-icon icon="lucide:edit" class="menu-icon"></iconify-icon>
-                                </button>
-                                <button type="button" class="remove-item-btn bg-danger-focus bg-hover-danger-200 text-danger-600 fw-medium w-40-px h-40-px d-flex justify-content-center align-items-center rounded-circle">
-                                    <iconify-icon icon="fluent:delete-24-regular" class="menu-icon"></iconify-icon>
-                                </button>
-                            </div>
-                        </td>
-                    </tr>
-
-                    <tr>
-                        <td>
-                            <div class="d-flex align-items-center gap-10">
-                                <div class="form-check style-check d-flex align-items-center">
-                                    <input class="form-check-input radius-4 border border-neutral-400" type="checkbox" name="checkbox" id="SL">
-                                </div>
-                                06
-                            </div>
-                        </td>
-                        <td>15 March 2024</td>
-                        <td>
-                            <div class="d-flex align-items-center">
-                                <img src="/images/user-list/user-list6.png" alt="" class="w-40-px h-40-px rounded-circle flex-shrink-0 me-12 overflow-hidden">
-                                <div class="flex-grow-1">
-                                    <span class="text-md mb-0 fw-normal text-secondary-light">Albert Flores</span>
-                                </div>
-                            </div>
-                        </td>
-                        <td><span class="text-md mb-0 fw-normal text-secondary-light">warn@mail.ru</span></td>
-                        <td>Design</td>
-                        <td>UI UX Designer</td>
-                        <td class="text-center">
-                            <span class="bg-success-focus text-success-600 border border-success-main px-24 py-4 radius-4 fw-medium text-sm">Active</span>
-                        </td>
-                        <td class="text-center">
-                            <div class="d-flex align-items-center gap-10 justify-content-center">
-                                <button type="button" class="bg-info-focus bg-hover-info-200 text-info-600 fw-medium w-40-px h-40-px d-flex justify-content-center align-items-center rounded-circle">
-                                    <iconify-icon icon="majesticons:eye-line" class="icon text-xl"></iconify-icon>
-                                </button>
-                                <button type="button" class="bg-success-focus text-success-600 bg-hover-success-200 fw-medium w-40-px h-40-px d-flex justify-content-center align-items-center rounded-circle">
-                                    <iconify-icon icon="lucide:edit" class="menu-icon"></iconify-icon>
-                                </button>
-                                <button type="button" class="remove-item-btn bg-danger-focus bg-hover-danger-200 text-danger-600 fw-medium w-40-px h-40-px d-flex justify-content-center align-items-center rounded-circle">
-                                    <iconify-icon icon="fluent:delete-24-regular" class="menu-icon"></iconify-icon>
-                                </button>
-                            </div>
-                        </td>
-                    </tr>
-
-                    <tr>
-                        <td>
-                            <div class="d-flex align-items-center gap-10">
-                                <div class="form-check style-check d-flex align-items-center">
-                                    <input class="form-check-input radius-4 border border-neutral-400" type="checkbox" name="checkbox" id="SL">
-                                </div>
-                                07
-                            </div>
-                        </td>
-                        <td>27 April 2024</td>
-                        <td>
-                            <div class="d-flex align-items-center">
-                                <img src="/images/user-list/user-list7.png" alt="" class="w-40-px h-40-px rounded-circle flex-shrink-0 me-12 overflow-hidden">
-                                <div class="flex-grow-1">
-                                    <span class="text-md mb-0 fw-normal text-secondary-light">Jacob Jones</span>
-                                </div>
-                            </div>
-                        </td>
-                        <td><span class="text-md mb-0 fw-normal text-secondary-light">zitka@mail.ru</span></td>
-                        <td>Development</td>
-                        <td>Frontend developer</td>
-                        <td class="text-center">
-                            <span class="bg-success-focus text-success-600 border border-success-main px-24 py-4 radius-4 fw-medium text-sm">Active</span>
-                        </td>
-                        <td class="text-center">
-                            <div class="d-flex align-items-center gap-10 justify-content-center">
-                                <button type="button" class="bg-info-focus bg-hover-info-200 text-info-600 fw-medium w-40-px h-40-px d-flex justify-content-center align-items-center rounded-circle">
-                                    <iconify-icon icon="majesticons:eye-line" class="icon text-xl"></iconify-icon>
-                                </button>
-                                <button type="button" class="bg-success-focus text-success-600 bg-hover-success-200 fw-medium w-40-px h-40-px d-flex justify-content-center align-items-center rounded-circle">
-                                    <iconify-icon icon="lucide:edit" class="menu-icon"></iconify-icon>
-                                </button>
-                                <button type="button" class="remove-item-btn bg-danger-focus bg-hover-danger-200 text-danger-600 fw-medium w-40-px h-40-px d-flex justify-content-center align-items-center rounded-circle">
-                                    <iconify-icon icon="fluent:delete-24-regular" class="menu-icon"></iconify-icon>
-                                </button>
-                            </div>
-                        </td>
-                    </tr>
-
-                    <tr>
-                        <td>
-                            <div class="d-flex align-items-center gap-10">
-                                <div class="form-check style-check d-flex align-items-center">
-                                    <input class="form-check-input radius-4 border border-neutral-400" type="checkbox" name="checkbox" id="SL">
-                                </div>
-                                08
-                            </div>
-                        </td>
-                        <td>25 Jan 2024</td>
-                        <td>
-                            <div class="d-flex align-items-center">
-                                <img src="/images/user-list/user-list8.png" alt="" class="w-40-px h-40-px rounded-circle flex-shrink-0 me-12 overflow-hidden">
-                                <div class="flex-grow-1">
-                                    <span class="text-md mb-0 fw-normal text-secondary-light">Jerome Bell</span>
-                                </div>
-                            </div>
-                        </td>
-                        <td><span class="text-md mb-0 fw-normal text-secondary-light">igerrin@gmail.com</span></td>
-                        <td>Development</td>
-                        <td>Frontend developer</td>
-                        <td class="text-center">
-                            <span class="bg-neutral-200 text-neutral-600 border border-neutral-400 px-24 py-4 radius-4 fw-medium text-sm">Inactive</span>
-                        </td>
-                        <td class="text-center">
-                            <div class="d-flex align-items-center gap-10 justify-content-center">
-                                <button type="button" class="bg-info-focus bg-hover-info-200 text-info-600 fw-medium w-40-px h-40-px d-flex justify-content-center align-items-center rounded-circle">
-                                    <iconify-icon icon="majesticons:eye-line" class="icon text-xl"></iconify-icon>
-                                </button>
-                                <button type="button" class="bg-success-focus text-success-600 bg-hover-success-200 fw-medium w-40-px h-40-px d-flex justify-content-center align-items-center rounded-circle">
-                                    <iconify-icon icon="lucide:edit" class="menu-icon"></iconify-icon>
-                                </button>
-                                <button type="button" class="remove-item-btn bg-danger-focus bg-hover-danger-200 text-danger-600 fw-medium w-40-px h-40-px d-flex justify-content-center align-items-center rounded-circle">
-                                    <iconify-icon icon="fluent:delete-24-regular" class="menu-icon"></iconify-icon>
-                                </button>
-                            </div>
-                        </td>
-                    </tr>
-
-                    <tr>
-                        <td>
-                            <div class="d-flex align-items-center gap-10">
-                                <div class="form-check style-check d-flex align-items-center">
-                                    <input class="form-check-input radius-4 border border-neutral-400" type="checkbox" name="checkbox" id="SL">
-                                </div>
-                                09
-                            </div>
-                        </td>
-                        <td>30 April 2024</td>
-                        <td>
-                            <div class="d-flex align-items-center">
-                                <img src="/images/user-list/user-list2.png" alt="" class="w-40-px h-40-px rounded-circle flex-shrink-0 me-12 overflow-hidden">
-                                <div class="flex-grow-1">
-                                    <span class="text-md mb-0 fw-normal text-secondary-light">Marvin McKinney</span>
-                                </div>
-                            </div>
-                        </td>
-                        <td><span class="text-md mb-0 fw-normal text-secondary-light">maka@yandex.ru</span></td>
-                        <td>Development</td>
-                        <td>Frontend developer</td>
-                        <td class="text-center">
-                            <span class="bg-success-focus text-success-600 border border-success-main px-24 py-4 radius-4 fw-medium text-sm">Active</span>
-                        </td>
-                        <td class="text-center">
-                            <div class="d-flex align-items-center gap-10 justify-content-center">
-                                <button type="button" class="bg-info-focus bg-hover-info-200 text-info-600 fw-medium w-40-px h-40-px d-flex justify-content-center align-items-center rounded-circle">
-                                    <iconify-icon icon="majesticons:eye-line" class="icon text-xl"></iconify-icon>
-                                </button>
-                                <button type="button" class="bg-success-focus text-success-600 bg-hover-success-200 fw-medium w-40-px h-40-px d-flex justify-content-center align-items-center rounded-circle">
-                                    <iconify-icon icon="lucide:edit" class="menu-icon"></iconify-icon>
-                                </button>
-                                <button type="button" class="remove-item-btn bg-danger-focus bg-hover-danger-200 text-danger-600 fw-medium w-40-px h-40-px d-flex justify-content-center align-items-center rounded-circle">
-                                    <iconify-icon icon="fluent:delete-24-regular" class="menu-icon"></iconify-icon>
-                                </button>
-                            </div>
-                        </td>
-                    </tr>
-
-                    <tr>
-                        <td>
-                            <div class="d-flex align-items-center gap-10">
-                                <div class="form-check style-check d-flex align-items-center">
-                                    <input class="form-check-input radius-4 border border-neutral-400" type="checkbox" name="checkbox" id="SL">
-                                </div>
-                                10
-                            </div>
-                        </td>
-                        <td>30 April 2024</td>
-                        <td>
-                            <div class="d-flex align-items-center">
-                                <img src="/images/user-list/user-list10.png" alt="" class="w-40-px h-40-px rounded-circle flex-shrink-0 me-12 overflow-hidden">
-                                <div class="flex-grow-1">
-                                    <span class="text-md mb-0 fw-normal text-secondary-light">Cameron Williamson</span>
-                                </div>
-                            </div>
-                        </td>
-                        <td><span class="text-md mb-0 fw-normal text-secondary-light">danten@mail.ru</span></td>
-                        <td>Development</td>
-                        <td>Frontend developer</td>
-                        <td class="text-center">
-                            <span class="bg-success-focus text-success-600 border border-success-main px-24 py-4 radius-4 fw-medium text-sm">Active</span>
-                        </td>
-                        <td class="text-center">
-                            <div class="d-flex align-items-center gap-10 justify-content-center">
-                                <button type="button" class="bg-info-focus bg-hover-info-200 text-info-600 fw-medium w-40-px h-40-px d-flex justify-content-center align-items-center rounded-circle">
-                                    <iconify-icon icon="majesticons:eye-line" class="icon text-xl"></iconify-icon>
-                                </button>
-                                <button type="button" class="bg-success-focus text-success-600 bg-hover-success-200 fw-medium w-40-px h-40-px d-flex justify-content-center align-items-center rounded-circle">
-                                    <iconify-icon icon="lucide:edit" class="menu-icon"></iconify-icon>
-                                </button>
-                                <button type="button" class="remove-item-btn bg-danger-focus bg-hover-danger-200 text-danger-600 fw-medium w-40-px h-40-px d-flex justify-content-center align-items-center rounded-circle">
-                                    <iconify-icon icon="fluent:delete-24-regular" class="menu-icon"></iconify-icon>
-                                </button>
-                            </div>
-                        </td>
-                    </tr>
-                </tbody>
-            </table>
+        <div id="staff-api-error" class="alert alert-danger radius-12 mb-24 d-none"></div>
+        <div id="staff-api-success" class="alert alert-success radius-12 mb-24 d-none"></div>
+        
+        <!-- Loading State -->
+        <div id="staff-loading" class="text-center py-5">
+            <div class="spinner-border text-primary" role="status">
+                <span class="visually-hidden">Loading...</span>
+            </div>
+            <p class="mt-3 text-secondary-light">Loading staff members...</p>
         </div>
 
-        <div class="d-flex align-items-center justify-content-between flex-wrap gap-2 mt-24">
-            <span>Showing 1 to 10 of 12 entries</span>
-            <ul class="pagination d-flex flex-wrap align-items-center gap-2 justify-content-center">
-                <li class="page-item">
-                    <a class="page-link bg-neutral-300 text-secondary-light fw-semibold radius-8 border-0 d-flex align-items-center justify-content-center h-32-px w-32-px text-md" href="javascript:void(0)">
-                        <iconify-icon icon="ep:d-arrow-left" class=""></iconify-icon>
-                    </a>
-                </li>
-                <li class="page-item">
-                    <a class="page-link text-secondary-light fw-semibold radius-8 border-0 d-flex align-items-center justify-content-center h-32-px w-32-px text-md bg-primary-600 text-white" href="javascript:void(0)">1</a>
-                </li>
-                <li class="page-item">
-                    <a class="page-link bg-neutral-300 text-secondary-light fw-semibold radius-8 border-0 d-flex align-items-center justify-content-center h-32-px w-32-px" href="javascript:void(0)">2</a>
-                </li>
-                <li class="page-item">
-                    <a class="page-link bg-neutral-300 text-secondary-light fw-semibold radius-8 border-0 d-flex align-items-center justify-content-center h-32-px w-32-px text-md" href="javascript:void(0)">3</a>
-                </li>
-                <li class="page-item">
-                    <a class="page-link bg-neutral-300 text-secondary-light fw-semibold radius-8 border-0 d-flex align-items-center justify-content-center h-32-px w-32-px text-md" href="javascript:void(0)">4</a>
-                </li>
-                <li class="page-item">
-                    <a class="page-link bg-neutral-300 text-secondary-light fw-semibold radius-8 border-0 d-flex align-items-center justify-content-center h-32-px w-32-px text-md" href="javascript:void(0)">5</a>
-                </li>
-                <li class="page-item">
-                    <a class="page-link bg-neutral-300 text-secondary-light fw-semibold radius-8 border-0 d-flex align-items-center justify-content-center h-32-px w-32-px text-md" href="javascript:void(0)">
-                        <iconify-icon icon="ep:d-arrow-right" class=""></iconify-icon>
-                    </a>
-                </li>
-            </ul>
+        <!-- Empty State -->
+        <div id="staff-empty" class="text-center py-5 d-none">
+            <iconify-icon icon="flowbite:users-group-outline" class="text-secondary-light" style="font-size: 64px;"></iconify-icon>
+            <h5 class="mt-3 text-secondary-light">No Staff Members Yet</h5>
+            <p class="text-secondary-light">Click "Add New Staff" to create your first staff member.</p>
+        </div>
+
+        <!-- Table -->
+        <div id="staff-table-container" class="d-none">
+            <div class="table-responsive scroll-sm">
+                <table class="table bordered-table sm-table mb-0">
+                    <thead>
+                        <tr>
+                            <th scope="col">S.No</th>
+                            <th scope="col">Join Date</th>
+                            <th scope="col">Name</th>
+                            <th scope="col">Email</th>
+                            <th scope="col">Role</th>
+                            <th scope="col" class="text-center">Status</th>
+                            <th scope="col">Company</th>
+                            <th scope="col" class="text-center">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="staff-table-body">
+                        <!-- Staff rows will be inserted here by JavaScript -->
+                    </tbody>
+                </table>
+            </div>
         </div>
     </div>
 </div>
-<% script = `
-<script>
-    $('.remove-item-btn').on('click', function () {
-        $(this).closest('tr').addClass('d-none')
-    });
-</script>
-` %>
+
+<!-- Delete Confirmation Modal -->
+<div class="modal fade" id="deleteStaffModal" tabindex="-1" aria-labelledby="deleteStaffModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content radius-16 bg-base shadow-lg border-0">
+            <!-- Modal Header -->
+            <div class="modal-header border-0 py-20 px-32" style="background: linear-gradient(135deg, #dc2626 0%, #ef4444 100%);">
+                <div class="d-flex align-items-center gap-3">
+                    <div class="w-48-px h-48-px rounded-circle bg-white bg-opacity-25 d-flex align-items-center justify-content-center">
+                        <iconify-icon icon="mdi:alert-circle" class="text-white" style="font-size: 24px;"></iconify-icon>
+                    </div>
+                    <div>
+                        <h5 class="modal-title text-white fw-bold mb-0" id="deleteStaffModalLabel">Delete Staff Member</h5>
+                        <p class="text-white text-opacity-75 mb-0" style="font-size: 13px;">This action cannot be undone</p>
+                    </div>
+                </div>
+                <button type="button" class="btn-close btn-close-white opacity-75" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            
+            <!-- Modal Body -->
+            <div class="modal-body p-32">
+                <input type="hidden" id="delete-staff-id">
+                
+                <div id="delete-modal-error" class="alert alert-danger radius-12 mb-24 d-none"></div>
+                
+                <div class="text-center mb-24">
+                    <div class="w-80-px h-80-px rounded-circle mx-auto mb-16 d-flex align-items-center justify-content-center" style="background: linear-gradient(135deg, #fee2e2 0%, #fecaca 100%);">
+                        <iconify-icon icon="mdi:delete-alert" style="font-size: 40px; color: #dc2626;"></iconify-icon>
+                    </div>
+                    <h5 class="mb-8 text-dark">Are you sure?</h5>
+                    <p class="text-secondary-light mb-16">You are about to delete:</p>
+                    <p class="fw-semibold text-lg mb-0" style="color: #dc2626;" id="delete-staff-name-display"></p>
+                </div>
+
+                <div class="card border-0 radius-12 mb-24" style="background: #fef2f2; border-left: 4px solid #dc2626 !important;">
+                    <div class="card-body p-16">
+                        <p class="text-sm mb-2 fw-medium" style="color: #991b1b;">⚠️ Warning:</p>
+                        <ul class="text-sm mb-0 ps-3" style="color: #b91c1c;">
+                            <li>This staff member will be permanently deleted</li>
+                            <li>They will no longer be able to login</li>
+                            <li>This action cannot be reversed</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="d-flex align-items-center justify-content-end gap-3">
+                    <button type="button" class="btn btn-outline-secondary text-sm px-24 py-12 radius-8 d-flex align-items-center gap-2" data-bs-dismiss="modal">
+                        <iconify-icon icon="mdi:close" class="icon"></iconify-icon>
+                        Cancel
+                    </button>
+                    <button type="button" id="confirm-delete-staff" class="btn text-sm px-24 py-12 radius-8 d-flex align-items-center gap-2" style="background: linear-gradient(135deg, #dc2626 0%, #ef4444 100%); color: white; border: none;">
+                        <iconify-icon icon="mdi:delete-forever" class="icon text-lg"></iconify-icon>
+                        Yes, Delete
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Edit Staff Modal -->
+<div class="modal fade" id="editStaffModal" tabindex="-1" aria-labelledby="editStaffModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-lg">
+        <div class="modal-content radius-16 bg-base shadow-lg border-0">
+            <!-- Modal Header -->
+            <div class="modal-header border-0 py-20 px-32" style="background: linear-gradient(135deg, #1e3a8a 0%, #3b82f6 100%);">
+                <div class="d-flex align-items-center gap-3">
+                    <div class="w-48-px h-48-px rounded-circle bg-white bg-opacity-25 d-flex align-items-center justify-content-center">
+                        <iconify-icon icon="mdi:account-edit" class="text-white" style="font-size: 24px;"></iconify-icon>
+                    </div>
+                    <div>
+                        <h5 class="modal-title text-white fw-bold mb-0" id="editStaffModalLabel">Edit Staff Member</h5>
+                        <p class="text-white text-opacity-75 mb-0" style="font-size: 13px;">Update staff information and status</p>
+                    </div>
+                </div>
+                <button type="button" class="btn-close btn-close-white opacity-75" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            
+            <!-- Modal Body -->
+            <div class="modal-body p-32">
+                <div id="edit-modal-error" class="alert alert-danger radius-12 mb-24 d-none d-flex align-items-center gap-2">
+                    <iconify-icon icon="mdi:alert-circle-outline" class="text-xl"></iconify-icon>
+                    <span id="edit-modal-error-text"></span>
+                </div>
+                <div id="edit-modal-success" class="alert alert-success radius-12 mb-24 d-none d-flex align-items-center gap-2">
+                    <iconify-icon icon="mdi:check-circle-outline" class="text-xl"></iconify-icon>
+                    <span id="edit-modal-success-text"></span>
+                </div>
+
+                <form id="edit-staff-form">
+                    <input type="hidden" id="edit-staff-id" name="id">
+                    <div class="row g-3">
+                        <div class="col-12">
+                            <label class="form-label fw-semibold text-primary-light text-sm mb-8 d-flex align-items-center gap-2">
+                                <iconify-icon icon="mdi:account-outline" style="color: #2563eb;"></iconify-icon>
+                                Full Name <span class="text-danger">*</span>
+                            </label>
+                            <div class="icon-field">
+                                <span class="icon top-50 translate-middle-y">
+                                    <iconify-icon icon="mdi:account" class="text-secondary-light"></iconify-icon>
+                                </span>
+                                <input type="text" name="name" id="edit-staff-name" class="form-control h-56-px bg-neutral-50 radius-12 ps-48" required>
+                            </div>
+                        </div>
+
+                        <div class="col-12">
+                            <label class="form-label fw-semibold text-primary-light text-sm mb-8 d-flex align-items-center gap-2">
+                                <iconify-icon icon="mdi:email-outline" style="color: #2563eb;"></iconify-icon>
+                                Email Address <span class="text-danger">*</span>
+                            </label>
+                            <div class="icon-field">
+                                <span class="icon top-50 translate-middle-y">
+                                    <iconify-icon icon="mage:email" class="text-secondary-light"></iconify-icon>
+                                </span>
+                                <input type="email" name="email" id="edit-staff-email" class="form-control h-56-px bg-neutral-50 radius-12 ps-48" required>
+                            </div>
+                        </div>
+
+                        <div class="col-12">
+                            <label class="form-label fw-semibold text-primary-light text-sm mb-8 d-flex align-items-center gap-2">
+                                <iconify-icon icon="mdi:toggle-switch" style="color: #2563eb;"></iconify-icon>
+                                Status <span class="text-danger">*</span>
+                            </label>
+                            <select name="status" id="edit-staff-status" class="form-control h-56-px bg-neutral-50 radius-12" required>
+                                <option value="ACTIVE">Active</option>
+                                <option value="INACTIVE">Inactive</option>
+                            </select>
+                            <small class="text-secondary-light d-flex align-items-center gap-1 mt-1">
+                                <iconify-icon icon="mdi:information-outline" class="text-sm"></iconify-icon>
+                                Inactive users cannot login to the system
+                            </small>
+                        </div>
+                    </div>
+
+                    <div class="d-flex align-items-center justify-content-end gap-3 mt-32 pt-24 border-top">
+                        <button type="button" class="btn btn-outline-secondary text-sm px-24 py-12 radius-8 d-flex align-items-center gap-2" data-bs-dismiss="modal">
+                            <iconify-icon icon="mdi:close" class="icon"></iconify-icon>
+                            Cancel
+                        </button>
+                        <button type="submit" id="edit-staff-submit-btn" class="btn text-sm px-24 py-12 radius-8 d-flex align-items-center gap-2" style="background: linear-gradient(135deg, #1e3a8a 0%, #3b82f6 100%); color: white; border: none;">
+                            <iconify-icon icon="mdi:content-save" class="icon text-lg"></iconify-icon>
+                            Save Changes
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Add Staff Modal -->
+<div class="modal fade" id="addStaffModal" tabindex="-1" aria-labelledby="addStaffModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-lg">
+        <div class="modal-content radius-16 bg-base shadow-lg border-0">
+            <!-- Modal Header with Gradient Background -->
+            <div class="modal-header border-0 py-20 px-32" style="background: linear-gradient(135deg, #1e3a8a 0%, #3b82f6 100%);">
+                <div class="d-flex align-items-center gap-3">
+                    <div class="w-48-px h-48-px rounded-circle bg-white bg-opacity-25 d-flex align-items-center justify-content-center">
+                        <iconify-icon icon="flowbite:user-add-outline" class="text-white" style="font-size: 24px;"></iconify-icon>
+                    </div>
+                    <div>
+                        <h5 class="modal-title text-white fw-bold mb-0" id="addStaffModalLabel">Add New Staff Member</h5>
+                        <p class="text-white text-opacity-75 mb-0" style="font-size: 13px;">Create a new staff account for your company</p>
+                    </div>
+                </div>
+                <button type="button" class="btn-close btn-close-white opacity-75" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            
+            <!-- Modal Body -->
+            <div class="modal-body p-32">
+                <!-- Alert Messages -->
+                <div id="modal-error" class="alert alert-danger radius-12 mb-24 d-none d-flex align-items-center gap-2">
+                    <iconify-icon icon="mdi:alert-circle-outline" class="text-xl"></iconify-icon>
+                    <span id="modal-error-text"></span>
+                </div>
+                <div id="modal-success" class="alert alert-success radius-12 mb-24 d-none d-flex align-items-center gap-2">
+                    <iconify-icon icon="mdi:check-circle-outline" class="text-xl"></iconify-icon>
+                    <span id="modal-success-text"></span>
+                </div>
+                
+                <!-- Info Card -->
+                <div class="card border-0 mb-24 radius-12" style="background: linear-gradient(135deg, #dbeafe 0%, #bfdbfe 100%);">
+                    <div class="card-body p-16 d-flex align-items-start gap-3">
+                        <iconify-icon icon="mdi:information-outline" style="color: #1e40af;" class="text-xl mt-1"></iconify-icon>
+                        <div>
+                            <p class="text-sm mb-0 fw-medium" style="color: #1e40af;">After creating the staff account:</p>
+                            <ul class="text-sm mb-0 ps-3 mt-1" style="color: #1e3a8a;">
+                                <li>Staff can login with their email and password</li>
+                                <li>They must select "Staff" as their role during login</li>
+                                <li>They will have access to your company's data</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Form -->
+                <form id="add-staff-form">
+                    <div class="row g-3">
+                        <!-- Full Name -->
+                        <div class="col-12">
+                            <label class="form-label fw-semibold text-primary-light text-sm mb-8 d-flex align-items-center gap-2">
+                                <iconify-icon icon="mdi:account-outline" style="color: #2563eb;"></iconify-icon>
+                                Full Name <span class="text-danger">*</span>
+                            </label>
+                            <div class="icon-field">
+                                <span class="icon top-50 translate-middle-y">
+                                    <iconify-icon icon="mdi:account" class="text-secondary-light"></iconify-icon>
+                                </span>
+                                <input type="text" name="name" class="form-control h-56-px bg-neutral-50 radius-12 ps-48" placeholder="e.g. John Smith" required>
+                            </div>
+                        </div>
+
+                        <!-- Email Address -->
+                        <div class="col-12">
+                            <label class="form-label fw-semibold text-primary-light text-sm mb-8 d-flex align-items-center gap-2">
+                                <iconify-icon icon="mdi:email-outline" style="color: #2563eb;"></iconify-icon>
+                                Email Address <span class="text-danger">*</span>
+                            </label>
+                            <div class="icon-field">
+                                <span class="icon top-50 translate-middle-y">
+                                    <iconify-icon icon="mage:email" class="text-secondary-light"></iconify-icon>
+                                </span>
+                                <input type="email" name="email" class="form-control h-56-px bg-neutral-50 radius-12 ps-48" placeholder="e.g. staff@example.com" required>
+                            </div>
+                            <small class="text-secondary-light d-flex align-items-center gap-1 mt-1">
+                                <iconify-icon icon="mdi:information-outline" class="text-sm"></iconify-icon>
+                                This will be their login email
+                            </small>
+                        </div>
+
+                        <!-- Password -->
+                        <div class="col-12">
+                            <label class="form-label fw-semibold text-primary-light text-sm mb-8 d-flex align-items-center gap-2">
+                                <iconify-icon icon="mdi:lock-outline" style="color: #2563eb;"></iconify-icon>
+                                Password <span class="text-danger">*</span>
+                            </label>
+                            <div class="icon-field position-relative">
+                                <span class="icon top-50 translate-middle-y">
+                                    <iconify-icon icon="solar:lock-password-outline" class="text-secondary-light"></iconify-icon>
+                                </span>
+                                <input type="password" name="password" id="staff-password" class="form-control h-56-px bg-neutral-50 radius-12 ps-48 pe-48" placeholder="Minimum 6 characters" required>
+                                <span class="toggle-password ri-eye-line cursor-pointer position-absolute end-0 top-50 translate-middle-y me-16 text-secondary-light" data-toggle="#staff-password"></span>
+                            </div>
+                            <div class="mt-2 d-flex align-items-center gap-2">
+                                <div class="progress flex-grow-1" style="height: 4px;">
+                                    <div id="password-strength" class="progress-bar bg-danger" role="progressbar" style="width: 0%"></div>
+                                </div>
+                                <small id="password-strength-text" class="text-secondary-light"></small>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Action Buttons -->
+                    <div class="d-flex align-items-center justify-content-end gap-3 mt-32 pt-24 border-top">
+                        <button type="button" class="btn btn-outline-secondary text-sm px-24 py-12 radius-8 d-flex align-items-center gap-2" data-bs-dismiss="modal">
+                            <iconify-icon icon="mdi:close" class="icon"></iconify-icon>
+                            Cancel
+                        </button>
+                        <button type="submit" id="add-staff-submit-btn" class="btn text-sm px-24 py-12 radius-8 d-flex align-items-center gap-2" style="background: linear-gradient(135deg, #1e3a8a 0%, #3b82f6 100%); color: white; border: none;">
+                            <iconify-icon icon="mdi:account-plus" class="icon text-lg"></iconify-icon>
+                            Add Staff Member
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal Styles -->
+<style>
+#addStaffModal .modal-content,
+#editStaffModal .modal-content,
+#deleteStaffModal .modal-content {
+    overflow: hidden;
+    animation: modalSlideIn 0.3s ease-out;
+}
+
+@keyframes modalSlideIn {
+    from {
+        opacity: 0;
+        transform: translateY(-50px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+#addStaffModal .icon-field input:focus,
+#editStaffModal .icon-field input:focus,
+#editStaffModal select:focus {
+    border-color: #3b82f6;
+    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.15);
+}
+
+#addStaffModal .toggle-password:hover {
+    color: #2563eb !important;
+}
+
+#add-staff-submit-btn:hover,
+#edit-staff-submit-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 20px rgba(37, 99, 235, 0.4);
+    transition: all 0.3s ease;
+}
+
+#add-staff-submit-btn:disabled,
+#edit-staff-submit-btn:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+    transform: none !important;
+}
+
+.btn-outline-secondary:hover {
+    background-color: #f8f9fa;
+    border-color: #dee2e6;
+}
+
+.btn-edit-staff,
+.btn-delete-staff {
+    border: none;
+    transition: all 0.2s ease;
+}
+
+.btn-edit-staff:hover,
+.btn-delete-staff:hover {
+    transform: scale(1.1);
+}
+
+#confirm-delete-staff:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 20px rgba(220, 38, 38, 0.4);
+    transition: all 0.3s ease;
+}
+
+#confirm-delete-staff:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+    transform: none !important;
+}
+</style>
+
+<% script = `<script src="/js/modules/staff-management.js"></script>` %>

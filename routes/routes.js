@@ -32,17 +32,8 @@ function requireAuth(req, res, next) {
   return res.redirect("/authentication/signin");
 }
 
-router.get("/", (req, res) => {
-  if (req.session?.user) return res.redirect(req.session.user.role === "STAFF" ? "/staff/dashboard/index5" : "/owner/dashboard/index5");
-  if (req.session?.pendingOtp) return res.redirect("/authentication/verify-otp");
-  return res.redirect("/authentication/signin");
-});
-
-router.get("/index", (req, res) => {
-  if (req.session?.user) return res.redirect(req.session.user.role === "STAFF" ? "/staff/dashboard/index5" : "/owner/dashboard/index5");
-  if (req.session?.pendingOtp) return res.redirect("/authentication/verify-otp");
-  return res.redirect("/authentication/signin");
-});
+router.get("/", (req, res) => res.redirect("/authentication/signin"));
+router.get("/index", (req, res) => res.redirect("/authentication/signin"));
 
 // Default owner: bina /owner ya /staff prefix ke dashboard paths → /owner/... redirect (jab tak APIs/role fix nahi)
 router.use((req, res, next) => {
@@ -155,6 +146,8 @@ function mountDashboardModules(router, basePath) {
 mountDashboardModules(ownerRoutes, "/owner");
 mountDashboardModules(staffRoutes, "/staff");
 
+// Dashboard auth is JWT-based (authApi + authGuard). Session-based requireAuth would
+// redirect API-login users back to sign-in because req.session.user is never set.
 router.use("/owner", ownerRoutes);
 router.use("/staff", staffRoutes);
 
