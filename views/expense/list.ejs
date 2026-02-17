@@ -1,0 +1,58 @@
+<div class="card h-100 p-0 radius-12" id="expense-list-card" data-base-path="<%= typeof basePath !== 'undefined' ? basePath : '' %>" data-page="<%= query.page %>" data-limit="<%= query.limit %>" data-status="<%= query.status || '' %>" data-category="<%= query.category || '' %>" data-expense-date-from="<%= query.expense_date_from || '' %>" data-expense-date-to="<%= query.expense_date_to || '' %>">
+    <div class="card-header border-bottom bg-base py-16 px-24 d-flex align-items-center flex-wrap gap-3 justify-content-between">
+        <div class="d-flex align-items-center flex-wrap gap-3">
+            <select id="expense-filter-status" class="form-select form-select-sm w-auto ps-12 py-6 radius-12 h-40-px" title="Filter by status">
+                <option value="">All status</option>
+                <option value="PENDING" <%= query.status === 'PENDING' ? 'selected' : '' %>>Pending</option>
+                <option value="APPROVED" <%= query.status === 'APPROVED' ? 'selected' : '' %>>Approved</option>
+                <option value="REJECTED" <%= query.status === 'REJECTED' ? 'selected' : '' %>>Rejected</option>
+            </select>
+            <select id="expense-filter-category" class="form-select form-select-sm w-auto ps-12 py-6 radius-12 h-40-px" title="Filter by category">
+                <option value="">All categories</option>
+                <option value="FUEL" <%= query.category === 'FUEL' ? 'selected' : '' %>>Fuel</option>
+                <option value="MAINTENANCE" <%= query.category === 'MAINTENANCE' ? 'selected' : '' %>>Maintenance</option>
+                <option value="INSURANCE" <%= query.category === 'INSURANCE' ? 'selected' : '' %>>Insurance</option>
+                <option value="REPAIR" <%= query.category === 'REPAIR' ? 'selected' : '' %>>Repair</option>
+                <option value="OFFICE" <%= query.category === 'OFFICE' ? 'selected' : '' %>>Office</option>
+                <option value="OTHER" <%= query.category === 'OTHER' ? 'selected' : '' %>>Other</option>
+            </select>
+            <input type="date" id="expense-filter-date-from" class="form-control form-control-sm w-auto py-6 radius-12 h-40-px" value="<%= query.expense_date_from || '' %>" title="Expense date from">
+            <input type="date" id="expense-filter-date-to" class="form-control form-control-sm w-auto py-6 radius-12 h-40-px" value="<%= query.expense_date_to || '' %>" title="Expense date to">
+            <button type="button" id="expense-filter-apply" class="btn btn-sm border border-neutral-400 radius-8 h-40-px">Apply</button>
+        </div>
+        <div class="d-flex align-items-center gap-2">
+            <a href="<%= typeof basePath !== 'undefined' ? basePath : '' %>/expense/add" class="btn btn-primary text-sm btn-sm px-12 py-12 radius-8 d-flex align-items-center gap-2">
+                <iconify-icon icon="ic:baseline-plus" class="icon text-xl line-height-1"></iconify-icon>
+                Add Expense
+            </a>
+        </div>
+    </div>
+    <div class="card-body p-24">
+        <div id="expense-list-loading" class="text-center text-secondary-light py-24">Loading expenses…</div>
+        <div id="expense-list-content" class="d-none">
+            <div class="table-responsive scroll-sm">
+                <table class="table bordered-table sm-table mb-0">
+                    <thead>
+                        <tr>
+                            <th scope="col">#</th>
+                            <th scope="col">Amount</th>
+                            <th scope="col">Vehicle</th>
+                            <th scope="col">Category</th>
+                            <th scope="col">Description</th>
+                            <th scope="col">Date</th>
+                            <th scope="col" class="text-center">Status</th>
+                            <th scope="col" class="text-center">Action</th>
+                        </tr>
+                    </thead>
+                    <tbody id="expense-list-tbody">
+                    </tbody>
+                </table>
+            </div>
+            <div id="expense-list-pagination" class="d-flex align-items-center justify-content-between mt-16 flex-wrap gap-2">
+            </div>
+        </div>
+        <div id="expense-list-error" class="d-none text-center text-danger py-24"></div>
+    </div>
+</div>
+
+<% script = '<script src="/js/api/expenseApi.js"></script><script src="/js/pages/expense-list.js"></script>' %>

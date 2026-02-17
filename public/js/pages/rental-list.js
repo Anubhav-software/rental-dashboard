@@ -23,6 +23,7 @@
     var activeOnly = (card && card.getAttribute('data-active-only')) === '1';
     var initialPage = card && card.getAttribute('data-page');
     var initialLimit = card && card.getAttribute('data-limit');
+    var onDate = (card && card.getAttribute('data-on-date')) || '';
     var params = {
       page: parseInt(sessionStorage.getItem('rentalListPage') || initialPage || '1', 10),
       limit: parseInt(initialLimit || '20', 10),
@@ -31,6 +32,7 @@
     else if (statusEl && statusEl.value) params.status = statusEl.value.trim();
     if (fromEl && fromEl.value) params.start_date_from = fromEl.value.trim();
     if (toEl && toEl.value) params.start_date_to = toEl.value.trim();
+    if (onDate) params.on_date = onDate.trim();
     return params;
   }
 
@@ -67,6 +69,13 @@
       actions += '<a href="' + basePath + '/rental/edit/' + encodeURIComponent(r.id) + '" class="bg-success-focus text-success-600 bg-hover-success-200 fw-medium w-40-px h-40-px d-flex justify-content-center align-items-center rounded-circle text-decoration-none" title="Edit"><iconify-icon icon="lucide:edit" class="menu-icon"></iconify-icon></a>';
       actions += '<a href="' + basePath + '/return/process/' + encodeURIComponent(r.id) + '" class="bg-warning-focus text-warning-600 bg-hover-warning-200 fw-medium w-40-px h-40-px d-flex justify-content-center align-items-center rounded-circle text-decoration-none" title="Process return"><iconify-icon icon="mdi:key-return" class="menu-icon"></iconify-icon></a>';
       actions += '<button type="button" class="rental-cancel-btn remove-item-btn bg-danger-focus bg-hover-danger-200 text-danger-600 fw-medium w-40-px h-40-px d-flex justify-content-center align-items-center rounded-circle border-0" data-rental-id="' + encodeURIComponent(r.id) + '" title="Cancel rental"><iconify-icon icon="fluent:delete-24-regular" class="menu-icon"></iconify-icon></button>';
+    }
+    if (r.status === 'COMPLETED') {
+      if (r.hasInvoice) {
+        actions += '<span class="d-inline-flex w-40-px h-40-px align-items-center justify-content-center rounded-circle bg-neutral-200 text-neutral-500" title="Invoice already generated"><iconify-icon icon="hugeicons:invoice-03" class="menu-icon"></iconify-icon></span>';
+      } else {
+        actions += '<button type="button" class="rental-generate-invoice-btn btn border-0 bg-primary-focus text-primary-600 fw-medium w-40-px h-40-px d-flex justify-content-center align-items-center rounded-circle" data-rental-id="' + encodeURIComponent(r.id) + '" title="Generate invoice"><iconify-icon icon="hugeicons:invoice-03" class="menu-icon"></iconify-icon></button>';
+      }
     }
 
     var tr = document.createElement('tr');
@@ -169,6 +178,43 @@
                 if (result && result.isConfirmed) doCancel();
               });
             } else if (confirm('Cancel this rental?')) doCancel();
+          });
+        });
+        var generateInvoiceBtns = tbody.querySelectorAll('.rental-generate-invoice-btn');
+        generateInvoiceBtns.forEach(function (btn) {
+          btn.addEventListener('click', function () {
+            var rentalId = this.getAttribute('data-rental-id');
+            if (!rentalId || !window.invoiceApi || !window.invoiceApi.createFromRental) return;
+            var self = this;
+            var doCreate = function () {
+              self.disabled = true;
+              if (self.classList) self.classList.add('opacity-75');
+              window.invoiceApi.createFromRental({ rental_id: rentalId }).then(function (data) {
+                var inv = data.invoice;
+                var num = inv && inv.invoiceNumber ? inv.invoiceNumber : 'Invoice';
+                if (window.showToast) window.showToast('Invoice ' + num + ' created.', 'success');
+                if (inv && inv.id) window.location.href = basePath + '/invoice/view/' + encodeURIComponent(inv.id);
+                else loadList();
+              }).catch(function (err) {
+                var msg = (err.data && err.data.error) ? err.data.error : (err.message || 'Failed to create invoice.');
+                if (window.showToast) window.showToast(msg, 'error');
+                self.disabled = false;
+                if (self.classList) self.classList.remove('opacity-75');
+              });
+            };
+            if (typeof Swal !== 'undefined') {
+              Swal.fire({
+                title: 'Generate invoice?',
+                text: 'Create an invoice from this completed rental. PDF will be sent to customer email.',
+                icon: 'question',
+                showCancelButton: true,
+                confirmButtonColor: '#0d6efd',
+                cancelButtonColor: '#6c757d',
+                confirmButtonText: 'Yes, generate'
+              }).then(function (result) {
+                if (result && result.isConfirmed) doCreate();
+              });
+            } else if (confirm('Create invoice from this rental?')) doCreate();
           });
         });
       }

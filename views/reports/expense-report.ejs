@@ -1,19 +1,19 @@
-<div class="card h-100 p-0 radius-12">
+<div class="card h-100 p-0 radius-12" data-base-path="<%= typeof basePath !== 'undefined' ? basePath : '' %>">
     <div class="card-header border-bottom bg-base py-16 px-24 d-flex align-items-center flex-wrap gap-3 justify-content-between">
         <h6 class="text-md fw-semibold text-primary-light mb-0 d-flex align-items-center gap-2">
             <iconify-icon icon="mdi:chart-box-outline" class="text-primary-600"></iconify-icon>
             Expense Report
         </h6>
-        <form method="GET" action="<%= typeof basePath !== 'undefined' ? basePath : '' %>/reports/expense" class="d-flex align-items-center gap-2 flex-wrap">
-            <input type="date" name="from" class="form-control form-control-sm w-auto h-40-px radius-12" value="<%= from %>">
-            <input type="date" name="to" class="form-control form-control-sm w-auto h-40-px radius-12" value="<%= to %>">
+        <form method="GET" action="<%= typeof basePath !== 'undefined' ? basePath : '' %>/reports/expense" class="d-flex align-items-center gap-2 flex-wrap" id="expense-report-form">
+            <input type="date" name="from" id="expense-report-from" class="form-control form-control-sm w-auto h-40-px radius-12" value="<%= from %>" aria-label="From date">
+            <input type="date" name="to" id="expense-report-to" class="form-control form-control-sm w-auto h-40-px radius-12" value="<%= to %>" aria-label="To date">
             <button type="submit" class="btn btn-sm btn-primary radius-8 h-40-px">Apply</button>
         </form>
     </div>
     <div class="card-body p-24">
         <div class="mb-24">
-            <p class="text-sm text-secondary-light mb-4">Total expenses (<%= from %> to <%= to %>)</p>
-            <h4 class="fw-semibold text-danger-600 mb-0"><%= currencySymbol %><%= total %></h4>
+            <p class="text-sm text-secondary-light mb-4" id="expense-report-period">Total expenses (<%= from %> to <%= to %>)</p>
+            <h4 id="expense-report-total" class="fw-semibold text-danger-600 mb-0"><%= currencySymbol %>0</h4>
         </div>
         <div class="table-responsive scroll-sm">
             <table class="table bordered-table sm-table mb-0">
@@ -26,22 +26,10 @@
                         <th scope="col">Amount</th>
                     </tr>
                 </thead>
-                <tbody>
-                    <% if (expenses.length === 0) { %>
+                <tbody id="expense-report-tbody">
                     <tr>
-                        <td colspan="5" class="text-center text-secondary-light py-24">No expenses in this period.</td>
+                        <td colspan="5" class="text-center text-secondary-light py-24">Loading…</td>
                     </tr>
-                    <% } else { %>
-                    <% expenses.forEach((e, i) => { %>
-                    <tr>
-                        <td><%= i + 1 %></td>
-                        <td><span class="text-secondary-light"><%= e.expenseDate %></span></td>
-                        <td><span class="fw-medium"><%= e.expenseType %></span></td>
-                        <td><span class="text-secondary-light"><%= e.description || '-' %></span></td>
-                        <td><span class="fw-medium"><%= currencySymbol %><%= e.amount %></span></td>
-                    </tr>
-                    <% }); %>
-                    <% } %>
                 </tbody>
             </table>
         </div>

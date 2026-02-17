@@ -39,7 +39,7 @@ router.get("/index", (req, res) => res.redirect("/authentication/signin"));
 router.use((req, res, next) => {
   const p = req.path;
   if (p.startsWith("/owner") || p.startsWith("/staff")) return next();
-  const prefixes = ["/vehicle", "/customer", "/rental", "/return", "/expense", "/calendar", "/reports", "/settings", "/dashboard", "/users"];
+  const prefixes = ["/vehicle", "/customer", "/rental", "/return", "/invoice", "/expense", "/calendar", "/reports", "/settings", "/dashboard", "/users"];
   if (prefixes.some((prefix) => p === prefix || p.startsWith(prefix + "/"))) {
     return res.redirect(302, "/owner" + p);
   }
@@ -118,7 +118,6 @@ router.use("/chart", chart);
 router.use("/components", components);
 router.use("/crypto-currency", cryptoCurrency);
 router.use("/forms", forms);
-router.use("/invoice", invoice);
 router.use("/role-and-access", rolesAndAccess);
 router.use("/table", table);
 
@@ -136,6 +135,7 @@ function mountDashboardModules(router, basePath) {
   router.use("/customer", customer);
   router.use("/rental", rental);
   router.use("/return", returnRoutes);
+  router.use("/invoice", invoice);
   router.use("/expense", expense);
   router.use("/calendar", calendarRouter);
   router.use("/reports", reports);

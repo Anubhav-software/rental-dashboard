@@ -1,0 +1,66 @@
+<div class="card" id="invoice-add-card" data-base-path="<%= typeof basePath !== 'undefined' ? basePath : '' %>">
+    <div class="card-header border-bottom py-16 px-24 d-flex align-items-center justify-content-between">
+        <h5 class="mb-0 fw-semibold text-primary-light">Create invoice (manual)</h5>
+        <a href="<%= typeof basePath !== 'undefined' ? basePath : '' %>/invoice/list" class="btn btn-sm border border-neutral-400 radius-8">Back to list</a>
+    </div>
+    <div class="card-body p-24">
+        <div id="invoice-add-loading" class="text-center text-secondary-light py-24">Loading customers…</div>
+        <div id="invoice-add-content" class="d-none">
+            <form id="invoice-add-form" class="max-w-600">
+                <div class="mb-16">
+                    <label class="form-label">Customer <span class="text-danger">*</span></label>
+                    <select name="customer_id" id="invoice-add-customer" class="form-select" required>
+                        <option value="">Select customer</option>
+                    </select>
+                </div>
+                <div class="mb-16">
+                    <label class="form-label">Invoice type</label>
+                    <select name="invoice_type" class="form-select">
+                        <option value="B2C">B2C</option>
+                        <option value="B2B">B2B</option>
+                    </select>
+                </div>
+                <div class="mb-16">
+                    <label class="form-label">Due date</label>
+                    <input type="date" name="due_date" id="invoice-add-due-date" class="form-control">
+                </div>
+                <div class="mb-16">
+                    <label class="form-label d-flex align-items-center justify-content-between">
+                        <span>Line items <span class="text-danger">*</span></span>
+                        <button type="button" id="invoice-add-line-row" class="btn btn-sm btn-outline-primary radius-8">+ Add row</button>
+                    </label>
+                    <div class="table-responsive border radius-12">
+                        <table class="table table-sm bordered-table mb-0">
+                            <thead class="bg-neutral-50">
+                                <tr>
+                                    <th>Description</th>
+                                    <th style="width: 90px;">Qty</th>
+                                    <th style="width: 120px;">Unit price</th>
+                                    <th style="width: 120px;">Amount</th>
+                                    <th style="width: 50px;"></th>
+                                </tr>
+                            </thead>
+                            <tbody id="invoice-add-line-tbody">
+                                <tr class="invoice-line-row">
+                                    <td><input type="text" name="line_description" class="form-control form-control-sm" placeholder="Description" required></td>
+                                    <td><input type="number" name="line_quantity" class="form-control form-control-sm" min="0" step="1" value="1"></td>
+                                    <td><input type="number" name="line_unit_price" class="form-control form-control-sm" min="0" step="0.01" value="0" placeholder="0"></td>
+                                    <td><input type="number" name="line_amount" class="form-control form-control-sm line-amount" min="0" step="0.01" value="0" placeholder="0" required></td>
+                                    <td><button type="button" class="btn btn-sm btn-outline-danger p-0 border-0 remove-line-row" title="Remove">×</button></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                <div class="mb-16">
+                    <label class="form-label">Notes</label>
+                    <textarea name="notes" id="invoice-add-notes" class="form-control" rows="2" placeholder="Optional notes"></textarea>
+                </div>
+                <button type="submit" class="btn btn-primary radius-8">Create invoice</button>
+            </form>
+        </div>
+        <div id="invoice-add-error" class="d-none text-center text-danger py-24"></div>
+    </div>
+</div>
+
+<% script = '<script src="/js/lib/searchable-select.js"></script><script src="/js/api/invoiceApi.js"></script><script src="/js/api/customerApi.js"></script><script src="/js/pages/invoice-add.js"></script>' %>

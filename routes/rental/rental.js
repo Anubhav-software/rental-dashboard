@@ -99,6 +99,7 @@ function getAvailableVehicles() {
 }
 
 // List all rentals — shell; data loaded client-side via rentalApi.list()
+// Query on_date: show only rentals that include this date (from calendar day click).
 router.get("/", (req, res) => {
   const query = {
     status: (req.query.status || "").trim(),
@@ -106,6 +107,7 @@ router.get("/", (req, res) => {
     customer_id: (req.query.customer_id || "").trim(),
     start_date_from: (req.query.start_date_from || "").trim(),
     start_date_to: (req.query.start_date_to || "").trim(),
+    on_date: (req.query.on_date || "").trim(),
     page: Math.max(1, parseInt(req.query.page, 10) || 1),
     limit: Math.min(100, Math.max(1, parseInt(req.query.limit, 10) || 20)),
   };
@@ -139,13 +141,17 @@ router.get("/active", (req, res) => {
 });
 
 // Create rental form — dropdowns filled client-side via vehicleApi (AVAILABLE) + customerApi
+// Query: startDate (and optionally endDate) to pre-fill when coming from calendar day view
 router.get("/add", (req, res) => {
+  const startDate = (req.query.startDate || "").trim();
+  const endDate = (req.query.endDate || "").trim();
+  const rental = startDate || endDate ? { startDate: startDate || undefined, endDate: endDate || undefined } : null;
   res.render("rental/create-rental", {
     title: "Rentals",
     subTitle: "Create Rental",
     customers: [],
     vehicles: [],
-    rental: null,
+    rental,
     error: null,
   });
 });

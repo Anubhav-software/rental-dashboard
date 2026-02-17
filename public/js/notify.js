@@ -8,6 +8,11 @@
   if (typeof Toastify !== 'undefined') {
     window.showToast = function (message, type) {
       type = type || 'success';
+      // Suppress noisy DOM error toasts (e.g. from third-party script on calendar page)
+      if (type === 'error' && typeof message === 'string' && message.indexOf('innerHTML') !== -1 && message.indexOf('null') !== -1) {
+        if (typeof console !== 'undefined' && console.debug) console.debug('[showToast] Suppressed:', message);
+        return;
+      }
       var isSuccess = type === 'success';
       var options = {
         text: message || (isSuccess ? 'Done!' : 'Something went wrong.'),

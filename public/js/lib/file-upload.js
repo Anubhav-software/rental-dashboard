@@ -73,4 +73,5 @@
 })(jQuery);
 
 // Apply fileUpload functionality to each container with the class "fileUpload"
-$('.fileUpload').fileUpload();
+var fileUploadEls = $('.fileUpload');
+if (fileUploadEls.length) fileUploadEls.fileUpload();

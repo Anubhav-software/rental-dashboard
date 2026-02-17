@@ -1,15 +1,7 @@
 const express = require("express");
 const router = express.Router();
 
-const rentalRouter = require("../rental/rental");
-const vehicleRouter = require("../vehicle/vehicle");
-const customerRouter = require("../customer/customer");
-
-const demoRentals = rentalRouter.demoRentals;
-const demoVehicles = vehicleRouter.demoVehicles;
-const demoCustomers = customerRouter.demoCustomers;
-
-// Month view: availability calendar (which dates have rentals)
+// Month view: availability calendar (which dates have rentals). Data loaded client-side for real rentals.
 router.get("/", (req, res) => {
   const year = parseInt(req.query.year, 10) || new Date().getFullYear();
   const month = parseInt(req.query.month, 10) || new Date().getMonth() + 1;
@@ -18,18 +10,12 @@ router.get("/", (req, res) => {
   const daysInMonth = monthEnd.getDate();
   const firstDay = monthStart.getDay(); // 0 = Sun
 
-  // Build calendar grid: rows of 7 days each
+  // Build calendar grid: rows of 7 days each (no rental counts; day links only; month view can be enhanced with API later)
   const days = [];
   for (let i = 0; i < firstDay; i++) days.push(null);
   for (let d = 1; d <= daysInMonth; d++) {
     const dateStr = year + "-" + String(month).padStart(2, "0") + "-" + String(d).padStart(2, "0");
-    const rentalsOnDay = demoRentals.filter((r) => {
-      const start = new Date(r.startDate + "T00:00:00");
-      const end = new Date(r.endDate + "T23:59:59");
-      const day = new Date(dateStr);
-      return day >= start && day <= end;
-    });
-    days.push({ date: d, dateStr, rentals: rentalsOnDay });
+    days.push({ date: d, dateStr, rentals: [] });
   }
   const weekRows = [];
   for (let i = 0; i < days.length; i += 7) {
@@ -46,6 +32,14 @@ router.get("/", (req, res) => {
   const nextMonth = month === 12 ? 1 : month + 1;
   const nextYear = month === 12 ? year + 1 : year;
 
+  const now = new Date();
+  const todayStr =
+    now.getFullYear() +
+    "-" +
+    String(now.getMonth() + 1).padStart(2, "0") +
+    "-" +
+    String(now.getDate()).padStart(2, "0");
+
   res.render("calendar/availability", {
     title: "Calendar",
     subTitle: "Availability",
@@ -57,32 +51,16 @@ router.get("/", (req, res) => {
     prevYear,
     nextMonth,
     nextYear,
+    todayStr,
   });
 });
 
-// Day view: rentals for a specific date
+// Redirect old calendar/day links to Rentals page with date filter (one less page to maintain)
 router.get("/day", (req, res) => {
   const dateStr = (req.query.date || "").trim();
-  if (!dateStr) return res.redirect((req.baseUrl || "") + "/calendar");
-
-  const rentalsOnDay = demoRentals.filter((r) => {
-    const start = new Date(r.startDate + "T00:00:00");
-    const end = new Date(r.endDate + "T23:59:59");
-    const day = new Date(dateStr);
-    return day >= start && day <= end;
-  });
-
-  const vehiclesMap = Object.fromEntries(demoVehicles.map((v) => [v.id, v]));
-  const customersMap = Object.fromEntries(demoCustomers.map((c) => [c.id, c]));
-
-  res.render("calendar/day-view", {
-    title: "Calendar",
-    subTitle: "Day — " + dateStr,
-    dateStr,
-    rentals: rentalsOnDay,
-    vehiclesMap,
-    customersMap,
-  });
+  if (!dateStr) return res.redirect((req.baseUrl || "").replace(/\/calendar\/?.*$/, "") || "/calendar");
+  const base = (req.baseUrl || "").replace(/\/calendar\/?.*$/, "") || "";
+  return res.redirect(base + "/rental?on_date=" + encodeURIComponent(dateStr));
 });
 
 module.exports = router;

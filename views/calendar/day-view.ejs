@@ -1,60 +1,34 @@
-<div class="card h-100 p-0 radius-12">
+<style>
+  .cal-day-empty { text-align: center; padding: 48px 24px; background: #f8fafc; border-radius: 12px; border: 1px dashed #cbd5e1; }
+  .cal-day-empty iconify-icon { font-size: 4rem; color: #94a3b8; margin-bottom: 16px; display: block; }
+  .cal-day-empty p { font-size: 1rem; color: #64748b; margin-bottom: 20px; }
+  .cal-day-table { width: 100%; border-collapse: collapse; border-radius: 12px; overflow: hidden; box-shadow: 0 1px 3px rgba(0,0,0,0.06); }
+  .cal-day-table thead { background: #f8fafc; }
+  .cal-day-table th { padding: 14px 16px; font-size: 0.7rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.05em; color: #64748b; text-align: left; border-bottom: 2px solid #e2e8f0; }
+  .cal-day-table th.text-center { text-align: center; }
+  .cal-day-table td { padding: 14px 16px; border-bottom: 1px solid #e2e8f0; }
+  .cal-day-table tbody tr:last-child td { border-bottom: none; }
+  .cal-day-table tbody tr:hover { background: #f8fafc; }
+  .cal-day-table .contract-num { font-weight: 600; color: #1e293b; }
+  .cal-day-table .status-active { background: #dcfce7; color: #166534; padding: 4px 12px; border-radius: 20px; font-size: 0.75rem; font-weight: 600; }
+  .cal-day-table .status-completed { background: #dbeafe; color: #1d4ed8; padding: 4px 12px; border-radius: 20px; font-size: 0.75rem; font-weight: 600; }
+  .cal-day-table .status-other { background: #f1f5f9; color: #64748b; padding: 4px 12px; border-radius: 20px; font-size: 0.75rem; font-weight: 600; }
+</style>
+<% var basePathVal = typeof basePath !== 'undefined' ? basePath : ''; %>
+<div class="card h-100 p-0 radius-12 cal-day-wrap" id="cal-day-card" data-date="<%= dateStr %>" data-base-path="<%= basePathVal %>">
     <div class="card-header border-bottom bg-base py-16 px-24 d-flex align-items-center flex-wrap gap-3 justify-content-between">
         <h6 class="text-md fw-semibold text-primary-light mb-0 d-flex align-items-center gap-2">
             <iconify-icon icon="solar:calendar-outline" class="text-primary-600"></iconify-icon>
             Rentals on <%= dateStr %>
         </h6>
-        <a href="<%= typeof basePath !== 'undefined' ? basePath : '' %>/calendar" class="btn btn-outline-secondary btn-sm radius-8 d-flex align-items-center gap-2">
+        <a href="<%= basePathVal %>/calendar" class="btn btn-outline-secondary btn-sm radius-8 d-flex align-items-center gap-2">
             <iconify-icon icon="mdi:arrow-left"></iconify-icon> Back to calendar
         </a>
     </div>
     <div class="card-body p-24">
-        <% if (rentals.length === 0) { %>
-        <div class="text-center text-secondary-light py-32">
-            <iconify-icon icon="mdi:calendar-blank-outline" class="text-4xl mb-3 d-block text-neutral-400"></iconify-icon>
-            <p class="mb-0">No rentals on this date.</p>
-            <a href="<%= typeof basePath !== 'undefined' ? basePath : '' %>/rental/add" class="btn btn-outline-primary btn-sm mt-16 radius-8">Create rental</a>
+        <div id="cal-day-content">
+            <p class="text-secondary-light mb-0 d-flex align-items-center gap-2"><span class="spinner-border spinner-border-sm" role="status"></span> Loading rentals…</p>
         </div>
-        <% } else { %>
-        <div class="table-responsive scroll-sm">
-            <table class="table bordered-table sm-table mb-0">
-                <thead>
-                    <tr>
-                        <th scope="col">#</th>
-                        <th scope="col">Contract</th>
-                        <th scope="col">Customer</th>
-                        <th scope="col">Vehicle</th>
-                        <th scope="col">Start — End</th>
-                        <th scope="col">Status</th>
-                        <th scope="col" class="text-center">Action</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <% rentals.forEach((r, i) => { %>
-                    <% const cust = customersMap[r.customerId]; const veh = vehiclesMap[r.vehicleId]; %>
-                    <tr>
-                        <td><%= i + 1 %></td>
-                        <td><span class="text-md fw-medium text-primary-light"><%= r.contractNumber %></span></td>
-                        <td><span class="text-md fw-normal text-secondary-light"><%= cust ? cust.name : '-' %></span></td>
-                        <td><span class="text-md fw-normal text-secondary-light"><%= veh ? (veh.make + ' ' + veh.model) : '-' %></span></td>
-                        <td><span class="text-md fw-normal text-secondary-light"><%= r.startDate %> — <%= r.endDate %></span></td>
-                        <td>
-                            <% if (r.status === 'ACTIVE') { %>
-                            <span class="bg-success-focus text-success-600 border border-success-main px-16 py-4 radius-4 fw-medium text-sm">Active</span>
-                            <% } else if (r.status === 'COMPLETED') { %>
-                            <span class="bg-info-focus text-info-600 border border-info-main px-16 py-4 radius-4 fw-medium text-sm">Completed</span>
-                            <% } else { %>
-                            <span class="bg-neutral-200 text-neutral-600 border border-neutral-400 px-16 py-4 radius-4 fw-medium text-sm">Cancelled</span>
-                            <% } %>
-                        </td>
-                        <td class="text-center">
-                            <a href="<%= typeof basePath !== 'undefined' ? basePath : '' %>/rental/view/<%= r.id %>" class="btn btn-sm btn-outline-primary radius-8">View</a>
-                        </td>
-                    </tr>
-                    <% }); %>
-                </tbody>
-            </table>
-        </div>
-        <% } %>
     </div>
 </div>
+<% script = '<script src="/js/api/rentalApi.js"></script><script src="/js/pages/calendar-day-view.js"></script>'; %>

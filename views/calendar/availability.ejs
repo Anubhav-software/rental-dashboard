@@ -1,55 +1,120 @@
-<div class="card h-100 p-0 radius-12">
+<!-- Placeholder so scripts that expect #calendar (e.g. full-calendar) don't set innerHTML on null -->
+<div id="calendar" style="display:none" aria-hidden="true"></div>
+<style>
+  .cal-wrap .cal-body { padding: 24px; }
+  .cal-table { width: 100%; border-collapse: separate; border-spacing: 0; border-radius: 12px; overflow: hidden; box-shadow: 0 1px 3px rgba(0,0,0,0.06); }
+  .cal-table thead { background: #f8fafc; }
+  .cal-table th { padding: 14px 8px; font-size: 0.75rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.06em; color: #64748b; text-align: center; border-bottom: 2px solid #e2e8f0; }
+  .cal-table td { min-height: 96px; padding: 10px; vertical-align: top; text-align: center; border: 1px solid #e2e8f0; background: #fff; transition: background 0.25s ease; }
+  .cal-table td.cal-empty { background: #f8fafc; }
+  .cal-table td.cal-weekend { background: #fafafa; }
+  /* Light gradients: active rentals (green), completed rentals (blue), expenses (red) */
+  .cal-table td.cal-day-active { background: linear-gradient(135deg, #f0fdf4 0%, #dcfce7 50%, #bbf7d0 100%); }
+  .cal-table td.cal-day-active.cal-weekend { background: linear-gradient(135deg, #ecfdf5 0%, #d1fae5 50%, #a7f3d0 100%); }
+  .cal-table td.cal-day-completed { background: linear-gradient(135deg, #eff6ff 0%, #dbeafe 50%, #bfdbfe 100%); }
+  .cal-table td.cal-day-completed.cal-weekend { background: linear-gradient(135deg, #eff6ff 0%, #dbeafe 50%, #bfdbfe 100%); }
+  .cal-table td.cal-day-expense { background: linear-gradient(135deg, #fef2f2 0%, #fee2e2 50%, #fecaca 100%); }
+  .cal-table td.cal-day-expense.cal-weekend { background: linear-gradient(135deg, #fef2f2 0%, #fee2e2 50%, #fecaca 100%); }
+  /* Date number color on colored cells so dates are readable at a glance (today keeps blue circle + white number) */
+  .cal-table td.cal-day-active .cal-day-link:not(.cal-today) { color: #166534; font-weight: 700; }
+  .cal-table td.cal-day-active .cal-day-link:not(.cal-today):hover { background: rgba(22, 101, 52, 0.15); color: #14532d; }
+  .cal-table td.cal-day-completed .cal-day-link:not(.cal-today) { color: #1d4ed8; font-weight: 700; }
+  .cal-table td.cal-day-completed .cal-day-link:not(.cal-today):hover { background: rgba(29, 78, 216, 0.15); color: #1e40af; }
+  .cal-table td.cal-day-expense .cal-day-link:not(.cal-today) { color: #b91c1c; font-weight: 700; }
+  .cal-table td.cal-day-expense .cal-day-link:not(.cal-today):hover { background: rgba(185, 28, 28, 0.12); color: #991b1b; }
+  /* Priority: active over completed over expense (single class per cell in script) */
+  .cal-day-link { display: inline-flex; align-items: center; justify-content: center; width: 36px; height: 36px; border-radius: 50%; font-weight: 600; font-size: 0.95rem; color: #334155; text-decoration: none; transition: all 0.2s; }
+  .cal-day-link:hover { background: #e0e7ff; color: #4f46e5; box-shadow: 0 2px 8px rgba(79, 70, 229, 0.2); }
+  .cal-day-link.cal-today { background: #2563eb; color: #fff; box-shadow: 0 2px 8px rgba(37, 99, 235, 0.4); }
+  .cal-day-link.cal-today:hover { background: #1d4ed8; color: #fff; }
+  .cal-rentals { margin-top: 8px; }
+  .cal-badge { display: inline-block; padding: 4px 10px; border-radius: 20px; font-size: 0.7rem; font-weight: 600; background: #dbeafe; color: #1d4ed8; }
+  .cal-hint { margin-top: 20px; font-size: 0.875rem; color: #64748b; }
+  .cal-legend { margin-top: 20px; padding: 14px 20px; background: #f8fafc; border-radius: 10px; border: 1px solid #e2e8f0; display: flex; flex-wrap: wrap; align-items: center; gap: 20px; font-size: 0.8125rem; color: #475569; }
+  .cal-legend-item { display: inline-flex; align-items: center; gap: 8px; }
+  .cal-legend-dot { width: 14px; height: 14px; border-radius: 4px; flex-shrink: 0; }
+  .cal-legend-dot.legend-active { background: linear-gradient(135deg, #86efac 0%, #4ade80 100%); }
+  .cal-legend-dot.legend-completed { background: linear-gradient(135deg, #93c5fd 0%, #60a5fa 100%); }
+  .cal-legend-dot.legend-expense { background: linear-gradient(135deg, #fca5a5 0%, #f87171 100%); }
+  #cal-availability-loading { margin-top: 12px; font-size: 0.8125rem; color: #94a3b8; }
+  /* Descriptions below calendar — card layout with icons */
+  .cal-descriptions { margin-top: 28px; padding-top: 24px; border-top: 1px solid #e2e8f0; display: grid; grid-template-columns: 1fr 1fr; gap: 24px; }
+  @media (max-width: 767px) { .cal-descriptions { grid-template-columns: 1fr; } }
+  .cal-desc-block { background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 12px; padding: 18px 20px; }
+  .cal-desc-block h6 { font-size: 0.8125rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.06em; color: #475569; margin: 0 0 14px 0; display: flex; align-items: center; gap: 10px; }
+  .cal-desc-block h6 .cal-desc-head-icon { font-size: 1.15rem; opacity: 0.9; }
+  .cal-desc-list { list-style: none; padding: 0; margin: 0; }
+  .cal-desc-list li { display: flex; align-items: center; gap: 12px; font-size: 0.875rem; color: #334155; padding: 10px 12px; margin-bottom: 8px; background: #fff; border-radius: 8px; border: 1px solid #e2e8f0; line-height: 1.4; }
+  .cal-desc-list li:last-child { margin-bottom: 0; }
+  .cal-desc-list li.cal-desc-empty { background: transparent; border: 1px dashed #cbd5e1; color: #64748b; }
+  .cal-desc-list li.cal-desc-empty .cal-desc-item-text { color: #64748b; }
+  .cal-desc-list li.cal-desc-empty .cal-desc-item-icon { color: #94a3b8; }
+  .cal-desc-list .cal-desc-item-icon { font-size: 1.25rem; flex-shrink: 0; }
+  .cal-desc-rental .cal-desc-item-icon { color: #15803d; }
+  .cal-desc-expense .cal-desc-item-icon { color: #b91c1c; }
+  .cal-desc-list .cal-desc-item-text { flex: 1; min-width: 0; }
+  .cal-desc-rental .cal-desc-item-text { color: #166534; }
+  .cal-desc-expense .cal-desc-item-text { color: #991b1b; }
+  .cal-desc-rental .badge-rental-active { background: linear-gradient(135deg, #dcfce7 0%, #bbf7d0 100%); color: #166534; font-size: 0.7rem; font-weight: 600; padding: 4px 10px; border-radius: 6px; }
+  .cal-desc-rental .badge-rental-completed { background: linear-gradient(135deg, #dbeafe 0%, #bfdbfe 100%); color: #1d4ed8; font-size: 0.7rem; font-weight: 600; padding: 4px 10px; border-radius: 6px; }
+  .cal-desc-expense .badge { background: linear-gradient(135deg, #fee2e2 0%, #fecaca 100%); color: #b91c1c; font-size: 0.7rem; font-weight: 600; padding: 4px 10px; border-radius: 6px; }
+  .cal-day-cell[title] { cursor: help; }
+</style>
+<div class="card h-100 p-0 radius-12 cal-wrap" id="cal-availability-wrap" data-year="<%= year %>" data-month="<%= month %>" data-base-path="<%= typeof basePath !== 'undefined' ? basePath : '' %>">
     <div class="card-header border-bottom bg-base py-16 px-24 d-flex align-items-center flex-wrap gap-3 justify-content-between">
         <h6 class="text-md fw-semibold text-primary-light mb-0 d-flex align-items-center gap-2">
             <iconify-icon icon="solar:calendar-outline" class="text-primary-600"></iconify-icon>
             <%= monthName %> <%= year %>
         </h6>
         <div class="d-flex align-items-center gap-2">
-            <a href="<%= typeof basePath !== 'undefined' ? basePath : '' %>/calendar?year=<%= prevYear %>&month=<%= prevMonth %>" class="btn btn-outline-secondary btn-sm radius-8 d-flex align-items-center gap-2">
-                <iconify-icon icon="mdi:chevron-left"></iconify-icon> Prev
-            </a>
+            <a href="<%= typeof basePath !== 'undefined' ? basePath : '' %>/calendar?year=<%= prevYear %>&month=<%= prevMonth %>" class="btn btn-outline-secondary btn-sm radius-8 d-flex align-items-center gap-2"><iconify-icon icon="mdi:chevron-left"></iconify-icon> Prev</a>
             <a href="<%= typeof basePath !== 'undefined' ? basePath : '' %>/calendar?year=<%= new Date().getFullYear() %>&month=<%= new Date().getMonth() + 1 %>" class="btn btn-outline-secondary btn-sm radius-8">Today</a>
-            <a href="<%= typeof basePath !== 'undefined' ? basePath : '' %>/calendar?year=<%= nextYear %>&month=<%= nextMonth %>" class="btn btn-outline-secondary btn-sm radius-8 d-flex align-items-center gap-2">
-                Next <iconify-icon icon="mdi:chevron-right"></iconify-icon>
-            </a>
+            <a href="<%= typeof basePath !== 'undefined' ? basePath : '' %>/calendar?year=<%= nextYear %>&month=<%= nextMonth %>" class="btn btn-outline-secondary btn-sm radius-8 d-flex align-items-center gap-2">Next <iconify-icon icon="mdi:chevron-right"></iconify-icon></a>
         </div>
     </div>
-    <div class="card-body p-24">
-        <div class="table-responsive">
-            <table class="table table-bordered mb-0 calendar-month-table">
-                <thead>
-                    <tr class="bg-neutral-50">
-                        <th class="text-center py-12 radius-8">Sun</th>
-                        <th class="text-center py-12">Mon</th>
-                        <th class="text-center py-12">Tue</th>
-                        <th class="text-center py-12">Wed</th>
-                        <th class="text-center py-12">Thu</th>
-                        <th class="text-center py-12">Fri</th>
-                        <th class="text-center py-12 radius-8">Sat</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <% weekRows.forEach(function(row) { %>
-                    <tr>
-                        <% row.forEach(function(cell) { %>
-                        <% if (cell == null) { %>
-                        <td class="p-8 text-center bg-neutral-100" style="min-height: 80px;"></td>
-                        <% } else { %>
-                        <td class="p-8 text-center align-top" style="min-height: 80px;">
-                            <a href="<%= typeof basePath !== 'undefined' ? basePath : '' %>/calendar/day?date=<%= cell.dateStr %>" class="d-block text-primary-light fw-medium text-decoration-none"><%= cell.date %></a>
-                            <% if (cell.rentals && cell.rentals.length > 0) { %>
-                            <div class="mt-4">
-                                <span class="badge bg-info-focus text-info-600 text-xs"><%= cell.rentals.length %> rental<%= cell.rentals.length > 1 ? 's' : '' %></span>
-                            </div>
-                            <% } %>
-                        </td>
-                        <% } %>
-                        <% }); %>
-                    </tr>
+    <div class="cal-body card-body">
+        <table class="cal-table">
+            <thead>
+                <tr>
+                    <th>Sun</th><th>Mon</th><th>Tue</th><th>Wed</th><th>Thu</th><th>Fri</th><th>Sat</th>
+                </tr>
+            </thead>
+            <tbody>
+                <% weekRows.forEach(function(row, rowIdx) { %>
+                <tr>
+                    <% row.forEach(function(cell, colIdx) { %>
+                    <% if (cell == null) { %>
+                    <td class="cal-empty" style="min-width: 80px;"></td>
+                    <% } else {
+                      const isWeekend = colIdx === 0 || colIdx === 6;
+                      const isToday = cell.dateStr === todayStr;
+                    %>
+                    <td class="cal-day-cell <%= isWeekend ? 'cal-weekend' : '' %>" style="min-width: 80px;" data-date="<%= cell.dateStr %>">
+                        <a href="<%= typeof basePath !== 'undefined' ? basePath : '' %>/rental?on_date=<%= cell.dateStr %>" class="cal-day-link <%= isToday ? 'cal-today' : '' %>"><%= cell.date %></a>
+                    </td>
+                    <% } %>
                     <% }); %>
-                </tbody>
-            </table>
+                </tr>
+                <% }); %>
+            </tbody>
+        </table>
+        <p class="cal-hint mb-0">Click a date: <strong>red</strong> (expense) opens Expenses for that day; other dates open Rentals for that day. Hover a date for a tooltip.</p>
+        <div class="cal-legend" role="presentation" aria-hidden="true">
+            <span class="cal-legend-item"><span class="cal-legend-dot legend-active" aria-hidden="true"></span> Active rental</span>
+            <span class="cal-legend-item"><span class="cal-legend-dot legend-completed" aria-hidden="true"></span> Completed rental</span>
+            <span class="cal-legend-item"><span class="cal-legend-dot legend-expense" aria-hidden="true"></span> Expense</span>
         </div>
-        <p class="text-sm text-secondary-light mt-16 mb-0">Click a date to see rentals for that day.</p>
+        <p id="cal-availability-loading" class="d-none mb-0">Loading calendar…</p>
+        <div id="cal-descriptions" class="cal-descriptions d-none" aria-live="polite">
+            <div id="cal-desc-rentals-block" class="cal-desc-block">
+                <h6 id="cal-desc-rentals-title"><iconify-icon icon="solar:calendar-date-outline" class="cal-desc-head-icon"></iconify-icon> Rentals this month</h6>
+                <ul id="cal-desc-rentals" class="cal-desc-list"></ul>
+            </div>
+            <div id="cal-desc-expenses-block" class="cal-desc-block">
+                <h6 id="cal-desc-expenses-title"><iconify-icon icon="solar:wallet-money-outline" class="cal-desc-head-icon"></iconify-icon> Expenses this month</h6>
+                <ul id="cal-desc-expenses" class="cal-desc-list"></ul>
+            </div>
+        </div>
     </div>
 </div>
+<% script = '<script src="/js/api/rentalApi.js"></script><script src="/js/api/expenseApi.js"></script><script src="/js/pages/calendar-availability.js"></script>'; %>

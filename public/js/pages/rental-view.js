@@ -49,6 +49,13 @@
       html += '<a href="' + basePath + '/rental/edit/' + encodeURIComponent(r.id) + '" class="btn btn-outline-primary btn-sm radius-8 d-flex align-items-center gap-2"><iconify-icon icon="lucide:edit"></iconify-icon> Edit</a>';
       html += '<a href="' + basePath + '/return/process/' + encodeURIComponent(r.id) + '" class="btn btn-primary btn-sm radius-8 d-flex align-items-center gap-2"><iconify-icon icon="mdi:backup-restore"></iconify-icon> Process return</a>';
     }
+    if (r.status === 'COMPLETED') {
+      if (r.hasInvoice) {
+        html += '<span class="btn btn-secondary btn-sm radius-8 d-flex align-items-center gap-2 disabled" title="Invoice already generated"><iconify-icon icon="hugeicons:invoice-03"></iconify-icon> Invoice generated</span>';
+      } else {
+        html += '<button type="button" class="btn btn-primary btn-sm radius-8 d-flex align-items-center gap-2 rental-generate-invoice-btn" data-rental-id="' + esc(r.id) + '"><iconify-icon icon="hugeicons:invoice-03"></iconify-icon> Generate invoice</button>';
+      }
+    }
     html += '<button type="button" class="btn btn-outline-secondary btn-sm radius-8 d-flex align-items-center gap-2" onclick="window.print()"><iconify-icon icon="mdi:printer-outline"></iconify-icon> Print</button>' +
       '<a href="' + basePath + '/rental" class="btn btn-outline-secondary btn-sm radius-8 d-flex align-items-center gap-2"><iconify-icon icon="mdi:arrow-left"></iconify-icon> Back</a></div></div></div></div>';
 
@@ -161,6 +168,50 @@
     });
   }
 
+  function bindGenerateInvoice(container) {
+    var btn = container && container.querySelector('.rental-generate-invoice-btn');
+    if (!btn || !window.invoiceApi || !window.invoiceApi.createFromRental) return;
+    btn.addEventListener('click', function () {
+      var rid = btn.getAttribute('data-rental-id');
+      if (!rid) return;
+      if (typeof Swal !== 'undefined') {
+        Swal.fire({
+          title: 'Generate invoice?',
+          text: 'Create an invoice from this completed rental. PDF will be sent to customer email.',
+          icon: 'question',
+          showCancelButton: true,
+          confirmButtonColor: '#0d6efd',
+          cancelButtonColor: '#6c757d',
+          confirmButtonText: 'Yes, generate',
+        }).then(function (result) {
+          if (!result.isConfirmed) return;
+          btn.disabled = true;
+          window.invoiceApi.createFromRental({ rental_id: rid }).then(function (data) {
+            var inv = data.invoice;
+            var num = inv && inv.invoiceNumber ? inv.invoiceNumber : 'Invoice';
+            if (window.showToast) window.showToast('Invoice ' + num + ' created. PDF sent to customer.', 'success');
+            if (inv && inv.id) window.location.href = basePath + '/invoice/view/' + encodeURIComponent(inv.id);
+            else window.location.href = basePath + '/invoice/list';
+          }).catch(function (err) {
+            btn.disabled = false;
+            var msg = (err.data && err.data.error) ? err.data.error : (err.message || 'Failed to create invoice.');
+            if (window.showToast) window.showToast(msg, 'error');
+          });
+        });
+      } else {
+        btn.disabled = true;
+        window.invoiceApi.createFromRental({ rental_id: rid }).then(function (data) {
+          var inv = data.invoice;
+          if (inv && inv.id) window.location.href = basePath + '/invoice/view/' + encodeURIComponent(inv.id);
+          else window.location.href = basePath + '/invoice/list';
+        }).catch(function (err) {
+          btn.disabled = false;
+          if (window.showToast) window.showToast(err.message || 'Failed to create invoice.', 'error');
+        });
+      }
+    });
+  }
+
   function bindAddCharge(container) {
     var addBtn = container && container.querySelector('.rental-add-charge-btn');
     if (!addBtn || !window.rentalApi || !window.rentalApi.addCharge) return;
@@ -211,6 +262,7 @@
       contentEl.innerHTML = render(r);
       contentEl.classList.remove('d-none');
       bindCancel(contentEl);
+      bindGenerateInvoice(contentEl);
       bindAddCharge(contentEl);
     }).catch(function (err) {
       if (loadingEl) loadingEl.classList.add('d-none');

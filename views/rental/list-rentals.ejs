@@ -1,4 +1,4 @@
-<div class="card h-100 p-0 radius-12" id="rental-list-card" data-base-path="<%= typeof basePath !== 'undefined' ? basePath : '' %>" data-page="<%= query.page %>" data-limit="<%= query.limit %>" data-status="<%= query.status || '' %>" data-active-only="<%= activeOnly ? '1' : '0' %>" data-start-date-from="<%= query.start_date_from || '' %>" data-start-date-to="<%= query.start_date_to || '' %>">
+<div class="card h-100 p-0 radius-12" id="rental-list-card" data-base-path="<%= typeof basePath !== 'undefined' ? basePath : '' %>" data-page="<%= query.page %>" data-limit="<%= query.limit %>" data-status="<%= query.status || '' %>" data-active-only="<%= activeOnly ? '1' : '0' %>" data-start-date-from="<%= query.start_date_from || '' %>" data-start-date-to="<%= query.start_date_to || '' %>" data-on-date="<%= query.on_date || '' %>">
     <div class="card-header border-bottom bg-base py-16 px-24 d-flex align-items-center flex-wrap gap-3 justify-content-between">
         <div class="d-flex align-items-center flex-wrap gap-3">
             <% if (!activeOnly) { %>
@@ -32,6 +32,12 @@
         </div>
     </div>
     <div class="card-body p-24">
+        <% if (query.on_date) { %>
+        <div id="rental-list-date-filter-banner" class="d-flex align-items-center justify-content-between flex-wrap gap-2 mb-16 px-16 py-12 bg-primary-focus border border-primary-main radius-8">
+            <span class="text-sm fw-medium text-primary-light"><iconify-icon icon="solar:calendar-outline" class="text-primary-600"></iconify-icon> Showing rentals that include this date: <strong><%= query.on_date %></strong></span>
+            <a href="<%= typeof basePath !== 'undefined' ? basePath : '' %>/rental" class="btn btn-sm btn-outline-primary radius-8">Show all rentals</a>
+        </div>
+        <% } %>
         <div id="rental-list-loading" class="text-center text-secondary-light py-24">Loading rentals…</div>
         <div id="rental-list-content" class="d-none">
             <div class="table-responsive scroll-sm">
@@ -72,4 +78,4 @@
     </div>
 </div>
 
-<% script = '<script src="/js/api/rentalApi.js"></script><script src="/js/pages/rental-list.js"></script>' %>
+<% script = '<script src="/js/api/rentalApi.js"></script><script src="/js/api/invoiceApi.js"></script><script src="/js/pages/rental-list.js"></script>' %>

@@ -60,13 +60,13 @@
                 </a>
             </li>
             <li>
-                <a href="javascript:void(0)">
+                <a href="<%= typeof basePath !== 'undefined' ? basePath : '/owner' %>/invoice/list">
                     <iconify-icon icon="hugeicons:invoice-03" class="menu-icon"></iconify-icon>
                     <span>Invoices</span>
                 </a>
             </li>
             <li>
-                <a href="<%= typeof basePath !== 'undefined' ? basePath : '/owner' %>/expense">
+                <a href="<%= typeof basePath !== 'undefined' ? basePath : '/owner' %>/expense/list">
                     <iconify-icon icon="mdi:cash-multiple" class="menu-icon"></iconify-icon>
                     <span>Expenses</span>
                 </a>

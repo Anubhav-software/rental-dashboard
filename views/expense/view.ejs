@@ -1,0 +1,9 @@
+<div class="card" id="expense-view-card" data-expense-id="<%= expenseId %>" data-base-path="<%= typeof basePath !== 'undefined' ? basePath : '' %>">
+    <div class="card-body">
+        <div id="expense-view-loading" class="text-center text-secondary-light py-24">Loading expense…</div>
+        <div id="expense-view-content" class="d-none"></div>
+        <div id="expense-view-error" class="d-none text-center text-danger py-24"></div>
+    </div>
+</div>
+
+<% script = '<script src="/js/api/expenseApi.js"></script><script src="/js/pages/expense-view.js"></script>' %>

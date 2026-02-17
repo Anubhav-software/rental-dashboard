@@ -108,14 +108,14 @@
 
   Promise.all([
     window.rentalApi.getById(rentalId, false),
-    window.vehicleApi ? window.vehicleApi.list({ limit: 100 }) : Promise.resolve({ vehicles: [] }),
-    window.customerApi ? window.customerApi.list({ limit: 100 }) : Promise.resolve({ customers: [] })
+    window.vehicleApi && window.fetchAllVehicles ? window.fetchAllVehicles() : (window.vehicleApi ? window.vehicleApi.list({ limit: 100 }) : Promise.resolve({ vehicles: [] })).then(function (res) { return (res && res.vehicles) ? res.vehicles : []; }),
+    window.customerApi && window.fetchAllCustomers ? window.fetchAllCustomers() : (window.customerApi ? window.customerApi.list({ limit: 100 }) : Promise.resolve({ customers: [] })).then(function (res) { return (res && res.customers) ? res.customers : []; })
   ]).then(function (results) {
     var rentalData = results[0];
     var r = rentalData.rental;
-    var vehicles = (results[1].vehicles || []);
+    var vehicles = Array.isArray(results[1]) ? results[1] : (results[1] && results[1].vehicles ? results[1].vehicles : []);
     vehiclesCache = vehicles;
-    var customers = (results[2].customers || []);
+    var customers = Array.isArray(results[2]) ? results[2] : (results[2] && results[2].customers ? results[2].customers : []);
 
     if (!r) {
       if (loadingEl) loadingEl.classList.add('d-none');
@@ -150,6 +150,10 @@
       if (v.id === r.vehicleId) opt.selected = true;
       vehSelect.appendChild(opt);
     });
+    if (window.attachSearchToSelect) {
+      window.attachSearchToSelect(custSelect, 'Search customer…');
+      window.attachSearchToSelect(vehSelect, 'Search vehicle…');
+    }
 
     document.getElementById('edit-startDate').value = fmtDate(r.startDate);
     document.getElementById('edit-startTime').value = (r.startTime || '10:00').toString().slice(0, 5);

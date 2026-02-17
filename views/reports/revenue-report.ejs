@@ -1,19 +1,19 @@
-<div class="card h-100 p-0 radius-12">
+<div class="card h-100 p-0 radius-12" data-base-path="<%= typeof basePath !== 'undefined' ? basePath : '' %>">
     <div class="card-header border-bottom bg-base py-16 px-24 d-flex align-items-center flex-wrap gap-3 justify-content-between">
         <h6 class="text-md fw-semibold text-primary-light mb-0 d-flex align-items-center gap-2">
             <iconify-icon icon="mdi:chart-line" class="text-primary-600"></iconify-icon>
             Revenue Report
         </h6>
-        <form method="GET" action="<%= typeof basePath !== 'undefined' ? basePath : '' %>/reports/revenue" class="d-flex align-items-center gap-2 flex-wrap">
-            <input type="date" name="from" class="form-control form-control-sm w-auto h-40-px radius-12" value="<%= from %>">
-            <input type="date" name="to" class="form-control form-control-sm w-auto h-40-px radius-12" value="<%= to %>">
+        <form method="GET" action="<%= typeof basePath !== 'undefined' ? basePath : '' %>/reports/revenue" class="d-flex align-items-center gap-2 flex-wrap" id="revenue-report-form">
+            <input type="date" name="from" id="revenue-report-from" class="form-control form-control-sm w-auto h-40-px radius-12" value="<%= from %>" aria-label="From date">
+            <input type="date" name="to" id="revenue-report-to" class="form-control form-control-sm w-auto h-40-px radius-12" value="<%= to %>" aria-label="To date">
             <button type="submit" class="btn btn-sm btn-primary radius-8 h-40-px">Apply</button>
         </form>
     </div>
     <div class="card-body p-24">
         <div class="mb-24">
-            <p class="text-sm text-secondary-light mb-4">Total revenue (<%= from %> to <%= to %>)</p>
-            <h4 class="fw-semibold text-success-600 mb-0"><%= currencySymbol %><%= total %></h4>
+            <p class="text-sm text-secondary-light mb-4" id="revenue-report-period">Total revenue (<%= from %> to <%= to %>)</p>
+            <h4 id="revenue-report-total" class="fw-semibold text-success-600 mb-0"><%= currencySymbol %>0</h4>
         </div>
         <div class="table-responsive scroll-sm">
             <table class="table bordered-table sm-table mb-0">
@@ -26,22 +26,10 @@
                         <th scope="col">Status</th>
                     </tr>
                 </thead>
-                <tbody>
-                    <% if (rentals.length === 0) { %>
+                <tbody id="revenue-report-tbody">
                     <tr>
-                        <td colspan="5" class="text-center text-secondary-light py-24">No rentals in this period.</td>
+                        <td colspan="5" class="text-center text-secondary-light py-24">Loading…</td>
                     </tr>
-                    <% } else { %>
-                    <% rentals.forEach((r, i) => { %>
-                    <tr>
-                        <td><%= i + 1 %></td>
-                        <td><a href="<%= typeof basePath !== 'undefined' ? basePath : '' %>/rental/view/<%= r.id %>" class="text-primary-light text-decoration-none fw-medium"><%= r.contractNumber %></a></td>
-                        <td><span class="text-secondary-light"><%= r.startDate %></span></td>
-                        <td><span class="fw-medium"><%= currencySymbol %><%= r.totalAmount %></span></td>
-                        <td><span class="badge <%= r.status === 'ACTIVE' ? 'bg-success-focus text-success-600' : 'bg-info-focus text-info-600' %>"><%= r.status %></span></td>
-                    </tr>
-                    <% }); %>
-                    <% } %>
                 </tbody>
             </table>
         </div>

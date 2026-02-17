@@ -152,21 +152,24 @@
       if (vehicleSelect) { vehicleSelect.innerHTML = '<option value="">API not loaded</option>'; }
       return;
     }
+    if (customerSelect) customerSelect.innerHTML = '<option value="">Loading customers…</option>';
+    if (vehicleSelect) vehicleSelect.innerHTML = '<option value="">Loading vehicles…</option>';
     Promise.all([
-      window.vehicleApi.list({ status: 'AVAILABLE', limit: 100 }),
-      window.customerApi.list({ limit: 100 })
+      window.fetchAllVehicles ? window.fetchAllVehicles({ status: 'AVAILABLE' }) : window.vehicleApi.list({ status: 'AVAILABLE', limit: 100 }).then(function (r) { return (r && r.vehicles) ? r.vehicles : []; }),
+      window.fetchAllCustomers ? window.fetchAllCustomers() : window.customerApi.list({ limit: 100 }).then(function (r) { return (r && r.customers) ? r.customers : []; })
     ]).then(function (results) {
-      var vehicles = (results[0] && results[0].vehicles) ? results[0].vehicles : [];
+      var vehicles = Array.isArray(results[0]) ? results[0] : [];
       vehiclesCache = vehicles;
-      var customers = (results[1] && results[1].customers) ? results[1].customers : [];
+      var customers = Array.isArray(results[1]) ? results[1] : [];
       if (customerSelect) {
-        customerSelect.innerHTML = '<option value="">Select customer</option>';
+        customerSelect.innerHTML = '<option value="">' + (customers.length === 0 ? 'No customers — add from Customers page' : 'Select customer') + '</option>';
         customers.forEach(function (c) {
           var opt = document.createElement('option');
           opt.value = c.id;
           opt.textContent = (c.name || '') + ' (' + (c.phone || '') + ')';
           customerSelect.appendChild(opt);
         });
+        if (window.attachSearchToSelect) window.attachSearchToSelect(customerSelect, 'Search customer…');
       }
       if (vehicleSelect) {
         vehicleSelect.innerHTML = '<option value="">Select vehicle (available only)</option>';
@@ -178,6 +181,7 @@
           vehicleSelect.appendChild(opt);
         });
         vehicleSelect.addEventListener('change', updateTotalAmount);
+        if (window.attachSearchToSelect) window.attachSearchToSelect(vehicleSelect, 'Search vehicle…');
       }
     }).catch(function (err) {
       if (window.showToast) window.showToast(err.message || 'Failed to load options', 'error');

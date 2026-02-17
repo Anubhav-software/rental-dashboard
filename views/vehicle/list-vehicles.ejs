@@ -6,7 +6,7 @@
                 <input type="text" id="vehicle-search" class="form-control form-control-sm ps-36 py-8 radius-12 h-40-px" placeholder="Search registration, make, model…" autocomplete="off">
             </div>
             <select id="filter-status" class="form-select form-select-sm w-auto ps-12 py-6 radius-12 h-40-px" title="Filter by status">
-                <option value="">All status</option>
+                    <option value="">All status</option>
                 <option value="AVAILABLE" <%= query.status === 'AVAILABLE' ? 'selected' : '' %>>Available</option>
                 <option value="RENTED" <%= query.status === 'RENTED' ? 'selected' : '' %>>Rented</option>
                 <option value="MAINTENANCE" <%= query.status === 'MAINTENANCE' ? 'selected' : '' %>>Maintenance</option>
@@ -15,7 +15,7 @@
                 <option value="">All types</option>
                 <option value="CAR" <%= query.vehicle_type === 'CAR' ? 'selected' : '' %>>Car</option>
                 <option value="MOTORBIKE" <%= query.vehicle_type === 'MOTORBIKE' ? 'selected' : '' %>>Motorbike</option>
-            </select>
+                </select>
         </div>
         <div class="d-flex align-items-center gap-2">
             <button type="button" class="btn border border-neutral-400 bg-hover-neutral-100 text-primary-light text-sm btn-sm px-12 py-12 radius-8 d-flex align-items-center gap-2" data-bs-toggle="modal" data-bs-target="#vehicleBulkUploadModal">
@@ -35,28 +35,28 @@
     <div class="card-body p-24">
         <div id="vehicle-list-loading" class="text-center text-secondary-light py-24">Loading vehicles…</div>
         <div id="vehicle-list-content" class="d-none">
-            <div class="table-responsive scroll-sm">
-                <table class="table bordered-table sm-table mb-0">
-                    <thead>
-                        <tr>
-                            <th scope="col">#</th>
+        <div class="table-responsive scroll-sm">
+            <table class="table bordered-table sm-table mb-0">
+                <thead>
+                    <tr>
+                        <th scope="col">#</th>
                             <th scope="col">Image</th>
                             <th scope="col">Registration</th>
                             <th scope="col">Type</th>
-                            <th scope="col">Make</th>
-                            <th scope="col">Model</th>
+                        <th scope="col">Make</th>
+                        <th scope="col">Model</th>
                             <th scope="col">Status</th>
-                            <th scope="col">Year</th>
+                        <th scope="col">Year</th>
                             <th scope="col">Color</th>
-                            <th scope="col">Daily Rate</th>
-                            <th scope="col">Tax expiry</th>
-                            <th scope="col">Next service</th>
-                            <th scope="col" class="text-center">Action</th>
-                        </tr>
-                    </thead>
+                        <th scope="col">Daily Rate</th>
+                        <th scope="col">Tax expiry</th>
+                        <th scope="col">Next service</th>
+                        <th scope="col" class="text-center">Action</th>
+                    </tr>
+                </thead>
                     <tbody id="vehicle-list-tbody">
-                    </tbody>
-                </table>
+                </tbody>
+            </table>
             </div>
             <div id="vehicle-list-pagination" class="d-flex align-items-center justify-content-between mt-16 flex-wrap gap-2">
             </div>
