@@ -17,10 +17,11 @@ app.use(
   })
 );
 
-// Make user available to all views
+// Make user available to all views + API base URL for frontend (Render pe env se set karo)
 app.use((req, res, next) => {
   res.locals.user = req.session.user || null;
   res.locals.pendingOtp = Boolean(req.session.pendingOtp);
+  res.locals.API_BASE_URL = process.env.API_BASE_URL || 'http://localhost:7080';
   next();
 });
 
