@@ -28,31 +28,41 @@
     $("#signin-error").addClass("d-none");
     $("#signin-success").addClass("d-none");
     btn.prop("disabled", true);
-    
-    console.log("📤 Attempting login with OTP verification:", { email: email, role: role });
-    
+
+    // ---------- OPTION A: Direct login (active). To use OTP flow: comment this block, uncomment OPTION B below ----------
     window.authApi
-      .loginPasswordWithOtp(email, password, role)
+      .loginPassword(email, password, role)
       .then(function (data) {
-        console.log("✅ Password verified, OTP sent!");
-        console.log("📦 Response:", data);
-        
-        $("#signin-success").removeClass("d-none").text(data.message || "OTP sent! Check your email and redirecting...");
-        
-        // Store email for OTP verification
-        sessionStorage.setItem("pendingLoginEmail", email);
-        
-        setTimeout(function () {
-          window.location.href = "/authentication/verify-otp";
-        }, 1500);
+        if (data.token) {
+          localStorage.setItem("authToken", data.token);
+          $("#signin-success").removeClass("d-none").text("Login successful! Redirecting...");
+          setTimeout(function () { window.location.href = "/"; }, 500);
+        } else {
+          $("#signin-error").removeClass("d-none").text("Invalid response. Try again.");
+          btn.prop("disabled", false);
+        }
       })
       .catch(function (err) {
         console.error("❌ Login failed:", err);
         btn.prop("disabled", false);
-        $("#signin-error")
-          .removeClass("d-none")
-          .text(err.data && err.data.error ? err.data.error : err.message);
+        $("#signin-error").removeClass("d-none").text(err.data && err.data.error ? err.data.error : err.message);
       });
+
+    // ---------- OPTION B: OTP flow (commented). To use: comment OPTION A above, uncomment this block ----------
+    // console.log("📤 Attempting login with OTP verification:", { email: email, role: role });
+    // window.authApi
+    //   .loginPasswordWithOtp(email, password, role)
+    //   .then(function (data) {
+    //     console.log("✅ Password verified, OTP sent!");
+    //     $("#signin-success").removeClass("d-none").text(data.message || "OTP sent! Check your email and redirecting...");
+    //     sessionStorage.setItem("pendingLoginEmail", email);
+    //     setTimeout(function () { window.location.href = "/authentication/verify-otp"; }, 1500);
+    //   })
+    //   .catch(function (err) {
+    //     console.error("❌ Login failed:", err);
+    //     btn.prop("disabled", false);
+    //     $("#signin-error").removeClass("d-none").text(err.data && err.data.error ? err.data.error : err.message);
+    //   });
   });
 
   initPasswordToggle();
