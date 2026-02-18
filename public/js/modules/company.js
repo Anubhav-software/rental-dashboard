@@ -9,22 +9,56 @@
   var token = window.authApi && window.authApi.getToken ? window.authApi.getToken() : "";
   var backendURL = window.API_BASE_URL || "";
 
-  if (!token || !authUser) {
+  if (!token) {
     window.location.href = "/authentication/signin";
     return;
   }
 
+  // Token hai but authUser nahi (e.g. purana login): /auth/me se user lao aur save karo
+  if (!authUser && window.authApi.getMe) {
+    window.authApi.getMe()
+      .then(function (data) {
+        if (data && data.user) {
+          var u = data.user;
+          // Backend /auth/me returns camelCase (companyId); dashboard expects company_id
+          if (u.company_id === undefined && u.companyId !== undefined) u.company_id = u.companyId;
+          if (window.authApi.setAuth) window.authApi.setAuth(token, u);
+          else if (typeof localStorage !== "undefined") localStorage.setItem("authUser", JSON.stringify(u));
+          runCompanyPage(u);
+        } else {
+          window.location.href = "/authentication/signin";
+        }
+      })
+      .catch(function () {
+        window.location.href = "/authentication/signin";
+      });
+    return;
+  }
+
+  if (!authUser) {
+    window.location.href = "/authentication/signin";
+    return;
+  }
+
+  runCompanyPage(authUser);
+  return;
+})();
+
+function runCompanyPage(authUser) {
+  var token = window.authApi && window.authApi.getToken ? window.authApi.getToken() : "";
+  var backendURL = window.API_BASE_URL || "";
+  // Support both snake_case (login) and camelCase (/auth/me)
+  var companyId = authUser.company_id !== undefined ? authUser.company_id : authUser.companyId;
+
   var isCreateMode =
-    authUser.company_id === null ||
-    authUser.company_id === undefined ||
-    authUser.company_id === "";
+    companyId === null || companyId === undefined || companyId === "";
 
   var isViewMode = !isCreateMode && authUser.role === "OWNER";
   var isEditMode = false;
   var uploadedFile = null; // Store selected file
 
   console.log("[Company] Mode:", isCreateMode ? "CREATE" : "VIEW");
-  console.log("[Company] User has company_id:", authUser.company_id);
+  console.log("[Company] User company id:", companyId);
   console.log("[Company] Backend URL:", backendURL);
 
   // If in VIEW mode, load company data and show view cards
@@ -42,7 +76,7 @@
 
   function loadAndShowCompanyView() {
     window.companyApi
-      .getCompany(authUser.company_id)
+      .getCompany(companyId)
       .then(function (data) {
         console.log("[Company] ✅ Company data loaded:", data);
         populateViewCards(data.company);
@@ -163,7 +197,7 @@
 
     // Load company data into form
     window.companyApi
-      .getCompany(authUser.company_id)
+      .getCompany(companyId)
       .then(function (data) {
         populateFormForEdit(data.company);
       })
@@ -287,7 +321,7 @@
       console.log("📤 Updating company with FormData");
       
       window.companyApi
-        .updateCompany(authUser.company_id, formData)
+        .updateCompany(companyId, formData)
         .then(function (data) {
           console.log("✅ Company updated successfully:", data);
           $("#company-api-success")
@@ -351,4 +385,4 @@
     $("#logo-preview").hide();
     console.log("[Company] ❌ Logo removed");
   });
-})();
+}

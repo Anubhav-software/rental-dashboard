@@ -58,7 +58,7 @@
 
   window.companyApi = {
     getCompany: function (companyId) {
-      return request('GET', '/companies/' + encodeURIComponent(companyId), undefined, false);
+      return request('GET', '/companies/' + encodeURIComponent(companyId), undefined, true);
     },
     createCompany: function (formData) {
       return requestFormData('POST', '/companies', formData, true);

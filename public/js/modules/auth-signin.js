@@ -49,7 +49,12 @@
           sessionStorage.setItem("pendingLoginEmail", email);
           setTimeout(function () { window.location.href = "/authentication/verify-otp"; }, 1500);
         } else if (data.token) {
-          localStorage.setItem("authToken", data.token);
+          if (window.authApi && window.authApi.setAuth) {
+            window.authApi.setAuth(data.token, data.user || null);
+          } else {
+            localStorage.setItem("authToken", data.token);
+            if (data.user) localStorage.setItem("authUser", JSON.stringify(data.user));
+          }
           $("#signin-success").removeClass("d-none").text("Login successful! Redirecting...");
           var base = (data.user && data.user.role === "STAFF") ? "/staff" : "/owner";
           setTimeout(function () { window.location.href = base + "/dashboard/index5"; }, 500);

@@ -13,15 +13,16 @@
       return;
     }
 
+    var companyId = authUser.company_id !== undefined ? authUser.company_id : authUser.companyId;
     console.log("[Sidebar] Checking user:", {
       role: authUser.role,
-      company_id: authUser.company_id
+      company_id: companyId
     });
 
     // Check if OWNER without company
     var isOwnerWithoutCompany =
       authUser.role === "OWNER" &&
-      (authUser.company_id === null || authUser.company_id === undefined || authUser.company_id === "");
+      (companyId === null || companyId === undefined || companyId === "");
 
     if (isOwnerWithoutCompany) {
       console.log("[Sidebar] ⚠️ OWNER without company detected - disabling sidebar");
