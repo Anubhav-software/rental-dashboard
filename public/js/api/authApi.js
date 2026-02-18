@@ -63,7 +63,12 @@
     });
   }
 
+  function getLoginConfig() {
+    return fetch(base() + '/auth/config').then(function (r) { return r.json(); });
+  }
+
   window.authApi = {
+    getLoginConfig: getLoginConfig,
     signup: function (body) {
       return request('POST', '/auth/signup', body, false);
     },
